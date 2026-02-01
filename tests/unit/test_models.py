@@ -1,23 +1,24 @@
 """Unit tests for Pydantic models."""
 
-import pytest
 from datetime import datetime
+
+import pytest
 from pydantic import ValidationError
 
 from nostradamus_ioto_sdk.models import (
+    CollectionCreateRequest,
+    CollectionResponse,
+    CollectionUpdateRequest,
+    DeleteDataRequest,
+    KeyType,
     OrganizationResponse,
     OrganizationUpdateRequest,
-    ProjectResponse,
     ProjectCreateRequest,
-    ProjectUpdateRequest,
-    CollectionResponse,
-    CollectionCreateRequest,
-    CollectionUpdateRequest,
-    ProjectKeyResponse,
     ProjectKeyCreateRequest,
-    KeyType,
+    ProjectKeyResponse,
+    ProjectResponse,
+    ProjectUpdateRequest,
     StatOperation,
-    DeleteDataRequest,
 )
 
 

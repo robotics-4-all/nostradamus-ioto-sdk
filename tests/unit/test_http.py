@@ -1,11 +1,10 @@
 """Unit tests for HTTP utilities."""
 
-import pytest
 import time
-import asyncio
-from datetime import datetime, timedelta
 
-from nostradamus_ioto_sdk._http import ResponseCache, RateLimiter, should_retry
+import pytest
+
+from nostradamus_ioto_sdk._http import RateLimiter, ResponseCache, should_retry
 from nostradamus_ioto_sdk.config import RetryConfig
 
 

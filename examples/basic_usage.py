@@ -4,6 +4,7 @@ This example demonstrates the basic operations you can perform with the SDK.
 """
 
 import os
+
 from nostradamus_ioto_sdk import NostradamusClient
 
 

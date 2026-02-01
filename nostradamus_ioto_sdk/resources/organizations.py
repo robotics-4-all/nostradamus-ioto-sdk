@@ -6,8 +6,7 @@ from ..models import OrganizationResponse, OrganizationUpdateRequest
 from ._base import BaseResource
 
 if TYPE_CHECKING:
-    from ..client import NostradamusClient
-    from ..async_client import AsyncNostradamusClient
+    pass
 
 
 class OrganizationsResource(BaseResource):

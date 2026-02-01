@@ -6,10 +6,10 @@ import sys
 from typing import Optional
 
 import click
+from rich import box
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
-from rich import box
 
 from nostradamus_ioto_sdk import NostradamusClient
 from nostradamus_ioto_sdk.exceptions import (
@@ -731,13 +731,13 @@ def keys_delete(
     """
     try:
         if not yes:
-            if not click.confirm(f"Delete API key?"):
+            if not click.confirm("Delete API key?"):
                 console.print("[yellow]Cancelled.[/yellow]")
                 return
 
         client = get_client(api_key, base_url)
         client.project_keys.delete(project_id=project, api_key=api_key_to_delete)
-        console.print(f"[green]✓[/green] Deleted API key")
+        console.print("[green]✓[/green] Deleted API key")
     except Exception as e:
         handle_error(e)
 

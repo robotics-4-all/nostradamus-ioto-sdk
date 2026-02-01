@@ -1,6 +1,5 @@
 """Unit tests for configuration."""
 
-import pytest
 import os
 
 from nostradamus_ioto_sdk.config import ClientConfig, RetryConfig

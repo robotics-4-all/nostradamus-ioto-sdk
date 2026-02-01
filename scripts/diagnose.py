@@ -2,7 +2,9 @@
 """Diagnostic script to test SDK and API connection."""
 
 import os
+
 import httpx
+
 from nostradamus_ioto_sdk import NostradamusClient
 
 print("=" * 70)
@@ -23,7 +25,7 @@ if api_key:
         else f"   ✅ API Key found: {api_key}"
     )
 elif username and password:
-    print(f"   ✅ OAuth2 credentials found")
+    print("   ✅ OAuth2 credentials found")
     print(f"      Username: {username}")
 else:
     print("   ❌ No credentials found!")
@@ -41,7 +43,7 @@ url = "https://nostradamus-ioto.issel.ee.auth.gr/api/v1/organization/nostradamus
 
 if api_key:
     headers = {"X-API-Key": api_key}
-    print(f"   Making GET request to:")
+    print("   Making GET request to:")
     print(f"   {url}")
     print(f"   With header: X-API-Key: {api_key[:10]}...")
 
@@ -73,7 +75,7 @@ if api_key:
 
 elif username and password:
     print("   Testing OAuth2 login...")
-    print(f"   POST to: https://nostradamus-ioto.issel.ee.auth.gr/api/v1/token")
+    print("   POST to: https://nostradamus-ioto.issel.ee.auth.gr/api/v1/token")
 
     try:
         with httpx.Client() as client:
@@ -115,7 +117,7 @@ try:
     # Try to get organization
     print("   Attempting to get organization info...")
     org = client.organizations.get()
-    print(f"   ✅ SUCCESS!")
+    print("   ✅ SUCCESS!")
     print(f"   Organization: {org.organization_name}")
     print(f"   ID: {org.organization_id}")
 

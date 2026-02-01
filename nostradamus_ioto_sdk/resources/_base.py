@@ -1,13 +1,13 @@
 """Base resource class for the Nostradamus IoTO SDK."""
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Type, TypeVar, Union
 from uuid import UUID
 
 from pydantic import BaseModel
 
 if TYPE_CHECKING:
-    from ..client import NostradamusClient
     from ..async_client import AsyncNostradamusClient
+    from ..client import NostradamusClient
 
 T = TypeVar("T", bound=BaseModel)
 

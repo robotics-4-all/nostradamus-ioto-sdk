@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Script to generate Pydantic models from OpenAPI specification."""
 
-import json
 import subprocess
 import sys
 from pathlib import Path
@@ -49,7 +48,7 @@ def main() -> None:
         print(result.stdout)
 
         # Display some stats
-        with open(output_file, "r") as f:
+        with open(output_file) as f:
             lines = f.readlines()
             print(f"\nGenerated {len(lines)} lines of code")
 

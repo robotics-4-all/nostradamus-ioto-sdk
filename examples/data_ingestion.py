@@ -4,9 +4,10 @@ This example shows how to efficiently send sensor data to the IoTO platform.
 """
 
 import os
-import time
 import random
+import time
 from datetime import datetime
+
 from nostradamus_ioto_sdk import NostradamusClient
 
 
@@ -68,11 +69,11 @@ def main():
             time.sleep(0.1)  # Small delay to simulate real-time
 
         # Example 2: Batch sending (more efficient)
-        print(f"\n[Example 2] Batch sending multiple readings...")
+        print("\n[Example 2] Batch sending multiple readings...")
         batch_size = 10
         batch = []
 
-        for i in range(batch_size):
+        for _ in range(batch_size):
             sensor_id = random.choice(sensor_ids)
             reading = generate_sensor_reading(sensor_id)
             batch.append(reading)
@@ -86,7 +87,6 @@ def main():
         start_time = time.time()
         readings_sent = 0
         batch_buffer = []
-        batch_interval = 2  # Send batch every 2 seconds
 
         while time.time() - start_time < 5:
             # Generate reading from random sensor

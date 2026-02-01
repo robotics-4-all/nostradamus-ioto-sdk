@@ -12,70 +12,70 @@ from pydantic import BaseModel, Field, RootModel
 
 
 class BaseKeyModel(BaseModel):
-    key_value: str = Field(..., title='Key Value')
+    key_value: str = Field(..., title="Key Value")
 
 
 class GrantType(RootModel[str]):
-    root: str = Field(..., pattern='^password$', title='Grant Type')
+    root: str = Field(..., pattern="^password$", title="Grant Type")
 
 
 class BodyLoginForAccessTokenApiV1TokenPost(BaseModel):
-    grant_type: GrantType | None = Field(None, title='Grant Type')
-    username: str = Field(..., title='Username')
-    password: str = Field(..., title='Password')
-    scope: str = Field('', title='Scope')
-    client_id: str | None = Field(None, title='Client Id')
-    client_secret: str | None = Field(None, title='Client Secret')
+    grant_type: GrantType | None = Field(None, title="Grant Type")
+    username: str = Field(..., title="Username")
+    password: str = Field(..., title="Password")
+    scope: str = Field("", title="Scope")
+    client_id: str | None = Field(None, title="Client Id")
+    client_secret: str | None = Field(None, title="Client Secret")
 
 
 class CollectionCreateRequest(BaseModel):
-    name: str = Field(..., title='Name')
-    description: str = Field(..., title='Description')
-    tags: list[str] = Field([], title='Tags')
-    collection_schema: dict[str, Any] = Field(..., title='Collection Schema')
+    name: str = Field(..., title="Name")
+    description: str = Field(..., title="Description")
+    tags: list[str] = Field([], title="Tags")
+    collection_schema: dict[str, Any] = Field(..., title="Collection Schema")
 
 
 class CollectionResponse(BaseModel):
-    collection_name: str = Field(..., title='Collection Name')
-    collection_id: UUID = Field(..., title='Collection Id')
-    project_id: UUID = Field(..., title='Project Id')
-    project_name: str = Field(..., title='Project Name')
-    organization_id: UUID = Field(..., title='Organization Id')
-    organization_name: str = Field(..., title='Organization Name')
-    description: str = Field(..., title='Description')
-    tags: list[str] = Field(..., title='Tags')
-    creation_date: str = Field(..., title='Creation Date')
-    collection_schema: dict[str, Any] = Field(..., title='Collection Schema')
+    collection_name: str = Field(..., title="Collection Name")
+    collection_id: UUID = Field(..., title="Collection Id")
+    project_id: UUID = Field(..., title="Project Id")
+    project_name: str = Field(..., title="Project Name")
+    organization_id: UUID = Field(..., title="Organization Id")
+    organization_name: str = Field(..., title="Organization Name")
+    description: str = Field(..., title="Description")
+    tags: list[str] = Field(..., title="Tags")
+    creation_date: str = Field(..., title="Creation Date")
+    collection_schema: dict[str, Any] = Field(..., title="Collection Schema")
 
 
 class CollectionUpdateRequest(BaseModel):
-    description: str | None = Field(None, title='Description')
-    tags: list[str] | None = Field(None, title='Tags')
+    description: str | None = Field(None, title="Description")
+    tags: list[str] | None = Field(None, title="Tags")
 
 
 class DeleteDataRequest(BaseModel):
-    key: str | None = Field(None, title='Key')
-    timestamp_from: str | None = Field(None, title='Timestamp From')
-    timestamp_to: str | None = Field(None, title='Timestamp To')
+    key: str | None = Field(None, title="Key")
+    timestamp_from: str | None = Field(None, title="Timestamp From")
+    timestamp_to: str | None = Field(None, title="Timestamp To")
 
 
 class OrganizationResponse(BaseModel):
-    organization_id: UUID = Field(..., title='Organization Id')
-    organization_name: str = Field(..., title='Organization Name')
-    description: str = Field(..., title='Description')
-    creation_date: str = Field(..., title='Creation Date')
-    tags: list[str] | None = Field(None, title='Tags')
+    organization_id: UUID = Field(..., title="Organization Id")
+    organization_name: str = Field(..., title="Organization Name")
+    description: str = Field(..., title="Description")
+    creation_date: str = Field(..., title="Creation Date")
+    tags: list[str] | None = Field(None, title="Tags")
 
 
 class OrganizationUpdateRequest(BaseModel):
-    description: str | None = Field(None, title='Description')
-    tags: list[str] | None = Field(None, title='Tags')
+    description: str | None = Field(None, title="Description")
+    tags: list[str] | None = Field(None, title="Tags")
 
 
 class ProjectCreateRequest(BaseModel):
-    project_name: str = Field(..., title='Project Name')
-    description: str | None = Field(..., title='Description')
-    tags: list[str] = Field(..., title='Tags')
+    project_name: str = Field(..., title="Project Name")
+    description: str | None = Field(..., title="Description")
+    tags: list[str] = Field(..., title="Tags")
 
 
 class KeyType(Enum):
@@ -83,47 +83,47 @@ class KeyType(Enum):
     The type of the key for the project. It can be 'read', 'write', or 'master'.
     """
 
-    read = 'read'
-    write = 'write'
-    master = 'master'
+    read = "read"
+    write = "write"
+    master = "master"
 
 
 class ProjectKeyCreateRequest(BaseModel):
     key_type: KeyType = Field(
         ...,
         description="The type of the key for the project. It can be 'read', 'write', or 'master'.",
-        examples=['read'],
-        title='Key Type',
+        examples=["read"],
+        title="Key Type",
     )
 
 
 class ProjectKeyResponse(BaseModel):
-    api_key: str = Field(..., title='Api Key')
-    project_id: UUID = Field(..., title='Project Id')
-    key_type: str = Field(..., title='Key Type')
-    created_at: str = Field(..., title='Created At')
+    api_key: str = Field(..., title="Api Key")
+    project_id: UUID = Field(..., title="Project Id")
+    key_type: str = Field(..., title="Key Type")
+    created_at: str = Field(..., title="Created At")
 
 
 class ProjectResponse(BaseModel):
-    organization_id: UUID = Field(..., title='Organization Id')
-    project_id: UUID = Field(..., title='Project Id')
-    organization_name: str = Field(..., title='Organization Name')
-    project_name: str = Field(..., title='Project Name')
-    description: str | None = Field(..., title='Description')
-    tags: list[str] = Field(..., title='Tags')
-    creation_date: str = Field(..., title='Creation Date')
+    organization_id: UUID = Field(..., title="Organization Id")
+    project_id: UUID = Field(..., title="Project Id")
+    organization_name: str = Field(..., title="Organization Name")
+    project_name: str = Field(..., title="Project Name")
+    description: str | None = Field(..., title="Description")
+    tags: list[str] = Field(..., title="Tags")
+    creation_date: str = Field(..., title="Creation Date")
 
 
 class ProjectUpdateRequest(BaseModel):
-    description: str | None = Field(..., title='Description')
-    tags: list[str] | None = Field(..., title='Tags')
+    description: str | None = Field(..., title="Description")
+    tags: list[str] | None = Field(..., title="Tags")
 
 
 class ValidationError(BaseModel):
-    loc: list[str | int] = Field(..., title='Location')
-    msg: str = Field(..., title='Message')
-    type: str = Field(..., title='Error Type')
+    loc: list[str | int] = Field(..., title="Location")
+    msg: str = Field(..., title="Message")
+    type: str = Field(..., title="Error Type")
 
 
 class HTTPValidationError(BaseModel):
-    detail: list[ValidationError] | None = Field(None, title='Detail')
+    detail: list[ValidationError] | None = Field(None, title="Detail")

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Nostradamus IoTO SDK - Soil Monitoring Example
 
@@ -18,8 +17,9 @@ import os
 import random
 import time
 from datetime import datetime, timedelta
+
 from nostradamus_ioto_sdk import NostradamusClient
-from nostradamus_ioto_sdk.exceptions import APIError, ResourceNotFoundError
+from nostradamus_ioto_sdk.exceptions import APIError
 
 
 def generate_soil_data(num_sensors=3, num_readings=24):
@@ -117,7 +117,7 @@ def main():
             )
 
             collection_id = collection.collection_id
-            print(f"✅ Collection created successfully!")
+            print("✅ Collection created successfully!")
             print(f"   Collection ID: {collection_id}")
             print(f"   Name: {collection.collection_name}")
             print(f"   Description: {collection.description}")
@@ -125,7 +125,7 @@ def main():
         except APIError as e:
             # Check if collection already exists (409 Conflict)
             if e.status_code == 409:
-                print(f"⚠️  Collection 'sensors' already exists, finding it...")
+                print("⚠️  Collection 'sensors' already exists, finding it...")
                 # List collections and find the one named "sensors"
                 collections = master_client.collections.list(project_id)
                 for coll in collections:
@@ -136,14 +136,14 @@ def main():
                         break
 
                 if not collection_id:
-                    print(f"❌ Could not find existing 'sensors' collection")
+                    print("❌ Could not find existing 'sensors' collection")
                     return
             else:
                 print(f"❌ Failed to create collection: {e}")
                 return
 
         if not collection_id:
-            print(f"❌ No collection available")
+            print("❌ No collection available")
             return
 
     # ===================================================================
@@ -151,7 +151,7 @@ def main():
     # ===================================================================
 
     print("\n📤 Step 2: Generating and sending soil sensor data...")
-    print(f"   Generating data for 3 sensors with 24 readings each...")
+    print("   Generating data for 3 sensors with 24 readings each...")
 
     soil_data = generate_soil_data(num_sensors=3, num_readings=24)
     print(f"   Generated {len(soil_data)} total readings")
@@ -347,9 +347,8 @@ def main():
 
     # Use a time range that matches the generated data (last 24 hours)
     from_time = (datetime.now() - timedelta(hours=24)).strftime("%Y-%m-%dT%H:%M:%SZ")
-    to_time = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
 
-    print(f"   Deleting first 12 hours of data for key 'SOIL_001'...")
+    print("   Deleting first 12 hours of data for key 'SOIL_001'...")
     print(
         f"   Time range: {from_time[:19]} to {(datetime.now() - timedelta(hours=12)).strftime('%Y-%m-%dT%H:%M:%S')}"
     )
@@ -405,7 +404,7 @@ def main():
             master_client.collections.delete(
                 project_id=project_id, collection_id=collection_id
             )
-            print(f"✅ Collection 'sensors' deleted successfully!")
+            print("✅ Collection 'sensors' deleted successfully!")
 
         except APIError as e:
             print(f"❌ Failed to delete collection: {e}")

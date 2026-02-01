@@ -3,8 +3,8 @@
 Professional Python SDK for the Nostradamus IoT Observatory API.
 """
 
-from .client import NostradamusClient
 from .async_client import AsyncNostradamusClient
+from .client import NostradamusClient
 from .config import ClientConfig
 from .exceptions import (
     APIError,

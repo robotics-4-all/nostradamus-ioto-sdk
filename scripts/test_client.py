@@ -5,7 +5,8 @@ This script demonstrates how to use the SDK to interact with the IoTO API.
 """
 
 import os
-from nostradamus_ioto_sdk import NostradamusClient, KeyType
+
+from nostradamus_ioto_sdk import NostradamusClient
 
 
 def main():

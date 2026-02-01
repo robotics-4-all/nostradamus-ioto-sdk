@@ -1,10 +1,11 @@
 """Unit tests for resources.organizations module."""
 
-import pytest
-from unittest.mock import Mock, MagicMock
+from unittest.mock import Mock
 
-from nostradamus_ioto_sdk.resources.organizations import OrganizationsResource
+import pytest
+
 from nostradamus_ioto_sdk.models import OrganizationResponse
+from nostradamus_ioto_sdk.resources.organizations import OrganizationsResource
 
 
 class TestOrganizationsResource:

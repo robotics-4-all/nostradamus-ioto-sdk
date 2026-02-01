@@ -1,19 +1,19 @@
 """Unit tests for custom exceptions."""
 
-import pytest
-import httpx
 from unittest.mock import Mock
 
+import httpx
+
 from nostradamus_ioto_sdk.exceptions import (
-    NostradamusError,
-    ConfigurationError,
-    AuthenticationError,
     APIError,
-    ValidationError,
-    ResourceNotFoundError,
-    RateLimitError,
-    TimeoutError,
+    AuthenticationError,
+    ConfigurationError,
     ConnectionError,
+    NostradamusError,
+    RateLimitError,
+    ResourceNotFoundError,
+    TimeoutError,
+    ValidationError,
 )
 
 

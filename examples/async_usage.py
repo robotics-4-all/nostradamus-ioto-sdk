@@ -5,6 +5,7 @@ This example demonstrates how to use the async client for concurrent operations.
 
 import asyncio
 import os
+
 from nostradamus_ioto_sdk import AsyncNostradamusClient
 
 

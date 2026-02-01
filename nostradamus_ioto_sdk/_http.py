@@ -1,11 +1,11 @@
 """HTTP utilities for retry, rate limiting, and caching."""
 
 import asyncio
+import threading
 import time
+from collections import deque
 from datetime import datetime, timedelta
 from typing import Any, Dict, Optional, Tuple
-from collections import deque
-import threading
 
 from .config import RetryConfig
 

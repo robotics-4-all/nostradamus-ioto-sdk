@@ -1,14 +1,14 @@
 """Synchronous client for Nostradamus IoTO SDK."""
 
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 import httpx
 
-from .auth import APIKeyHandler, OAuth2Handler
-from .config import ClientConfig, RetryConfig
-from .exceptions import ConfigurationError
 from ._base_client import make_request_with_retry
 from ._logging import get_logger
+from .auth import APIKeyHandler, OAuth2Handler
+from .config import RetryConfig
+from .exceptions import ConfigurationError
 from .resources.collections import CollectionsResource
 from .resources.data import DataResource
 from .resources.organizations import OrganizationsResource

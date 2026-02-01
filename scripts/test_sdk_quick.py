@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Quick SDK Test Script
 
@@ -20,6 +19,7 @@ import os
 import sys
 import time
 from datetime import datetime
+
 from nostradamus_ioto_sdk import NostradamusClient
 from nostradamus_ioto_sdk.exceptions import APIError
 
@@ -185,7 +185,7 @@ def main():
             client.collections.delete(
                 project_id=project_id, collection_id=collection_id
             )
-            print(f"✅ Collection deleted")
+            print("✅ Collection deleted")
 
         step_duration = time.time() - step_start
         print(f"   ⏱️  Time: {step_duration:.2f}s")
@@ -208,9 +208,9 @@ def main():
                 with NostradamusClient(api_key=master_key) as client:
                     client.collections.delete(project_id, collection_id)
                     print("✅ Cleanup successful")
-            except:
+            except Exception as e:
                 print(
-                    "⚠️  Cleanup failed - you may need to manually delete the collection"
+                    f"⚠️  Cleanup failed - you may need to manually delete the collection: {e}"
                 )
 
         return 1

@@ -1,8 +1,9 @@
 """Unit tests for resources._base module."""
 
-import pytest
-from uuid import UUID
 from unittest.mock import Mock
+from uuid import UUID
+
+import pytest
 from pydantic import BaseModel
 
 from nostradamus_ioto_sdk.resources._base import BaseResource

@@ -4,7 +4,6 @@ import logging
 import re
 from typing import Any, Dict, Optional
 
-
 # Patterns for sensitive data masking
 SENSITIVE_PATTERNS = [
     (

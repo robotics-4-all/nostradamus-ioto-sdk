@@ -1,11 +1,12 @@
 """Unit tests for authentication handlers."""
 
-import pytest
-from datetime import datetime, timedelta
+from datetime import datetime
 from unittest.mock import Mock, patch
-import httpx
 
-from nostradamus_ioto_sdk.auth import Token, APIKeyHandler, OAuth2Handler
+import httpx
+import pytest
+
+from nostradamus_ioto_sdk.auth import APIKeyHandler, OAuth2Handler, Token
 from nostradamus_ioto_sdk.exceptions import AuthenticationError
 
 

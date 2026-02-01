@@ -1,10 +1,11 @@
 """Base client functionality for Nostradamus IoTO SDK."""
 
 import time
-from typing import Any, Dict, Optional, Union
+from typing import Any, Optional
 
 import httpx
 
+from ._http import should_retry
 from .config import RetryConfig
 from .exceptions import (
     APIError,
@@ -15,8 +16,6 @@ from .exceptions import (
     TimeoutError,
     ValidationError,
 )
-from ._http import should_retry
-from ._logging import get_logger
 
 
 def handle_response(response: httpx.Response) -> httpx.Response:

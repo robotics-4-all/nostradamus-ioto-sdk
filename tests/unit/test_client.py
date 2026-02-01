@@ -1,13 +1,13 @@
 """Unit tests for NostradamusClient."""
 
-import pytest
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, patch
+
 import httpx
+import pytest
 
 from nostradamus_ioto_sdk import NostradamusClient
-from nostradamus_ioto_sdk.config import ClientConfig
+from nostradamus_ioto_sdk.auth import APIKeyHandler
 from nostradamus_ioto_sdk.exceptions import ConfigurationError
-from nostradamus_ioto_sdk.auth import APIKeyHandler, OAuth2Handler
 
 
 class TestNostradamusClientInitialization:
@@ -108,7 +108,7 @@ class TestNostradamusClientMethods:
         client = NostradamusClient(api_key="test-key-123")
 
         # Make a request
-        response = client._request("GET", "/test")
+        client._request("GET", "/test")
 
         # Verify request was made
         assert mock_request.called
