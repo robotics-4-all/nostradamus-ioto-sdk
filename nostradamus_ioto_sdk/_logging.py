@@ -50,7 +50,7 @@ def mask_dict(data: Dict[str, Any]) -> Dict[str, Any]:
     Returns:
         Dictionary with sensitive data masked
     """
-    masked = {}
+    masked: Dict[str, Any] = {}
     sensitive_keys = {
         "api_key",
         "api-key",

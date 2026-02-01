@@ -43,6 +43,8 @@ lint:
 	isort --check-only .
 	@echo "Running ruff..."
 	ruff check .
+	@echo "Running mypy..."
+	mypy nostradamus_ioto_sdk
 
 format:
 	black .

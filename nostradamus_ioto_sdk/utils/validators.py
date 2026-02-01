@@ -52,8 +52,18 @@ def validate_iso8601(value: Union[str, datetime]) -> datetime:
         return value
 
     try:
-        return dateutil_parser.isoparse(value)
-    except (ValueError, TypeError) as err:
+        parsed = dateutil_parser.isoparse(value)
+        return datetime(
+            parsed.year,
+            parsed.month,
+            parsed.day,
+            parsed.hour,
+            parsed.minute,
+            parsed.second,
+            parsed.microsecond,
+            parsed.tzinfo,
+        )
+    except (ValueError, TypeError, AttributeError) as err:
         raise ValueError(f"Invalid ISO 8601 timestamp: {value}") from err
 
 

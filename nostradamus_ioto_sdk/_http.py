@@ -139,7 +139,7 @@ class RateLimiter:
     """
 
     def __init__(self, requests_per_second: int = 10) -> None:
-        self._rate = requests_per_second
+        self._rate = float(requests_per_second)
         self._tokens = float(requests_per_second)
         self._last_update = time.monotonic()
         self._lock = threading.Lock()
@@ -210,7 +210,7 @@ class RateLimiter:
         """
         with self._lock:
             # Reduce rate by 50% when hit with rate limit
-            self._rate = max(1, self._rate * 0.5)
+            self._rate = max(1.0, self._rate * 0.5)
             self._tokens = 0.0  # Reset tokens
 
             if retry_after:

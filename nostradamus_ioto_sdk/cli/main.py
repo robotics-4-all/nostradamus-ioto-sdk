@@ -36,11 +36,9 @@ def get_client(
         )
         sys.exit(1)
 
-    kwargs = {"api_key": key}
     if base_url:
-        kwargs["base_url"] = base_url
-
-    return NostradamusClient(**kwargs)
+        return NostradamusClient(api_key=key, base_url=base_url)
+    return NostradamusClient(api_key=key)
 
 
 def handle_error(error: Exception) -> None:
@@ -394,7 +392,7 @@ def collections_list(
             table.add_column("ID", style="dim", no_wrap=True, width=10)
             table.add_column("Name", style="cyan bold")
             table.add_column("Description", style="white")
-            table.add_column("Type", style="magenta")
+            table.add_column("Project", style="magenta")
             table.add_column("Created", style="yellow", no_wrap=True)
 
             for c in coll_list:
@@ -402,7 +400,7 @@ def collections_list(
                     str(c.collection_id)[:8] + "...",
                     c.collection_name,
                     (c.description or "-")[:40],
-                    c.collection_type,
+                    c.project_name,
                     c.creation_date.strftime("%Y-%m-%d"),
                 )
             console.print(table)
@@ -443,7 +441,7 @@ def collections_get(
             table.add_row("ID", str(c.collection_id))
             table.add_row("Name", c.collection_name)
             table.add_row("Description", c.description or "-")
-            table.add_row("Type", c.collection_type)
+            table.add_row("Project", c.project_name)
             table.add_row("Project ID", str(c.project_id))
             table.add_row("Created", c.creation_date.strftime("%Y-%m-%d %H:%M:%S"))
             if c.tags:
@@ -650,21 +648,21 @@ def keys_list(
             )
         elif format == "compact":
             for k in key_list:
-                console.print(f"{k.key_type} ({k.key_id})")
+                console.print(f"{k.key_type} ({k.api_key[:16]}...)")
         else:
             table = Table(
                 title=f"[bold cyan]API Keys[/bold cyan] ({len(key_list)} total)",
                 box=box.ROUNDED,
             )
-            table.add_column("ID", style="dim", no_wrap=True, width=10)
+            table.add_column("Key", style="dim", no_wrap=True, width=20)
             table.add_column("Type", style="cyan bold")
             table.add_column("Created", style="yellow", no_wrap=True)
 
             for k in key_list:
                 table.add_row(
-                    str(k.key_id)[:8] + "...",
+                    k.api_key[:16] + "...",
                     k.key_type,
-                    k.creation_date.strftime("%Y-%m-%d"),
+                    k.created_at.strftime("%Y-%m-%d"),
                 )
             console.print(table)
     except Exception as e:
@@ -699,7 +697,7 @@ def keys_create(
         console.print(
             Panel(
                 f"[green]✓[/green] API key created!\n\n"
-                f"[cyan]ID:[/cyan] {key.key_id}\n"
+                f"[cyan]Key:[/cyan] {key.api_key}\n"
                 f"[cyan]Type:[/cyan] {key.key_type}\n"
                 f"[red]⚠ Save securely - won't be shown again![/red]",
                 title="Success",

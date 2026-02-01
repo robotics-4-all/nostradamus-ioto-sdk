@@ -1,6 +1,8 @@
 """Organization resource for the Nostradamus IoTO SDK."""
 
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, List, Optional, cast
+
+import httpx
 
 from ..models import OrganizationResponse, OrganizationUpdateRequest
 from ._base import BaseResource
@@ -31,10 +33,16 @@ class OrganizationsResource(BaseResource):
             >>> print(org.organization_name)
             'My Organization'
         """
-        response = self._client._request(
-            "GET", self._build_path("organization", "nostradamus")
+        response = cast(
+            httpx.Response,
+            self._client._request(
+                "GET", self._build_path("organization", "nostradamus")
+            ),
         )
-        return self._parse_response(response.json(), OrganizationResponse)
+        return cast(
+            OrganizationResponse,
+            self._parse_response(response.json(), OrganizationResponse),
+        )
 
     async def aget(self) -> OrganizationResponse:
         """Get organization information (async).
@@ -83,12 +91,18 @@ class OrganizationsResource(BaseResource):
             ... )
         """
         request_data = OrganizationUpdateRequest(description=description, tags=tags)
-        response = self._client._request(
-            "PUT",
-            self._build_path("organization", "nostradamus"),
-            json=request_data.model_dump(exclude_none=True),
+        response = cast(
+            httpx.Response,
+            self._client._request(
+                "PUT",
+                self._build_path("organization", "nostradamus"),
+                json=request_data.model_dump(exclude_none=True),
+            ),
         )
-        return self._parse_response(response.json(), OrganizationResponse)
+        return cast(
+            OrganizationResponse,
+            self._parse_response(response.json(), OrganizationResponse),
+        )
 
     async def aupdate(
         self,

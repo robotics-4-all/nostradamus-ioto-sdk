@@ -1,6 +1,15 @@
 """Base resource class for the Nostradamus IoTO SDK."""
 
-from typing import TYPE_CHECKING, Any, Dict, List, Type, TypeVar, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    List,
+    Type,
+    TypeVar,
+    Union,
+    overload,
+)
 from uuid import UUID
 
 from pydantic import BaseModel
@@ -43,6 +52,14 @@ class BaseResource:
         """
         clean_parts = [str(p).strip("/") for p in parts if p]
         return f"{self._base_path}/{'/'.join(clean_parts)}"
+
+    @overload
+    def _parse_response(self, data: Dict[str, Any], model_class: Type[T]) -> T: ...
+
+    @overload
+    def _parse_response(
+        self, data: List[Dict[str, Any]], model_class: Type[T]
+    ) -> List[T]: ...
 
     def _parse_response(
         self, data: Union[Dict[str, Any], List[Dict[str, Any]]], model_class: Type[T]

@@ -103,4 +103,4 @@ class RetryConfig:
             Delay in seconds
         """
         delay = self.backoff_factor * (2**attempt)
-        return min(delay, self.max_backoff)
+        return float(min(delay, self.max_backoff))
