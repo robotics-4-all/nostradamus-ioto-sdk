@@ -18,23 +18,19 @@ This directory contains example scripts demonstrating various features of the No
 
 ## Examples
 
-### 1. Soil Monitoring Example (`soil_monitoring_example.py`) ⭐ **RECOMMENDED**
+### Getting Started
 
-**Complete workflow matching the official API demonstration**:
-- Create collection with schema
-- Generate and send soil sensor data (3 sensors × 24 readings)
-- Query data with various filters:
-  - Get all data
-  - Limit results
-  - Order by temperature
-  - Filter by sensor ID
-  - Filter by moisture level
-  - Complex multi-condition filters
-- Get statistics (avg, max, min, distinct)
-- Delete specific data by key and time range
-- Clean up collection
+| Example | Domain | Description |
+|---------|--------|-------------|
+| `basic_usage.py` | General | Fundamental SDK operations (CRUD, data send/query) |
+| `async_usage.py` | General | Async client with concurrent operations |
+| `data_ingestion.py` | General | Sensor data ingestion patterns (individual, batch, continuous) |
+| `soil_monitoring_example.py` | Agriculture | Complete workflow matching official API demo ⭐ |
 
-**Environment Variables Required**:
+### Real-World Domain Examples
+
+All domain examples follow the same 6-step workflow: create collection → send data → query with filters → statistics → delete → cleanup. They require the same environment variables:
+
 ```bash
 export NOSTRADAMUS_PROJECT_ID="your-project-id"
 export NOSTRADAMUS_MASTER_KEY="your-master-key"
@@ -42,51 +38,71 @@ export NOSTRADAMUS_WRITE_KEY="your-write-key"
 export NOSTRADAMUS_READ_KEY="your-read-key"
 ```
 
-**Run it**:
-```bash
-python examples/soil_monitoring_example.py
-```
+#### 🌾 Agriculture
 
-This example demonstrates **all major SDK features** in a realistic IoT scenario.
+| Example | Scenario | Sensors | Data Points |
+|---------|----------|---------|-------------|
+| `agriculture/precision_farming.py` | Multi-zone crop monitoring | Soil moisture, NDVI, leaf wetness, wind, rainfall | 4 zones × 24h |
+| `agriculture/greenhouse_automation.py` | Greenhouse climate control | Air temp, CO2, PAR light, VPD, vent/heating/irrigation actuators | 3 zones × 48 readings |
+| `agriculture/livestock_tracking.py` | Cattle health & GPS tracking | Body temp, heart rate, rumination, activity, GPS coordinates | 5 animals × 24h |
+
+**Agriculture query highlights:**
+- Drought stress detection (low moisture + high temp)
+- Disease risk filtering (high leaf wetness + humidity)
+- Fever detection (body temp > 39.5°C)
+- Heat stress alerts (ambient > 30°C + high heart rate)
+
+#### 🏙️ Smart City
+
+| Example | Scenario | Sensors | Data Points |
+|---------|----------|---------|-------------|
+| `smart_city/air_quality_monitoring.py` | Urban air quality network | PM2.5, PM10, NO2, O3, CO, SO2, AQI | 4 stations × 48 readings |
+
+Station-specific pollution profiles (industrial, downtown, highway, park) with rush-hour traffic effects.
+
+#### ⚡ Smart Energy
+
+| Example | Scenario | Sensors | Data Points |
+|---------|----------|---------|-------------|
+| `smart_energy/microgrid_monitoring.py` | Solar/wind/battery microgrid | Power output, voltage, efficiency, SOC, irradiance | 4 assets × 48 readings |
+
+Realistic day/night solar curves, wind gusts, and battery charge/discharge cycles.
+
+#### 🚛 Smart Transportation
+
+| Example | Scenario | Sensors | Data Points |
+|---------|----------|---------|-------------|
+| `smart_transportation/fleet_management.py` | Vehicle fleet telemetry | GPS, speed, fuel, engine diagnostics, driver behavior | 5 vehicles × 24h |
+
+Vehicle-type-specific profiles (trucks, vans, buses) with speeding and overheating detection.
+
+#### 🤖 Cyber-Physical Systems
+
+| Example | Scenario | Sensors | Data Points |
+|---------|----------|---------|-------------|
+| `cyber_physical/robot_fleet_monitoring.py` | Warehouse robot fleet | Position, velocity, battery, LiDAR, task status, CPU | 5 robots × 24h |
+
+Mixed robot types (AGVs, robotic arms, inspection drones) with error detection and performance bottleneck filtering.
 
 ---
 
-### 2. Basic Usage (`basic_usage.py`)
+### Running Examples
 
-Demonstrates fundamental SDK operations:
-- Getting organization information
-- Listing, creating, updating, and deleting projects
-- Managing collections
-- Sending and querying data
-
-**Run it**:
 ```bash
+# General examples (API key only)
 python examples/basic_usage.py
-```
-
-### 3. Async Usage (`async_usage.py`)
-
-Shows how to use the async client for concurrent operations:
-- Parallel API requests
-- Creating multiple resources concurrently
-- Efficient batch operations
-
-**Run it**:
-```bash
 python examples/async_usage.py
-```
-
-### 4. Data Ingestion (`data_ingestion.py`)
-
-IoT-focused example for sensor data ingestion:
-- Simulating sensor readings
-- Individual vs batch data sending
-- Continuous data ingestion patterns
-- Querying and analyzing data
-
-**Run it**:
-```bash
 python examples/data_ingestion.py
+
+# Domain examples (require project + multi-key auth)
+python examples/soil_monitoring_example.py
+python examples/agriculture/precision_farming.py
+python examples/agriculture/greenhouse_automation.py
+python examples/agriculture/livestock_tracking.py
+python examples/smart_city/air_quality_monitoring.py
+python examples/smart_energy/microgrid_monitoring.py
+python examples/smart_transportation/fleet_management.py
+python examples/cyber_physical/robot_fleet_monitoring.py
 ```
 
 ## Tips
