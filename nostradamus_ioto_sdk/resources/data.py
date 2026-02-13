@@ -4,6 +4,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 from uuid import UUID
 
+from ..exceptions import ValidationError
 from ..models.enums import StatOperation
 from ._base import BaseResource
 
@@ -252,7 +253,7 @@ class DataResource(BaseResource):
             )
 
         if not delete_request:
-            raise ValueError(
+            raise ValidationError(
                 "At least one parameter (key, timestamp_from, or timestamp_to) must be provided"
             )
 
@@ -313,7 +314,7 @@ class DataResource(BaseResource):
             )
 
         if not delete_request:
-            raise ValueError(
+            raise ValidationError(
                 "At least one parameter (key, timestamp_from, or timestamp_to) must be provided"
             )
 

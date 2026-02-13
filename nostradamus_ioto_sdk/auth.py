@@ -7,6 +7,7 @@ from urllib.parse import urljoin
 
 import httpx
 from pydantic import BaseModel
+from pydantic import ValidationError as PydanticValidationError
 
 from .exceptions import AuthenticationError
 
@@ -137,9 +138,15 @@ class OAuth2Handler:
 
         try:
             token_data = response.json()
+        except (ValueError, UnicodeDecodeError) as err:
+            raise AuthenticationError(
+                f"Failed to decode token response: {err}"
+            ) from err
+
+        try:
             self._token = Token(**token_data)
-        except Exception as err:
-            raise AuthenticationError(f"Failed to parse token response: {err}") from err
+        except (TypeError, KeyError, PydanticValidationError) as err:
+            raise AuthenticationError(f"Invalid token response format: {err}") from err
 
     def get_headers(self) -> Dict[str, str]:
         """Get authentication headers for API requests.
