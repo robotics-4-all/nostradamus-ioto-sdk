@@ -45,6 +45,8 @@ dev = [
     "isort>=5.12.0",
     "ruff>=0.1.0",
     "mypy>=1.5.0",
+    "types-python-dateutil>=2.8.0",
+    "pylint>=3.0.0",
     "datamodel-code-generator>=0.22.0",
 ]
 cli = [
@@ -171,6 +173,51 @@ testpaths = ["tests"]
 pythonpath = ["."]
 asyncio_mode = "auto"
 
+[tool.pylint.main]
+# Only lint the SDK package, not tests/scripts/examples
+source-roots = ["."]
+ignore-paths = ["tests", "scripts", "examples", "docs"]
+
+[tool.pylint."messages control"]
+disable = [
+    "C0114",  # missing-module-docstring — enforced selectively, not globally
+    "C0115",  # missing-class-docstring — Pydantic models are self-documenting
+    "C0116",  # missing-function-docstring — private helpers don't always need docstrings
+    "R0903",  # too-few-public-methods — Pydantic models / config dataclasses
+    "R0801",  # duplicate-code — sync/async twins are intentionally duplicated
+    "W0622",  # redefined-builtin — SDK intentionally defines ConnectionError, TimeoutError, ValidationError
+    "E0611",  # no-name-in-module — false positives with pydantic re-exports
+    "C0209",  # consider-using-f-string — let black/ruff handle style
+    "W0511",  # fixme — allow TODO/FIXME comments
+    "C0301",  # line-too-long — handled by black
+    "W0107",  # unnecessary-pass — used in abstract/placeholder methods
+    "W0212",  # protected-access — resources access _client._request() by design
+    "C0415",  # import-outside-toplevel — circular import guards are intentional
+    "R0917",  # too-many-positional-arguments — SDK API surface requires many params
+    "R0902",  # too-many-instance-attributes — client classes need many attributes
+    "R0912",  # too-many-branches — retry logic is inherently branchy
+    "R0914",  # too-many-locals — retry functions need many local vars
+    "W0718",  # broad-exception-caught — CLI uses catch-all at boundary; _base_client wraps httpx
+    "W0621",  # redefined-outer-name — Click decorator pattern
+    "W0221",  # arguments-differ — Pydantic v2 model_post_init signature
+    "C0103",  # invalid-name — auto-generated enum values are lowercase
+    "E1120",  # no-value-for-parameter — false positive with Click decorators
+]
+
+[tool.pylint.format]
+max-line-length = 88
+
+[tool.pylint.basic]
+good-names = ["T", "e", "i", "k", "v", "f", "id", "ok"]
+
+[tool.pylint.design]
+max-args = 10
+max-locals = 20
+
+[tool.pylint.similarities]
+min-similarity-lines = 8
+ignore-imports = true
+
 [tool.coverage.run]
 source = ["nostradamus_ioto_sdk"]
 omit = [
@@ -189,6 +236,8 @@ omit = [
 ]
 
 [tool.coverage.report]
+fail_under = 80
+
 exclude_lines = [
     "pragma: no cover",
     "def __repr__",

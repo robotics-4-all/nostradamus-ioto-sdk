@@ -35,11 +35,14 @@ jobs:
     - name: Lint with ruff
       run: ruff check .
     
+    - name: Lint with pylint
+      run: pylint nostradamus_ioto_sdk
+    
     - name: Type check with mypy
       run: mypy nostradamus_ioto_sdk
     
     - name: Test with pytest
-      run: pytest --cov=nostradamus_ioto_sdk --cov-report=xml --cov-report=term
+      run: pytest --cov=nostradamus_ioto_sdk --cov-report=xml --cov-report=term --cov-fail-under=80
     
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3

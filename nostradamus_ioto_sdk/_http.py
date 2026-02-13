@@ -64,15 +64,12 @@ class ResponseCache:
             if key in self._cache:
                 value, expires_at = self._cache[key]
                 if datetime.now() < expires_at:
-                    # Move to end (most recently used)
                     self._access_order.remove(key)
                     self._access_order.append(key)
                     return value
-                else:
-                    # Expired, remove it
-                    del self._cache[key]
-                    if key in self._access_order:
-                        self._access_order.remove(key)
+                del self._cache[key]
+                if key in self._access_order:
+                    self._access_order.remove(key)
             return None
 
     def set(self, key: str, value: Any) -> None:
@@ -117,7 +114,7 @@ class ResponseCache:
             return
 
         with self._lock:
-            keys_to_remove = [k for k in self._cache.keys() if pattern in k]
+            keys_to_remove = [k for k in self._cache if pattern in k]
             for key in keys_to_remove:
                 del self._cache[key]
                 if key in self._access_order:

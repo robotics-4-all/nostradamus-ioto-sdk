@@ -18,7 +18,7 @@ class BaseModel(PydanticBaseModel):
         validate_assignment=True,
         populate_by_name=True,
         json_encoders={
-            datetime: lambda v: v.isoformat(),
-            UUID: lambda v: str(v),
+            datetime: datetime.isoformat,
+            UUID: str,
         },
     )
