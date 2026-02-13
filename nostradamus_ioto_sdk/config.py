@@ -15,6 +15,7 @@ class ClientConfig:
         backoff_factor: Exponential backoff factor for retries
         enable_cache: Enable response caching for GET requests
         cache_ttl: Cache time-to-live in seconds
+        rate_limit_rps: Rate limit in requests per second (0 = disabled)
         log_level: Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
         verify_ssl: Verify SSL certificates
 
@@ -32,6 +33,7 @@ class ClientConfig:
     backoff_factor: float = 0.5
     enable_cache: bool = False
     cache_ttl: int = 60
+    rate_limit_rps: float = 0.0
     log_level: str = "INFO"
     verify_ssl: bool = True
 
@@ -46,6 +48,7 @@ class ClientConfig:
             NOSTRADAMUS_BACKOFF_FACTOR: Retry backoff factor
             NOSTRADAMUS_ENABLE_CACHE: Enable caching (true/false)
             NOSTRADAMUS_CACHE_TTL: Cache TTL in seconds
+            NOSTRADAMUS_RATE_LIMIT_RPS: Rate limit in requests per second (0 = disabled)
             NOSTRADAMUS_LOG_LEVEL: Logging level
             NOSTRADAMUS_VERIFY_SSL: Verify SSL (true/false)
 
@@ -70,6 +73,9 @@ class ClientConfig:
             ),
             enable_cache=os.getenv(f"{prefix}ENABLE_CACHE", "false").lower() == "true",
             cache_ttl=int(os.getenv(f"{prefix}CACHE_TTL", str(cls.cache_ttl))),
+            rate_limit_rps=float(
+                os.getenv(f"{prefix}RATE_LIMIT_RPS", str(cls.rate_limit_rps))
+            ),
             log_level=os.getenv(f"{prefix}LOG_LEVEL", cls.log_level).upper(),
             verify_ssl=os.getenv(f"{prefix}VERIFY_SSL", "true").lower() == "true",
         )

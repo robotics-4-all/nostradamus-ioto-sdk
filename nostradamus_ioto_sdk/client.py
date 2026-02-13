@@ -5,6 +5,7 @@ from typing import Any, Optional
 import httpx
 
 from ._base_client import make_request_with_retry
+from ._http import RateLimiter
 from ._logging import get_logger
 from .auth import APIKeyHandler, OAuth2Handler
 from .config import RetryConfig
@@ -51,6 +52,7 @@ class NostradamusClient:
         base_url: str = "https://nostradamus-ioto.issel.ee.auth.gr",
         timeout: float = 30.0,
         max_retries: int = 3,
+        rate_limit_rps: float = 0.0,
         log_level: str = "INFO",
         **kwargs: Any,
     ) -> None:
@@ -76,6 +78,11 @@ class NostradamusClient:
                 username=username,  # type: ignore
                 password=password,  # type: ignore
             )
+
+        # Setup rate limiter (disabled by default)
+        self._rate_limiter: Optional[RateLimiter] = None
+        if rate_limit_rps > 0:
+            self._rate_limiter = RateLimiter(requests_per_second=int(rate_limit_rps))
 
         # Create HTTP client (no base_url - we'll build full URLs)
         self._http_client = httpx.Client(timeout=timeout, **kwargs)
@@ -103,6 +110,10 @@ class NostradamusClient:
         Returns:
             HTTP response
         """
+        # Acquire rate limit permit if enabled
+        if self._rate_limiter:
+            self._rate_limiter.acquire()
+
         # Add authentication headers
         headers = kwargs.pop("headers", {})
         auth_headers = self._auth_handler.get_headers()

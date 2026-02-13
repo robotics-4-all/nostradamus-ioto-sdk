@@ -5,6 +5,7 @@ from typing import Any, Optional
 
 import httpx
 
+from ._http import RateLimiter
 from ._logging import get_logger
 from .auth import APIKeyHandler, OAuth2Handler
 from .config import RetryConfig
@@ -148,6 +149,7 @@ class AsyncNostradamusClient:
         base_url: str = "https://nostradamus-ioto.issel.ee.auth.gr",
         timeout: float = 30.0,
         max_retries: int = 3,
+        rate_limit_rps: float = 0.0,
         log_level: str = "INFO",
         **kwargs: Any,
     ) -> None:
@@ -163,6 +165,11 @@ class AsyncNostradamusClient:
         self._timeout = timeout
         self._retry_config = RetryConfig(max_retries=max_retries)
         self._logger = get_logger(__name__, log_level)
+
+        # Setup rate limiter (disabled by default)
+        self._rate_limiter: Optional[RateLimiter] = None
+        if rate_limit_rps > 0:
+            self._rate_limiter = RateLimiter(requests_per_second=int(rate_limit_rps))
 
         # Setup authentication
         if api_key:
@@ -200,6 +207,10 @@ class AsyncNostradamusClient:
         Returns:
             HTTP response
         """
+        # Acquire rate limit permit if enabled
+        if self._rate_limiter:
+            await self._rate_limiter.aacquire()
+
         # Add authentication headers
         headers = kwargs.pop("headers", {})
         auth_headers = self._auth_handler.get_headers()

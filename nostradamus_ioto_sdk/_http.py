@@ -143,7 +143,7 @@ class RateLimiter:
         self._tokens = float(requests_per_second)
         self._last_update = time.monotonic()
         self._lock = threading.Lock()
-        self._async_lock = asyncio.Lock()
+        self._async_lock: Optional[asyncio.Lock] = None
 
     def acquire(self, timeout: Optional[float] = None) -> bool:
         """Acquire permission to make a request (blocking).
@@ -170,6 +170,12 @@ class RateLimiter:
             # Sleep for a short time before retrying
             time.sleep(0.01)
 
+    def _get_async_lock(self) -> asyncio.Lock:
+        """Get or create the async lock (lazy initialization)."""
+        if self._async_lock is None:
+            self._async_lock = asyncio.Lock()
+        return self._async_lock
+
     async def aacquire(self, timeout: Optional[float] = None) -> bool:
         """Async acquire permission to make a request.
 
@@ -182,7 +188,7 @@ class RateLimiter:
         start_time = time.monotonic()
 
         while True:
-            async with self._async_lock:
+            async with self._get_async_lock():
                 self._refill()
 
                 if self._tokens >= 1.0:
