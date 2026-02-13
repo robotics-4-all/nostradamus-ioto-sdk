@@ -17,6 +17,7 @@ class TestClientConfig:
         assert config.backoff_factor == 0.5
         assert config.enable_cache is False
         assert config.cache_ttl == 60
+        assert config.rate_limit_rps == 0.0
         assert config.log_level == "INFO"
         assert config.verify_ssl is True
 
@@ -125,6 +126,12 @@ class TestClientConfig:
         config = ClientConfig.from_env(prefix="CUSTOM_")
         assert config.base_url == "https://prefix.example.com"
 
+    def test_from_env_custom_rate_limit_rps(self, monkeypatch):
+        """Test from_env with custom rate limit."""
+        monkeypatch.setenv("NOSTRADAMUS_RATE_LIMIT_RPS", "50.0")
+        config = ClientConfig.from_env()
+        assert config.rate_limit_rps == 50.0
+
     def test_from_env_all_variables(self, monkeypatch):
         """Test from_env with all environment variables set."""
         monkeypatch.setenv("NOSTRADAMUS_BASE_URL", "https://full.example.com")
@@ -133,6 +140,7 @@ class TestClientConfig:
         monkeypatch.setenv("NOSTRADAMUS_BACKOFF_FACTOR", "1.5")
         monkeypatch.setenv("NOSTRADAMUS_ENABLE_CACHE", "true")
         monkeypatch.setenv("NOSTRADAMUS_CACHE_TTL", "180")
+        monkeypatch.setenv("NOSTRADAMUS_RATE_LIMIT_RPS", "25.0")
         monkeypatch.setenv("NOSTRADAMUS_LOG_LEVEL", "warning")
         monkeypatch.setenv("NOSTRADAMUS_VERIFY_SSL", "false")
 
@@ -143,6 +151,7 @@ class TestClientConfig:
         assert config.backoff_factor == 1.5
         assert config.enable_cache is True
         assert config.cache_ttl == 180
+        assert config.rate_limit_rps == 25.0
         assert config.log_level == "WARNING"
         assert config.verify_ssl is False
 

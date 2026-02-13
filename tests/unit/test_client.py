@@ -6,6 +6,7 @@ import httpx
 import pytest
 
 from nostradamus_ioto_sdk import NostradamusClient
+from nostradamus_ioto_sdk._http import RateLimiter
 from nostradamus_ioto_sdk.auth import APIKeyHandler
 from nostradamus_ioto_sdk.exceptions import ConfigurationError
 
@@ -150,3 +151,48 @@ class TestNostradamusClientMethods:
         call_kwargs = mock_request.call_args[1]
         assert "params" in call_kwargs
         assert call_kwargs["params"] == params
+
+
+class TestNostradamusClientRateLimiter:
+    """Test client rate limiter integration."""
+
+    def test_client_init_without_rate_limiter(self):
+        """Test rate limiter is None by default."""
+        client = NostradamusClient(api_key="test-key")
+        assert client._rate_limiter is None
+
+    def test_client_init_with_rate_limiter(self):
+        """Test rate limiter is created when rate_limit_rps > 0."""
+        client = NostradamusClient(api_key="test-key", rate_limit_rps=10.0)
+        assert client._rate_limiter is not None
+        assert isinstance(client._rate_limiter, RateLimiter)
+
+    def test_client_init_rate_limiter_zero_disabled(self):
+        """Test rate limiter is disabled when rate_limit_rps is 0."""
+        client = NostradamusClient(api_key="test-key", rate_limit_rps=0.0)
+        assert client._rate_limiter is None
+
+    @patch("nostradamus_ioto_sdk.client.make_request_with_retry")
+    def test_client_request_acquires_rate_limit(self, mock_request):
+        """Test that _request calls rate limiter acquire before making request."""
+        mock_response = Mock(spec=httpx.Response)
+        mock_response.status_code = 200
+        mock_request.return_value = mock_response
+
+        client = NostradamusClient(api_key="test-key", rate_limit_rps=100.0)
+        with patch.object(
+            client._rate_limiter, "acquire", return_value=True
+        ) as mock_acquire:
+            client._request("GET", "/test")
+            mock_acquire.assert_called_once()
+
+    @patch("nostradamus_ioto_sdk.client.make_request_with_retry")
+    def test_client_request_skips_rate_limit_when_disabled(self, mock_request):
+        """Test that _request does not call rate limiter when disabled."""
+        mock_response = Mock(spec=httpx.Response)
+        mock_response.status_code = 200
+        mock_request.return_value = mock_response
+
+        client = NostradamusClient(api_key="test-key")
+        client._request("GET", "/test")
+        assert mock_request.called

@@ -84,6 +84,17 @@ class TestResponseCache:
         assert cache.get("key3") == "value3"
         assert cache.get("key4") == "value4"
 
+    def test_cache_set_updates_existing_key(self):
+        """Test setting an existing key updates value and access order."""
+        cache = ResponseCache(ttl=60, max_size=3)
+        cache.set("key1", "value1")
+        cache.set("key2", "value2")
+
+        cache.set("key1", "updated_value1")
+
+        assert cache.get("key1") == "updated_value1"
+        assert cache.get("key2") == "value2"
+
     def test_cache_clear(self):
         """Test clearing cache."""
         cache = ResponseCache(ttl=60)

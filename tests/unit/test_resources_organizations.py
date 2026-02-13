@@ -1,6 +1,6 @@
 """Unit tests for resources.organizations module."""
 
-from unittest.mock import Mock
+from unittest.mock import AsyncMock, Mock
 
 import pytest
 
@@ -152,3 +152,66 @@ class TestOrganizationsResource:
 
         # Verify response
         assert isinstance(result, OrganizationResponse)
+
+
+class TestOrganizationsResourceAsync:
+    """Test async methods of OrganizationsResource."""
+
+    @pytest.fixture
+    def mock_async_client(self):
+        """Create mock async client."""
+        client = Mock()
+        client._request = AsyncMock()
+        return client
+
+    @pytest.fixture
+    def resource(self, mock_async_client):
+        """Create OrganizationsResource with async client."""
+        return OrganizationsResource(mock_async_client)
+
+    @pytest.mark.asyncio
+    async def test_aget_returns_organization_response(
+        self, resource, mock_async_client
+    ):
+        """Test aget returns OrganizationResponse."""
+        mock_response = Mock()
+        mock_response.json.return_value = {
+            "organization_id": "12345678-1234-5678-1234-567812345678",
+            "organization_name": "Test Org",
+            "description": "Test description",
+            "creation_date": "2024-01-01T00:00:00Z",
+        }
+        mock_async_client._request.return_value = mock_response
+
+        result = await resource.aget()
+
+        mock_async_client._request.assert_called_once_with(
+            "GET", "/api/v1/organization/nostradamus"
+        )
+        assert isinstance(result, OrganizationResponse)
+        assert result.organization_name == "Test Org"
+
+    @pytest.mark.asyncio
+    async def test_aupdate_returns_organization_response(
+        self, resource, mock_async_client
+    ):
+        """Test aupdate returns OrganizationResponse."""
+        mock_response = Mock()
+        mock_response.json.return_value = {
+            "organization_id": "12345678-1234-5678-1234-567812345678",
+            "organization_name": "Test Org",
+            "description": "Updated description",
+            "creation_date": "2024-01-01T00:00:00Z",
+            "tags": ["iot"],
+        }
+        mock_async_client._request.return_value = mock_response
+
+        result = await resource.aupdate(description="Updated description", tags=["iot"])
+
+        mock_async_client._request.assert_called_once_with(
+            "PUT",
+            "/api/v1/organization/nostradamus",
+            json={"description": "Updated description", "tags": ["iot"]},
+        )
+        assert isinstance(result, OrganizationResponse)
+        assert result.description == "Updated description"

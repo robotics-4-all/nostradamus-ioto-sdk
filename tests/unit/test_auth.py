@@ -242,6 +242,96 @@ class TestOAuth2Handler:
             exc_info.value
         ).lower() or "Authentication failed" in str(exc_info.value)
 
+    @patch("httpx.post")
+    def test_oauth2_handler_non_auth_http_error(self, mock_post):
+        """Test OAuth2 handler handles non-401/403 HTTP errors."""
+        mock_response = Mock()
+        mock_response.status_code = 500
+        mock_response.text = "Internal Server Error"
+        mock_response.raise_for_status.side_effect = httpx.HTTPStatusError(
+            "500", request=Mock(), response=mock_response
+        )
+        mock_post.return_value = mock_response
+
+        handler = OAuth2Handler(
+            base_url="https://api.example.com",
+            username="testuser",
+            password="testpass",
+        )
+
+        with pytest.raises(AuthenticationError) as exc_info:
+            handler.get_headers()
+
+        assert "Failed to obtain access token" in str(exc_info.value)
+
+    @patch("httpx.post")
+    def test_oauth2_handler_invalid_token_json(self, mock_post):
+        """Test OAuth2 handler handles malformed token JSON."""
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_response.json.side_effect = ValueError("Invalid JSON")
+        mock_response.raise_for_status = Mock()
+        mock_post.return_value = mock_response
+
+        handler = OAuth2Handler(
+            base_url="https://api.example.com",
+            username="testuser",
+            password="testpass",
+        )
+
+        with pytest.raises(AuthenticationError) as exc_info:
+            handler.get_headers()
+
+        assert "Failed to decode token response" in str(exc_info.value)
+
+    @patch("httpx.post")
+    def test_oauth2_handler_invalid_token_format(self, mock_post):
+        """Test OAuth2 handler handles invalid token data structure."""
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {"unexpected": "format"}
+        mock_response.raise_for_status = Mock()
+        mock_post.return_value = mock_response
+
+        handler = OAuth2Handler(
+            base_url="https://api.example.com",
+            username="testuser",
+            password="testpass",
+        )
+
+        with pytest.raises(AuthenticationError) as exc_info:
+            handler.get_headers()
+
+        assert "Invalid token response format" in str(exc_info.value)
+
+    @patch("httpx.post")
+    def test_oauth2_handler_clear_token(self, mock_post):
+        """Test clear_token forces re-authentication."""
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {
+            "access_token": "first-token",
+            "token_type": "bearer",
+            "expires_in": 3600,
+        }
+        mock_response.raise_for_status = Mock()
+        mock_post.return_value = mock_response
+
+        handler = OAuth2Handler(
+            base_url="https://api.example.com",
+            username="testuser",
+            password="testpass",
+        )
+
+        handler.get_headers()
+        assert mock_post.call_count == 1
+
+        handler.clear_token()
+        assert handler._token is None
+
+        handler.get_headers()
+        assert mock_post.call_count == 2
+
     def test_oauth2_handler_strips_trailing_slash_from_url(self):
         """Test OAuth2Handler strips trailing slash from base URL."""
         handler = OAuth2Handler(
