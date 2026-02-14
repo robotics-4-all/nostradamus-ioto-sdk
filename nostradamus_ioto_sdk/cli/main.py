@@ -112,12 +112,14 @@ def org_get(api_key: Optional[str], base_url: Optional[str], format: str) -> Non
     """Get organization information."""
     try:
         client = get_client(api_key, base_url)
-        org = client.organizations.get()
+        organization = client.organizations.get()
 
         if format == "json":
-            console.print_json(org.model_dump_json())
+            console.print_json(organization.model_dump_json())
         elif format == "compact":
-            console.print(f"{org.organization_name} ({org.organization_id})")
+            console.print(
+                f"{organization.organization_name} ({organization.organization_id})"
+            )
         else:
             table = Table(
                 title="[bold cyan]Organization[/bold cyan]",
@@ -126,12 +128,15 @@ def org_get(api_key: Optional[str], base_url: Optional[str], format: str) -> Non
             )
             table.add_column("Field", style="cyan", width=20)
             table.add_column("Value", style="green")
-            table.add_row("ID", str(org.organization_id))
-            table.add_row("Name", org.organization_name)
-            table.add_row("Description", org.description)
-            table.add_row("Created", org.creation_date.strftime("%Y-%m-%d %H:%M:%S"))
-            if org.tags:
-                table.add_row("Tags", ", ".join(org.tags))
+            table.add_row("ID", str(organization.organization_id))
+            table.add_row("Name", organization.organization_name)
+            table.add_row("Description", organization.description)
+            table.add_row(
+                "Created",
+                organization.creation_date.strftime("%Y-%m-%d %H:%M:%S"),
+            )
+            if organization.tags:
+                table.add_row("Tags", ", ".join(organization.tags))
             console.print(table)
     except Exception as e:
         handle_error(e)
@@ -156,9 +161,11 @@ def org_update(
 
         client = get_client(api_key, base_url)
         tag_list = [t.strip() for t in tags.split(",")] if tags else None
-        org = client.organizations.update(description=description, tags=tag_list)
+        organization = client.organizations.update(
+            description=description, tags=tag_list
+        )
 
-        console.print(f"[green]✓[/green] Updated: {org.organization_name}")
+        console.print(f"[green]✓[/green] Updated: {organization.organization_name}")
     except Exception as e:
         handle_error(e)
 
@@ -544,13 +551,13 @@ def data() -> None:
 @base_url_option
 @click.option("--project", "-p", required=True, help="Project ID")
 @click.option("--collection", "-c", required=True, help="Collection ID")
-@click.option("--data", "-d", required=True, help="Data points (JSON array)")
+@click.option("--data", "-d", "payload", required=True, help="Data points (JSON array)")
 def data_send(
     api_key: Optional[str],
     base_url: Optional[str],
     project: str,
     collection: str,
-    data: str,
+    payload: str,
 ) -> None:
     """Send data to collection.
 
@@ -560,7 +567,7 @@ def data_send(
     """
     try:
         client = get_client(api_key, base_url)
-        data_points = json.loads(data)
+        data_points = json.loads(payload)
         if not isinstance(data_points, list):
             data_points = [data_points]
 
@@ -741,4 +748,4 @@ def keys_delete(
 
 
 if __name__ == "__main__":
-    cli()
+    cli.main(standalone_mode=True)

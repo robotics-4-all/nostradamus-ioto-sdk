@@ -3,7 +3,11 @@
 from typing import TYPE_CHECKING, List, Optional, Union
 from uuid import UUID
 
-from ..models import ProjectCreateRequest, ProjectResponse, ProjectUpdateRequest
+from ..models.project import (
+    ProjectCreateRequest,
+    ProjectResponse,
+    ProjectUpdateRequest,
+)
 from ._base import BaseResource
 
 if TYPE_CHECKING:
@@ -32,7 +36,7 @@ class ProjectsResource(BaseResource):
             >>> for project in projects:
             ...     print(project.project_name)
         """
-        response = self._client._request("GET", self._build_path("projects"))
+        response = self.client.request("GET", self._build_path("projects"))
         return self._parse_response(response.json(), ProjectResponse)
 
     async def alist(self) -> List[ProjectResponse]:
@@ -41,7 +45,7 @@ class ProjectsResource(BaseResource):
         Returns:
             List[ProjectResponse]: List of all projects
         """
-        response = await self._client._request("GET", self._build_path("projects"))
+        response = await self.client.request("GET", self._build_path("projects"))
         return self._parse_response(response.json(), ProjectResponse)
 
     def get(self, project_id: Union[str, UUID]) -> ProjectResponse:
@@ -64,7 +68,7 @@ class ProjectsResource(BaseResource):
             >>> print(project.project_name)
         """
         project_id_str = self._validate_uuid(project_id)
-        response = self._client._request(
+        response = self.client.request(
             "GET", self._build_path("projects", project_id_str)
         )
         return self._parse_response(response.json(), ProjectResponse)
@@ -79,7 +83,7 @@ class ProjectsResource(BaseResource):
             ProjectResponse: Project details
         """
         project_id_str = self._validate_uuid(project_id)
-        response = await self._client._request(
+        response = await self.client.request(
             "GET", self._build_path("projects", project_id_str)
         )
         return self._parse_response(response.json(), ProjectResponse)
@@ -117,7 +121,7 @@ class ProjectsResource(BaseResource):
         request_data = ProjectCreateRequest(
             project_name=name, description=description, tags=tags or []
         )
-        response = self._client._request(
+        response = self.client.request(
             "POST",
             self._build_path("projects"),
             json=request_data.model_dump(exclude_none=True),
@@ -182,7 +186,7 @@ class ProjectsResource(BaseResource):
         request_data = ProjectCreateRequest(
             project_name=name, description=description, tags=tags or []
         )
-        response = await self._client._request(
+        response = await self.client.request(
             "POST",
             self._build_path("projects"),
             json=request_data.model_dump(exclude_none=True),
@@ -259,7 +263,7 @@ class ProjectsResource(BaseResource):
         """
         project_id_str = self._validate_uuid(project_id)
         request_data = ProjectUpdateRequest(description=description, tags=tags)
-        response = self._client._request(
+        response = self.client.request(
             "PUT",
             self._build_path("projects", project_id_str),
             json=request_data.model_dump(exclude_none=True),
@@ -284,7 +288,7 @@ class ProjectsResource(BaseResource):
         """
         project_id_str = self._validate_uuid(project_id)
         request_data = ProjectUpdateRequest(description=description, tags=tags)
-        response = await self._client._request(
+        response = await self.client.request(
             "PUT",
             self._build_path("projects", project_id_str),
             json=request_data.model_dump(exclude_none=True),
@@ -307,7 +311,7 @@ class ProjectsResource(BaseResource):
             >>> client.projects.delete("550e8400-e29b-41d4-a716-446655440000")
         """
         project_id_str = self._validate_uuid(project_id)
-        self._client._request("DELETE", self._build_path("projects", project_id_str))
+        self.client.request("DELETE", self._build_path("projects", project_id_str))
 
     async def adelete(self, project_id: Union[str, UUID]) -> None:
         """Delete project (async).
@@ -316,6 +320,6 @@ class ProjectsResource(BaseResource):
             project_id: Project UUID
         """
         project_id_str = self._validate_uuid(project_id)
-        await self._client._request(
+        await self.client.request(
             "DELETE", self._build_path("projects", project_id_str)
         )

@@ -208,9 +208,9 @@ def main():
                 with NostradamusClient(api_key=master_key) as client:
                     client.collections.delete(project_id, collection_id)
                     print("✅ Cleanup successful")
-            except Exception as e:
+            except Exception as cleanup_err:
                 print(
-                    f"⚠️  Cleanup failed - you may need to manually delete the collection: {e}"
+                    f"⚠️  Cleanup failed - you may need to manually delete the collection: {cleanup_err}"
                 )
 
         return 1

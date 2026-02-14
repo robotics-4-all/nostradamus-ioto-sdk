@@ -24,7 +24,7 @@ class DataResource(BaseResource):
         """Send data to collection."""
         project_id_str = self._validate_uuid(project_id)
         collection_id_str = self._validate_uuid(collection_id)
-        self._client._request(
+        self.client.request(
             "POST",
             self._build_path(
                 "projects",
@@ -45,7 +45,7 @@ class DataResource(BaseResource):
         """Send data to collection (async)."""
         project_id_str = self._validate_uuid(project_id)
         collection_id_str = self._validate_uuid(collection_id)
-        await self._client._request(
+        await self.client.request(
             "POST",
             self._build_path(
                 "projects",
@@ -86,7 +86,7 @@ class DataResource(BaseResource):
         if nested:
             params["nested"] = nested
 
-        response = self._client._request(
+        response = self.client.request(
             "GET",
             self._build_path(
                 "projects", project_id_str, "collections", collection_id_str, "get_data"
@@ -124,7 +124,7 @@ class DataResource(BaseResource):
         if nested:
             params["nested"] = nested
 
-        response = await self._client._request(
+        response = await self.client.request(
             "GET",
             self._build_path(
                 "projects", project_id_str, "collections", collection_id_str, "get_data"
@@ -158,7 +158,7 @@ class DataResource(BaseResource):
         if limit:
             params["limit"] = limit
 
-        response = self._client._request(
+        response = self.client.request(
             "GET",
             self._build_path(
                 "projects",
@@ -196,7 +196,7 @@ class DataResource(BaseResource):
         if limit:
             params["limit"] = limit
 
-        response = await self._client._request(
+        response = await self.client.request(
             "GET",
             self._build_path(
                 "projects",
@@ -257,7 +257,7 @@ class DataResource(BaseResource):
                 "At least one parameter (key, timestamp_from, or timestamp_to) must be provided"
             )
 
-        response = self._client._request(
+        response = self.client.request(
             "DELETE",
             self._build_path(
                 "projects",
@@ -318,7 +318,7 @@ class DataResource(BaseResource):
                 "At least one parameter (key, timestamp_from, or timestamp_to) must be provided"
             )
 
-        response = await self._client._request(
+        response = await self.client.request(
             "DELETE",
             self._build_path(
                 "projects",

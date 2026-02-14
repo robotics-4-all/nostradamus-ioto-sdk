@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, List, Optional, cast
 
 import httpx
 
-from ..models import OrganizationResponse, OrganizationUpdateRequest
+from ..models.organization import OrganizationResponse, OrganizationUpdateRequest
 from ._base import BaseResource
 
 if TYPE_CHECKING:
@@ -35,9 +35,7 @@ class OrganizationsResource(BaseResource):
         """
         response = cast(
             httpx.Response,
-            self._client._request(
-                "GET", self._build_path("organization", "nostradamus")
-            ),
+            self.client.request("GET", self._build_path("organization", "nostradamus")),
         )
         return cast(
             OrganizationResponse,
@@ -59,7 +57,7 @@ class OrganizationsResource(BaseResource):
             ...     org = await client.organizations.aget()
             ...     print(org.organization_name)
         """
-        response = await self._client._request(
+        response = await self.client.request(
             "GET", self._build_path("organization", "nostradamus")
         )
         return self._parse_response(response.json(), OrganizationResponse)
@@ -93,7 +91,7 @@ class OrganizationsResource(BaseResource):
         request_data = OrganizationUpdateRequest(description=description, tags=tags)
         response = cast(
             httpx.Response,
-            self._client._request(
+            self.client.request(
                 "PUT",
                 self._build_path("organization", "nostradamus"),
                 json=request_data.model_dump(exclude_none=True),
@@ -130,7 +128,7 @@ class OrganizationsResource(BaseResource):
             ...     )
         """
         request_data = OrganizationUpdateRequest(description=description, tags=tags)
-        response = await self._client._request(
+        response = await self.client.request(
             "PUT",
             self._build_path("organization", "nostradamus"),
             json=request_data.model_dump(exclude_none=True),

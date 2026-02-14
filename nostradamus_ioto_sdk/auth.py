@@ -83,6 +83,31 @@ class OAuth2Handler:
         self._token: Optional[Token] = None
         self._lock = threading.Lock()
 
+    @property
+    def base_url(self) -> str:
+        """The base URL of the API."""
+        return self._base_url
+
+    @property
+    def username(self) -> str:
+        """The username for authentication."""
+        return self._username
+
+    @property
+    def password(self) -> str:
+        """The password for authentication."""
+        return self._password
+
+    @property
+    def token_url(self) -> str:
+        """The token endpoint path."""
+        return self._token_url
+
+    @property
+    def token(self) -> Optional[Token]:
+        """The current cached token, or None if not yet authenticated."""
+        return self._token
+
     def get_token(self) -> Token:
         """Get valid access token, refreshing if necessary.
 
@@ -183,6 +208,11 @@ class APIKeyHandler:
             raise ValueError("API key cannot be empty")
         self._api_key = api_key
         self._header_name = header_name
+
+    @property
+    def api_key(self) -> str:
+        """The API key value."""
+        return self._api_key
 
     def get_headers(self) -> Dict[str, str]:
         """Get authentication headers for API requests.

@@ -32,8 +32,8 @@ class TestBaseResource:
     def test_init_sets_client_and_base_path(self, mock_client):
         """Test that initialization sets client and base path."""
         resource = BaseResource(mock_client)
-        assert resource._client is mock_client
-        assert resource._base_path == "/api/v1"
+        assert resource.client is mock_client
+        assert resource.base_path == "/api/v1"
 
     def test_build_path_with_single_part(self, resource):
         """Test building path with single component."""

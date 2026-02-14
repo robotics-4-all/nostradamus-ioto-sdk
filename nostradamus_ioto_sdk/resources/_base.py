@@ -34,8 +34,8 @@ class BaseResource:
     def __init__(
         self, client: Union["NostradamusClient", "AsyncNostradamusClient"]
     ) -> None:
-        self._client = client
-        self._base_path = "/api/v1"
+        self.client = client
+        self.base_path = "/api/v1"
 
     def _build_path(self, *parts: str) -> str:
         """Build URL path from parts.
@@ -51,7 +51,7 @@ class BaseResource:
             '/api/v1/projects/123/collections'
         """
         clean_parts = [str(p).strip("/") for p in parts if p]
-        return f"{self._base_path}/{'/'.join(clean_parts)}"
+        return f"{self.base_path}/{'/'.join(clean_parts)}"
 
     @overload
     def _parse_response(self, data: Dict[str, Any], model_class: Type[T]) -> T: ...

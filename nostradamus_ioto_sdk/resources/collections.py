@@ -3,7 +3,7 @@
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 from uuid import UUID
 
-from ..models import (
+from ..models.collection import (
     CollectionCreateRequest,
     CollectionResponse,
     CollectionUpdateRequest,
@@ -20,7 +20,7 @@ class CollectionsResource(BaseResource):
     def list(self, project_id: Union[str, UUID]) -> List[CollectionResponse]:
         """List all collections in a project."""
         project_id_str = self._validate_uuid(project_id)
-        response = self._client._request(
+        response = self.client.request(
             "GET", self._build_path("projects", project_id_str, "collections")
         )
         return self._parse_response(response.json(), CollectionResponse)
@@ -28,7 +28,7 @@ class CollectionsResource(BaseResource):
     async def alist(self, project_id: Union[str, UUID]) -> List[CollectionResponse]:
         """List all collections in a project (async)."""
         project_id_str = self._validate_uuid(project_id)
-        response = await self._client._request(
+        response = await self.client.request(
             "GET", self._build_path("projects", project_id_str, "collections")
         )
         return self._parse_response(response.json(), CollectionResponse)
@@ -41,7 +41,7 @@ class CollectionsResource(BaseResource):
         """Get collection by ID."""
         project_id_str = self._validate_uuid(project_id)
         collection_id_str = self._validate_uuid(collection_id)
-        response = self._client._request(
+        response = self.client.request(
             "GET",
             self._build_path(
                 "projects", project_id_str, "collections", collection_id_str
@@ -57,7 +57,7 @@ class CollectionsResource(BaseResource):
         """Get collection by ID (async)."""
         project_id_str = self._validate_uuid(project_id)
         collection_id_str = self._validate_uuid(collection_id)
-        response = await self._client._request(
+        response = await self.client.request(
             "GET",
             self._build_path(
                 "projects", project_id_str, "collections", collection_id_str
@@ -81,7 +81,7 @@ class CollectionsResource(BaseResource):
             tags=tags or [],
             collection_schema=collection_schema,
         )
-        response = self._client._request(
+        response = self.client.request(
             "POST",
             self._build_path("projects", project_id_str, "collections"),
             json=request_data.model_dump(),
@@ -143,7 +143,7 @@ class CollectionsResource(BaseResource):
             tags=tags or [],
             collection_schema=collection_schema,
         )
-        response = await self._client._request(
+        response = await self.client.request(
             "POST",
             self._build_path("projects", project_id_str, "collections"),
             json=request_data.model_dump(),
@@ -200,7 +200,7 @@ class CollectionsResource(BaseResource):
         project_id_str = self._validate_uuid(project_id)
         collection_id_str = self._validate_uuid(collection_id)
         request_data = CollectionUpdateRequest(description=description, tags=tags)
-        response = self._client._request(
+        response = self.client.request(
             "PUT",
             self._build_path(
                 "projects", project_id_str, "collections", collection_id_str
@@ -220,7 +220,7 @@ class CollectionsResource(BaseResource):
         project_id_str = self._validate_uuid(project_id)
         collection_id_str = self._validate_uuid(collection_id)
         request_data = CollectionUpdateRequest(description=description, tags=tags)
-        response = await self._client._request(
+        response = await self.client.request(
             "PUT",
             self._build_path(
                 "projects", project_id_str, "collections", collection_id_str
@@ -237,7 +237,7 @@ class CollectionsResource(BaseResource):
         """Delete collection."""
         project_id_str = self._validate_uuid(project_id)
         collection_id_str = self._validate_uuid(collection_id)
-        self._client._request(
+        self.client.request(
             "DELETE",
             self._build_path(
                 "projects", project_id_str, "collections", collection_id_str
@@ -252,7 +252,7 @@ class CollectionsResource(BaseResource):
         """Delete collection (async)."""
         project_id_str = self._validate_uuid(project_id)
         collection_id_str = self._validate_uuid(collection_id)
-        await self._client._request(
+        await self.client.request(
             "DELETE",
             self._build_path(
                 "projects", project_id_str, "collections", collection_id_str

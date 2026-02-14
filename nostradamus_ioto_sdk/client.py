@@ -94,7 +94,27 @@ class NostradamusClient:
         self.collections = CollectionsResource(self)
         self.data = DataResource(self)
 
-    def _request(
+    @property
+    def base_url(self) -> str:
+        """The base URL for API requests."""
+        return self._base_url
+
+    @property
+    def auth_handler(self) -> Any:
+        """The authentication handler (OAuth2Handler or APIKeyHandler)."""
+        return self._auth_handler
+
+    @property
+    def rate_limiter(self) -> Optional[RateLimiter]:
+        """The rate limiter instance, or None if disabled."""
+        return self._rate_limiter
+
+    @property
+    def http_client(self) -> httpx.Client:
+        """The underlying HTTP client."""
+        return self._http_client
+
+    def request(
         self,
         method: str,
         path: str,
@@ -110,20 +130,16 @@ class NostradamusClient:
         Returns:
             HTTP response
         """
-        # Acquire rate limit permit if enabled
         if self._rate_limiter:
             self._rate_limiter.acquire()
 
-        # Add authentication headers
         headers = kwargs.pop("headers", {})
         auth_headers = self._auth_handler.get_headers()
         headers.update(auth_headers)
         kwargs["headers"] = headers
 
-        # Build full URL
         url = f"{self._base_url}{path}"
 
-        # Make request with retry
         return make_request_with_retry(
             client=self._http_client,
             method=method,

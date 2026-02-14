@@ -14,8 +14,8 @@ class TestResponseCache:
     def test_cache_creation(self):
         """Test creating a cache."""
         cache = ResponseCache(ttl=60, max_size=100)
-        assert cache._ttl == 60
-        assert cache._max_size == 100
+        assert cache.ttl == 60
+        assert cache.max_size == 100
 
     def test_cache_set_and_get(self):
         """Test setting and getting cached values."""
@@ -135,13 +135,13 @@ class TestResponseCache:
         """Test cache key generation."""
         cache = ResponseCache(ttl=60)
 
-        key1 = cache._generate_key("GET", "/api/users", {"page": 1, "size": 10})
-        key2 = cache._generate_key("GET", "/api/users", {"size": 10, "page": 1})
+        key1 = cache.generate_key("GET", "/api/users", {"page": 1, "size": 10})
+        key2 = cache.generate_key("GET", "/api/users", {"size": 10, "page": 1})
 
         # Keys should be the same (params sorted)
         assert key1 == key2
 
-        key3 = cache._generate_key("GET", "/api/users", {"page": 2, "size": 10})
+        key3 = cache.generate_key("GET", "/api/users", {"page": 2, "size": 10})
         assert key1 != key3
 
     def test_cache_thread_safety(self):
@@ -178,7 +178,7 @@ class TestRateLimiter:
     def test_rate_limiter_creation(self):
         """Test creating a rate limiter."""
         limiter = RateLimiter(requests_per_second=10)
-        assert limiter._rate == 10
+        assert limiter.rate == 10
 
     def test_rate_limiter_acquire(self):
         """Test acquiring rate limit permits."""
@@ -222,13 +222,12 @@ class TestRateLimiter:
     def test_rate_limiter_handle_rate_limit(self):
         """Test handling rate limit response."""
         limiter = RateLimiter(requests_per_second=10)
-        original_rate = limiter._rate
+        original_rate = limiter.rate
 
-        # Handle rate limit (should reduce rate by 50%)
         limiter.handle_rate_limit()
 
-        assert limiter._rate == original_rate * 0.5
-        assert limiter._tokens == 0.0
+        assert limiter.rate == original_rate * 0.5
+        assert limiter.tokens == 0.0
 
     def test_rate_limiter_handle_rate_limit_with_retry_after(self):
         """Test handling rate limit with retry-after header."""
@@ -274,7 +273,7 @@ class TestRateLimiter:
         limiter.handle_rate_limit()  # 2 -> 1
         limiter.handle_rate_limit()  # 1 -> 0.5 but capped at 1
 
-        assert limiter._rate >= 1.0
+        assert limiter.rate >= 1.0
 
 
 class TestShouldRetry:

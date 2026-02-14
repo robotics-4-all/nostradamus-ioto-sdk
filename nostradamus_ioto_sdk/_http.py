@@ -32,7 +32,17 @@ class ResponseCache:
         self._lock = threading.Lock()
         self._access_order: deque = deque(maxlen=max_size)
 
-    def _generate_key(
+    @property
+    def ttl(self) -> int:
+        """Time-to-live in seconds for cached responses."""
+        return self._ttl
+
+    @property
+    def max_size(self) -> int:
+        """Maximum number of cached items."""
+        return self._max_size
+
+    def generate_key(
         self, method: str, url: str, params: Optional[Dict[str, Any]] = None
     ) -> str:
         """Generate cache key from request parameters.
@@ -141,6 +151,16 @@ class RateLimiter:
         self._last_update = time.monotonic()
         self._lock = threading.Lock()
         self._async_lock: Optional[asyncio.Lock] = None
+
+    @property
+    def rate(self) -> float:
+        """Current rate limit (requests per second)."""
+        return self._rate
+
+    @property
+    def tokens(self) -> float:
+        """Current number of available tokens."""
+        return self._tokens
 
     def acquire(self, timeout: Optional[float] = None) -> bool:
         """Acquire permission to make a request (blocking).

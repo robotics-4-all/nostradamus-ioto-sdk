@@ -3,8 +3,12 @@
 from typing import TYPE_CHECKING, List, Union
 from uuid import UUID
 
-from ..models import BaseKeyModel, ProjectKeyCreateRequest, ProjectKeyResponse
 from ..models.enums import KeyType
+from ..models.project_key import (
+    BaseKeyModel,
+    ProjectKeyCreateRequest,
+    ProjectKeyResponse,
+)
 from ._base import BaseResource
 
 if TYPE_CHECKING:
@@ -46,7 +50,7 @@ class ProjectKeysResource(BaseResource):
         """
         project_id_str = self._validate_uuid(project_id)
         request_data = ProjectKeyCreateRequest(key_type=key_type)
-        response = self._client._request(
+        response = self.client.request(
             "POST",
             self._build_path("projects", project_id_str, "keys"),
             json=request_data.model_dump(),
@@ -98,7 +102,7 @@ class ProjectKeysResource(BaseResource):
         """Create a new API key for a project (async)."""
         project_id_str = self._validate_uuid(project_id)
         request_data = ProjectKeyCreateRequest(key_type=key_type)
-        response = await self._client._request(
+        response = await self.client.request(
             "POST",
             self._build_path("projects", project_id_str, "keys"),
             json=request_data.model_dump(),
@@ -163,7 +167,7 @@ class ProjectKeysResource(BaseResource):
             ...     print(f"{key.key_type}: {key.api_key}")
         """
         project_id_str = self._validate_uuid(project_id)
-        response = self._client._request(
+        response = self.client.request(
             "GET", self._build_path("projects", project_id_str, "keys")
         )
         return self._parse_response(response.json(), ProjectKeyResponse)
@@ -171,7 +175,7 @@ class ProjectKeysResource(BaseResource):
     async def alist(self, project_id: Union[str, UUID]) -> List[ProjectKeyResponse]:
         """List all API keys for a project (async)."""
         project_id_str = self._validate_uuid(project_id)
-        response = await self._client._request(
+        response = await self.client.request(
             "GET", self._build_path("projects", project_id_str, "keys")
         )
         return self._parse_response(response.json(), ProjectKeyResponse)
@@ -203,7 +207,7 @@ class ProjectKeysResource(BaseResource):
             ... )
         """
         project_id_str = self._validate_uuid(project_id)
-        response = self._client._request(
+        response = self.client.request(
             "GET", self._build_path("projects", project_id_str, "keys", api_key)
         )
         return self._parse_response(response.json(), ProjectKeyResponse)
@@ -215,7 +219,7 @@ class ProjectKeysResource(BaseResource):
     ) -> ProjectKeyResponse:
         """Get API key details (async)."""
         project_id_str = self._validate_uuid(project_id)
-        response = await self._client._request(
+        response = await self.client.request(
             "GET", self._build_path("projects", project_id_str, "keys", api_key)
         )
         return self._parse_response(response.json(), ProjectKeyResponse)
@@ -248,7 +252,7 @@ class ProjectKeysResource(BaseResource):
             >>> print(f"New key: {new_key.key_value}")
         """
         project_id_str = self._validate_uuid(project_id)
-        response = self._client._request(
+        response = self.client.request(
             "PUT",
             self._build_path("projects", project_id_str, "keys", api_key, "regenerate"),
         )
@@ -261,7 +265,7 @@ class ProjectKeysResource(BaseResource):
     ) -> BaseKeyModel:
         """Regenerate an API key (async)."""
         project_id_str = self._validate_uuid(project_id)
-        response = await self._client._request(
+        response = await self.client.request(
             "PUT",
             self._build_path("projects", project_id_str, "keys", api_key, "regenerate"),
         )
@@ -291,7 +295,7 @@ class ProjectKeysResource(BaseResource):
             ... )
         """
         project_id_str = self._validate_uuid(project_id)
-        self._client._request(
+        self.client.request(
             "DELETE", self._build_path("projects", project_id_str, "keys", api_key)
         )
 
@@ -302,6 +306,6 @@ class ProjectKeysResource(BaseResource):
     ) -> None:
         """Delete an API key (async)."""
         project_id_str = self._validate_uuid(project_id)
-        await self._client._request(
+        await self.client.request(
             "DELETE", self._build_path("projects", project_id_str, "keys", api_key)
         )
