@@ -19,19 +19,19 @@ class CollectionsResource(BaseResource):
 
     def list(self, project_id: Union[str, UUID]) -> List[CollectionResponse]:
         """List all collections in a project."""
-        project_id_str = self._validate_uuid(project_id)
+        project_id_str = self.validate_uuid(project_id)
         response = self.client.request(
-            "GET", self._build_path("projects", project_id_str, "collections")
+            "GET", self.build_path("projects", project_id_str, "collections")
         )
-        return self._parse_response(response.json(), CollectionResponse)
+        return self.parse_response(response.json(), CollectionResponse)
 
     async def alist(self, project_id: Union[str, UUID]) -> List[CollectionResponse]:
         """List all collections in a project (async)."""
-        project_id_str = self._validate_uuid(project_id)
+        project_id_str = self.validate_uuid(project_id)
         response = await self.client.request(
-            "GET", self._build_path("projects", project_id_str, "collections")
+            "GET", self.build_path("projects", project_id_str, "collections")
         )
-        return self._parse_response(response.json(), CollectionResponse)
+        return self.parse_response(response.json(), CollectionResponse)
 
     def get(
         self,
@@ -39,15 +39,15 @@ class CollectionsResource(BaseResource):
         collection_id: Union[str, UUID],
     ) -> CollectionResponse:
         """Get collection by ID."""
-        project_id_str = self._validate_uuid(project_id)
-        collection_id_str = self._validate_uuid(collection_id)
+        project_id_str = self.validate_uuid(project_id)
+        collection_id_str = self.validate_uuid(collection_id)
         response = self.client.request(
             "GET",
-            self._build_path(
+            self.build_path(
                 "projects", project_id_str, "collections", collection_id_str
             ),
         )
-        return self._parse_response(response.json(), CollectionResponse)
+        return self.parse_response(response.json(), CollectionResponse)
 
     async def aget(
         self,
@@ -55,15 +55,15 @@ class CollectionsResource(BaseResource):
         collection_id: Union[str, UUID],
     ) -> CollectionResponse:
         """Get collection by ID (async)."""
-        project_id_str = self._validate_uuid(project_id)
-        collection_id_str = self._validate_uuid(collection_id)
+        project_id_str = self.validate_uuid(project_id)
+        collection_id_str = self.validate_uuid(collection_id)
         response = await self.client.request(
             "GET",
-            self._build_path(
+            self.build_path(
                 "projects", project_id_str, "collections", collection_id_str
             ),
         )
-        return self._parse_response(response.json(), CollectionResponse)
+        return self.parse_response(response.json(), CollectionResponse)
 
     def create(
         self,
@@ -74,7 +74,7 @@ class CollectionsResource(BaseResource):
         tags: Optional[List[str]] = None,
     ) -> CollectionResponse:
         """Create a new collection."""
-        project_id_str = self._validate_uuid(project_id)
+        project_id_str = self.validate_uuid(project_id)
         request_data = CollectionCreateRequest(
             name=name,
             description=description,
@@ -83,7 +83,7 @@ class CollectionsResource(BaseResource):
         )
         response = self.client.request(
             "POST",
-            self._build_path("projects", project_id_str, "collections"),
+            self.build_path("projects", project_id_str, "collections"),
             json=request_data.model_dump(),
         )
 
@@ -93,7 +93,7 @@ class CollectionsResource(BaseResource):
         # Check if the response is already a full CollectionResponse
         if "collection_name" in response_data:
             # API returned full object
-            return self._parse_response(response_data, CollectionResponse)
+            return self.parse_response(response_data, CollectionResponse)
 
         # Otherwise, extract the ID and fetch full details
         # Try different possible field names
@@ -136,7 +136,7 @@ class CollectionsResource(BaseResource):
         tags: Optional[List[str]] = None,
     ) -> CollectionResponse:
         """Create a new collection (async)."""
-        project_id_str = self._validate_uuid(project_id)
+        project_id_str = self.validate_uuid(project_id)
         request_data = CollectionCreateRequest(
             name=name,
             description=description,
@@ -145,7 +145,7 @@ class CollectionsResource(BaseResource):
         )
         response = await self.client.request(
             "POST",
-            self._build_path("projects", project_id_str, "collections"),
+            self.build_path("projects", project_id_str, "collections"),
             json=request_data.model_dump(),
         )
 
@@ -155,7 +155,7 @@ class CollectionsResource(BaseResource):
         # Check if the response is already a full CollectionResponse
         if "collection_name" in response_data:
             # API returned full object
-            return self._parse_response(response_data, CollectionResponse)
+            return self.parse_response(response_data, CollectionResponse)
 
         # Otherwise, extract the ID and fetch full details
         # Try different possible field names
@@ -197,17 +197,17 @@ class CollectionsResource(BaseResource):
         tags: Optional[List[str]] = None,
     ) -> CollectionResponse:
         """Update collection."""
-        project_id_str = self._validate_uuid(project_id)
-        collection_id_str = self._validate_uuid(collection_id)
+        project_id_str = self.validate_uuid(project_id)
+        collection_id_str = self.validate_uuid(collection_id)
         request_data = CollectionUpdateRequest(description=description, tags=tags)
         response = self.client.request(
             "PUT",
-            self._build_path(
+            self.build_path(
                 "projects", project_id_str, "collections", collection_id_str
             ),
             json=request_data.model_dump(exclude_none=True),
         )
-        return self._parse_response(response.json(), CollectionResponse)
+        return self.parse_response(response.json(), CollectionResponse)
 
     async def aupdate(
         self,
@@ -217,17 +217,17 @@ class CollectionsResource(BaseResource):
         tags: Optional[List[str]] = None,
     ) -> CollectionResponse:
         """Update collection (async)."""
-        project_id_str = self._validate_uuid(project_id)
-        collection_id_str = self._validate_uuid(collection_id)
+        project_id_str = self.validate_uuid(project_id)
+        collection_id_str = self.validate_uuid(collection_id)
         request_data = CollectionUpdateRequest(description=description, tags=tags)
         response = await self.client.request(
             "PUT",
-            self._build_path(
+            self.build_path(
                 "projects", project_id_str, "collections", collection_id_str
             ),
             json=request_data.model_dump(exclude_none=True),
         )
-        return self._parse_response(response.json(), CollectionResponse)
+        return self.parse_response(response.json(), CollectionResponse)
 
     def delete(
         self,
@@ -235,11 +235,11 @@ class CollectionsResource(BaseResource):
         collection_id: Union[str, UUID],
     ) -> None:
         """Delete collection."""
-        project_id_str = self._validate_uuid(project_id)
-        collection_id_str = self._validate_uuid(collection_id)
+        project_id_str = self.validate_uuid(project_id)
+        collection_id_str = self.validate_uuid(collection_id)
         self.client.request(
             "DELETE",
-            self._build_path(
+            self.build_path(
                 "projects", project_id_str, "collections", collection_id_str
             ),
         )
@@ -250,11 +250,11 @@ class CollectionsResource(BaseResource):
         collection_id: Union[str, UUID],
     ) -> None:
         """Delete collection (async)."""
-        project_id_str = self._validate_uuid(project_id)
-        collection_id_str = self._validate_uuid(collection_id)
+        project_id_str = self.validate_uuid(project_id)
+        collection_id_str = self.validate_uuid(collection_id)
         await self.client.request(
             "DELETE",
-            self._build_path(
+            self.build_path(
                 "projects", project_id_str, "collections", collection_id_str
             ),
         )

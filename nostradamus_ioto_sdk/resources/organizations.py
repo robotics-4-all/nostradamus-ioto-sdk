@@ -35,11 +35,11 @@ class OrganizationsResource(BaseResource):
         """
         response = cast(
             httpx.Response,
-            self.client.request("GET", self._build_path("organization", "nostradamus")),
+            self.client.request("GET", self.build_path("organization", "nostradamus")),
         )
         return cast(
             OrganizationResponse,
-            self._parse_response(response.json(), OrganizationResponse),
+            self.parse_response(response.json(), OrganizationResponse),
         )
 
     async def aget(self) -> OrganizationResponse:
@@ -58,9 +58,9 @@ class OrganizationsResource(BaseResource):
             ...     print(org.organization_name)
         """
         response = await self.client.request(
-            "GET", self._build_path("organization", "nostradamus")
+            "GET", self.build_path("organization", "nostradamus")
         )
-        return self._parse_response(response.json(), OrganizationResponse)
+        return self.parse_response(response.json(), OrganizationResponse)
 
     def update(
         self,
@@ -93,13 +93,13 @@ class OrganizationsResource(BaseResource):
             httpx.Response,
             self.client.request(
                 "PUT",
-                self._build_path("organization", "nostradamus"),
+                self.build_path("organization", "nostradamus"),
                 json=request_data.model_dump(exclude_none=True),
             ),
         )
         return cast(
             OrganizationResponse,
-            self._parse_response(response.json(), OrganizationResponse),
+            self.parse_response(response.json(), OrganizationResponse),
         )
 
     async def aupdate(
@@ -130,7 +130,7 @@ class OrganizationsResource(BaseResource):
         request_data = OrganizationUpdateRequest(description=description, tags=tags)
         response = await self.client.request(
             "PUT",
-            self._build_path("organization", "nostradamus"),
+            self.build_path("organization", "nostradamus"),
             json=request_data.model_dump(exclude_none=True),
         )
-        return self._parse_response(response.json(), OrganizationResponse)
+        return self.parse_response(response.json(), OrganizationResponse)

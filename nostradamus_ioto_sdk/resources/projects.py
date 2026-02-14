@@ -36,8 +36,8 @@ class ProjectsResource(BaseResource):
             >>> for project in projects:
             ...     print(project.project_name)
         """
-        response = self.client.request("GET", self._build_path("projects"))
-        return self._parse_response(response.json(), ProjectResponse)
+        response = self.client.request("GET", self.build_path("projects"))
+        return self.parse_response(response.json(), ProjectResponse)
 
     async def alist(self) -> List[ProjectResponse]:
         """List all projects (async).
@@ -45,8 +45,8 @@ class ProjectsResource(BaseResource):
         Returns:
             List[ProjectResponse]: List of all projects
         """
-        response = await self.client.request("GET", self._build_path("projects"))
-        return self._parse_response(response.json(), ProjectResponse)
+        response = await self.client.request("GET", self.build_path("projects"))
+        return self.parse_response(response.json(), ProjectResponse)
 
     def get(self, project_id: Union[str, UUID]) -> ProjectResponse:
         """Get project by ID.
@@ -67,11 +67,11 @@ class ProjectsResource(BaseResource):
             >>> project = client.projects.get("550e8400-e29b-41d4-a716-446655440000")
             >>> print(project.project_name)
         """
-        project_id_str = self._validate_uuid(project_id)
+        project_id_str = self.validate_uuid(project_id)
         response = self.client.request(
-            "GET", self._build_path("projects", project_id_str)
+            "GET", self.build_path("projects", project_id_str)
         )
-        return self._parse_response(response.json(), ProjectResponse)
+        return self.parse_response(response.json(), ProjectResponse)
 
     async def aget(self, project_id: Union[str, UUID]) -> ProjectResponse:
         """Get project by ID (async).
@@ -82,11 +82,11 @@ class ProjectsResource(BaseResource):
         Returns:
             ProjectResponse: Project details
         """
-        project_id_str = self._validate_uuid(project_id)
+        project_id_str = self.validate_uuid(project_id)
         response = await self.client.request(
-            "GET", self._build_path("projects", project_id_str)
+            "GET", self.build_path("projects", project_id_str)
         )
-        return self._parse_response(response.json(), ProjectResponse)
+        return self.parse_response(response.json(), ProjectResponse)
 
     def create(
         self,
@@ -123,7 +123,7 @@ class ProjectsResource(BaseResource):
         )
         response = self.client.request(
             "POST",
-            self._build_path("projects"),
+            self.build_path("projects"),
             json=request_data.model_dump(exclude_none=True),
         )
 
@@ -133,7 +133,7 @@ class ProjectsResource(BaseResource):
         # Check if the response is already a full ProjectResponse
         if "project_name" in response_data:
             # API returned full object
-            return self._parse_response(response_data, ProjectResponse)
+            return self.parse_response(response_data, ProjectResponse)
 
         # Otherwise, extract the ID and fetch full details
         # Try different possible field names
@@ -188,7 +188,7 @@ class ProjectsResource(BaseResource):
         )
         response = await self.client.request(
             "POST",
-            self._build_path("projects"),
+            self.build_path("projects"),
             json=request_data.model_dump(exclude_none=True),
         )
 
@@ -198,7 +198,7 @@ class ProjectsResource(BaseResource):
         # Check if the response is already a full ProjectResponse
         if "project_name" in response_data:
             # API returned full object
-            return self._parse_response(response_data, ProjectResponse)
+            return self.parse_response(response_data, ProjectResponse)
 
         # Otherwise, extract the ID and fetch full details
         # Try different possible field names
@@ -261,14 +261,14 @@ class ProjectsResource(BaseResource):
             ...     description="Updated description"
             ... )
         """
-        project_id_str = self._validate_uuid(project_id)
+        project_id_str = self.validate_uuid(project_id)
         request_data = ProjectUpdateRequest(description=description, tags=tags)
         response = self.client.request(
             "PUT",
-            self._build_path("projects", project_id_str),
+            self.build_path("projects", project_id_str),
             json=request_data.model_dump(exclude_none=True),
         )
-        return self._parse_response(response.json(), ProjectResponse)
+        return self.parse_response(response.json(), ProjectResponse)
 
     async def aupdate(
         self,
@@ -286,14 +286,14 @@ class ProjectsResource(BaseResource):
         Returns:
             ProjectResponse: Updated project details
         """
-        project_id_str = self._validate_uuid(project_id)
+        project_id_str = self.validate_uuid(project_id)
         request_data = ProjectUpdateRequest(description=description, tags=tags)
         response = await self.client.request(
             "PUT",
-            self._build_path("projects", project_id_str),
+            self.build_path("projects", project_id_str),
             json=request_data.model_dump(exclude_none=True),
         )
-        return self._parse_response(response.json(), ProjectResponse)
+        return self.parse_response(response.json(), ProjectResponse)
 
     def delete(self, project_id: Union[str, UUID]) -> None:
         """Delete project.
@@ -310,8 +310,8 @@ class ProjectsResource(BaseResource):
             >>> client = NostradamusClient(api_key="...")
             >>> client.projects.delete("550e8400-e29b-41d4-a716-446655440000")
         """
-        project_id_str = self._validate_uuid(project_id)
-        self.client.request("DELETE", self._build_path("projects", project_id_str))
+        project_id_str = self.validate_uuid(project_id)
+        self.client.request("DELETE", self.build_path("projects", project_id_str))
 
     async def adelete(self, project_id: Union[str, UUID]) -> None:
         """Delete project (async).
@@ -319,7 +319,5 @@ class ProjectsResource(BaseResource):
         Args:
             project_id: Project UUID
         """
-        project_id_str = self._validate_uuid(project_id)
-        await self.client.request(
-            "DELETE", self._build_path("projects", project_id_str)
-        )
+        project_id_str = self.validate_uuid(project_id)
+        await self.client.request("DELETE", self.build_path("projects", project_id_str))

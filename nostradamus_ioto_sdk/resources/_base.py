@@ -37,7 +37,7 @@ class BaseResource:
         self.client = client
         self.base_path = "/api/v1"
 
-    def _build_path(self, *parts: str) -> str:
+    def build_path(self, *parts: str) -> str:
         """Build URL path from parts.
 
         Args:
@@ -47,21 +47,21 @@ class BaseResource:
             Complete path string
 
         Example:
-            >>> self._build_path("projects", "123", "collections")
+            >>> self.build_path("projects", "123", "collections")
             '/api/v1/projects/123/collections'
         """
         clean_parts = [str(p).strip("/") for p in parts if p]
         return f"{self.base_path}/{'/'.join(clean_parts)}"
 
     @overload
-    def _parse_response(self, data: Dict[str, Any], model_class: Type[T]) -> T: ...
+    def parse_response(self, data: Dict[str, Any], model_class: Type[T]) -> T: ...
 
     @overload
-    def _parse_response(
+    def parse_response(
         self, data: List[Dict[str, Any]], model_class: Type[T]
     ) -> List[T]: ...
 
-    def _parse_response(
+    def parse_response(
         self, data: Union[Dict[str, Any], List[Dict[str, Any]]], model_class: Type[T]
     ) -> Union[T, List[T]]:
         """Parse response data into Pydantic model(s).
@@ -77,7 +77,7 @@ class BaseResource:
             return [model_class(**item) for item in data]
         return model_class(**data)
 
-    def _validate_uuid(self, value: Union[str, UUID]) -> str:
+    def validate_uuid(self, value: Union[str, UUID]) -> str:
         """Validate and convert UUID to string.
 
         Args:

@@ -48,11 +48,11 @@ class ProjectKeysResource(BaseResource):
             ... )
             >>> print(key.api_key)
         """
-        project_id_str = self._validate_uuid(project_id)
+        project_id_str = self.validate_uuid(project_id)
         request_data = ProjectKeyCreateRequest(key_type=key_type)
         response = self.client.request(
             "POST",
-            self._build_path("projects", project_id_str, "keys"),
+            self.build_path("projects", project_id_str, "keys"),
             json=request_data.model_dump(),
         )
 
@@ -62,7 +62,7 @@ class ProjectKeysResource(BaseResource):
         # Check if the response is already a full ProjectKeyResponse
         if "api_key" in response_data or "key" in response_data:
             # API returned full object
-            return self._parse_response(response_data, ProjectKeyResponse)
+            return self.parse_response(response_data, ProjectKeyResponse)
 
         # Otherwise, extract the ID and fetch full details
         # Try different possible field names
@@ -100,11 +100,11 @@ class ProjectKeysResource(BaseResource):
         key_type: KeyType,
     ) -> ProjectKeyResponse:
         """Create a new API key for a project (async)."""
-        project_id_str = self._validate_uuid(project_id)
+        project_id_str = self.validate_uuid(project_id)
         request_data = ProjectKeyCreateRequest(key_type=key_type)
         response = await self.client.request(
             "POST",
-            self._build_path("projects", project_id_str, "keys"),
+            self.build_path("projects", project_id_str, "keys"),
             json=request_data.model_dump(),
         )
 
@@ -114,7 +114,7 @@ class ProjectKeysResource(BaseResource):
         # Check if the response is already a full ProjectKeyResponse
         if "api_key" in response_data or "key" in response_data:
             # API returned full object
-            return self._parse_response(response_data, ProjectKeyResponse)
+            return self.parse_response(response_data, ProjectKeyResponse)
 
         # Otherwise, extract the ID and fetch full details
         # Try different possible field names
@@ -166,19 +166,19 @@ class ProjectKeysResource(BaseResource):
             >>> for key in keys:
             ...     print(f"{key.key_type}: {key.api_key}")
         """
-        project_id_str = self._validate_uuid(project_id)
+        project_id_str = self.validate_uuid(project_id)
         response = self.client.request(
-            "GET", self._build_path("projects", project_id_str, "keys")
+            "GET", self.build_path("projects", project_id_str, "keys")
         )
-        return self._parse_response(response.json(), ProjectKeyResponse)
+        return self.parse_response(response.json(), ProjectKeyResponse)
 
     async def alist(self, project_id: Union[str, UUID]) -> List[ProjectKeyResponse]:
         """List all API keys for a project (async)."""
-        project_id_str = self._validate_uuid(project_id)
+        project_id_str = self.validate_uuid(project_id)
         response = await self.client.request(
-            "GET", self._build_path("projects", project_id_str, "keys")
+            "GET", self.build_path("projects", project_id_str, "keys")
         )
-        return self._parse_response(response.json(), ProjectKeyResponse)
+        return self.parse_response(response.json(), ProjectKeyResponse)
 
     def get(
         self,
@@ -206,11 +206,11 @@ class ProjectKeysResource(BaseResource):
             ...     api_key="your-api-key-here"
             ... )
         """
-        project_id_str = self._validate_uuid(project_id)
+        project_id_str = self.validate_uuid(project_id)
         response = self.client.request(
-            "GET", self._build_path("projects", project_id_str, "keys", api_key)
+            "GET", self.build_path("projects", project_id_str, "keys", api_key)
         )
-        return self._parse_response(response.json(), ProjectKeyResponse)
+        return self.parse_response(response.json(), ProjectKeyResponse)
 
     async def aget(
         self,
@@ -218,11 +218,11 @@ class ProjectKeysResource(BaseResource):
         api_key: str,
     ) -> ProjectKeyResponse:
         """Get API key details (async)."""
-        project_id_str = self._validate_uuid(project_id)
+        project_id_str = self.validate_uuid(project_id)
         response = await self.client.request(
-            "GET", self._build_path("projects", project_id_str, "keys", api_key)
+            "GET", self.build_path("projects", project_id_str, "keys", api_key)
         )
-        return self._parse_response(response.json(), ProjectKeyResponse)
+        return self.parse_response(response.json(), ProjectKeyResponse)
 
     def regenerate(
         self,
@@ -251,12 +251,12 @@ class ProjectKeysResource(BaseResource):
             ... )
             >>> print(f"New key: {new_key.key_value}")
         """
-        project_id_str = self._validate_uuid(project_id)
+        project_id_str = self.validate_uuid(project_id)
         response = self.client.request(
             "PUT",
-            self._build_path("projects", project_id_str, "keys", api_key, "regenerate"),
+            self.build_path("projects", project_id_str, "keys", api_key, "regenerate"),
         )
-        return self._parse_response(response.json(), BaseKeyModel)
+        return self.parse_response(response.json(), BaseKeyModel)
 
     async def aregenerate(
         self,
@@ -264,12 +264,12 @@ class ProjectKeysResource(BaseResource):
         api_key: str,
     ) -> BaseKeyModel:
         """Regenerate an API key (async)."""
-        project_id_str = self._validate_uuid(project_id)
+        project_id_str = self.validate_uuid(project_id)
         response = await self.client.request(
             "PUT",
-            self._build_path("projects", project_id_str, "keys", api_key, "regenerate"),
+            self.build_path("projects", project_id_str, "keys", api_key, "regenerate"),
         )
-        return self._parse_response(response.json(), BaseKeyModel)
+        return self.parse_response(response.json(), BaseKeyModel)
 
     def delete(
         self,
@@ -294,9 +294,9 @@ class ProjectKeysResource(BaseResource):
             ...     api_key="key-to-delete"
             ... )
         """
-        project_id_str = self._validate_uuid(project_id)
+        project_id_str = self.validate_uuid(project_id)
         self.client.request(
-            "DELETE", self._build_path("projects", project_id_str, "keys", api_key)
+            "DELETE", self.build_path("projects", project_id_str, "keys", api_key)
         )
 
     async def adelete(
@@ -305,7 +305,7 @@ class ProjectKeysResource(BaseResource):
         api_key: str,
     ) -> None:
         """Delete an API key (async)."""
-        project_id_str = self._validate_uuid(project_id)
+        project_id_str = self.validate_uuid(project_id)
         await self.client.request(
-            "DELETE", self._build_path("projects", project_id_str, "keys", api_key)
+            "DELETE", self.build_path("projects", project_id_str, "keys", api_key)
         )
