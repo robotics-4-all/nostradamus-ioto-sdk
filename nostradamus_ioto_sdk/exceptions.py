@@ -16,8 +16,6 @@ class NostradamusError(Exception):
 class ConfigurationError(NostradamusError):
     """Raised when the SDK is misconfigured."""
 
-    pass
-
 
 class AuthenticationError(NostradamusError):
     """Raised when authentication fails (401, 403)."""
@@ -113,7 +111,7 @@ class RateLimitError(APIError):
         return base_msg
 
 
-class TimeoutError(APIError):
+class RequestTimeoutError(APIError):
     """Raised when a request times out."""
 
     def __init__(
@@ -123,7 +121,5 @@ class TimeoutError(APIError):
         self.timeout = timeout
 
 
-class ConnectionError(APIError):
+class APIConnectionError(APIError):
     """Raised when connection to API fails."""
-
-    pass

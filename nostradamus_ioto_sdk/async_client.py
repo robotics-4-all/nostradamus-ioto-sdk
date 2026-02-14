@@ -44,10 +44,10 @@ async def make_async_request_with_retry(
     from ._base_client import handle_response
     from ._http import should_retry
     from .exceptions import (
+        APIConnectionError,
         AuthenticationError,
-        ConnectionError,
         RateLimitError,
-        TimeoutError,
+        RequestTimeoutError,
         ValidationError,
     )
 
@@ -69,7 +69,7 @@ async def make_async_request_with_retry(
             return handle_response(response)
 
         except httpx.TimeoutException as err:
-            last_exception = TimeoutError(f"Request timed out: {err}")
+            last_exception = RequestTimeoutError(f"Request timed out: {err}")
             if attempt < retry_config.max_retries:
                 delay = retry_config.get_backoff_delay(attempt)
                 logger.debug(f"Request timed out, retrying in {delay}s...")
@@ -78,7 +78,7 @@ async def make_async_request_with_retry(
                 raise last_exception from err
 
         except httpx.RequestError as err:
-            last_exception = ConnectionError(f"Connection error: {err}")
+            last_exception = APIConnectionError(f"Connection error: {err}")
             if attempt < retry_config.max_retries:
                 delay = retry_config.get_backoff_delay(attempt)
                 logger.debug(f"Connection error, retrying in {delay}s...")

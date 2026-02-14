@@ -64,6 +64,7 @@ base_url_option = click.option(
 format_option = click.option(
     "--format",
     "-f",
+    "output_format",
     type=click.Choice(["table", "json", "compact"]),
     default="table",
     help="Output format",
@@ -101,22 +102,23 @@ def cli(verbose: bool) -> None:
 @cli.group(name="org")
 def org() -> None:
     """Manage organization."""
-    pass
 
 
 @org.command(name="get")
 @api_key_option
 @base_url_option
 @format_option
-def org_get(api_key: Optional[str], base_url: Optional[str], format: str) -> None:
+def org_get(
+    api_key: Optional[str], base_url: Optional[str], output_format: str
+) -> None:
     """Get organization information."""
     try:
         client = get_client(api_key, base_url)
         organization = client.organizations.get()
 
-        if format == "json":
+        if output_format == "json":
             console.print_json(organization.model_dump_json())
-        elif format == "compact":
+        elif output_format == "compact":
             console.print(
                 f"{organization.organization_name} ({organization.organization_id})"
             )
@@ -178,7 +180,6 @@ def org_update(
 @cli.group(name="projects")
 def projects() -> None:
     """Manage projects."""
-    pass
 
 
 @projects.command(name="list")
@@ -187,7 +188,10 @@ def projects() -> None:
 @format_option
 @click.option("--limit", "-n", type=int, help="Limit results")
 def projects_list(
-    api_key: Optional[str], base_url: Optional[str], format: str, limit: Optional[int]
+    api_key: Optional[str],
+    base_url: Optional[str],
+    output_format: str,
+    limit: Optional[int],
 ) -> None:
     """List all projects."""
     try:
@@ -201,11 +205,11 @@ def projects_list(
         if limit:
             project_list = project_list[:limit]
 
-        if format == "json":
+        if output_format == "json":
             console.print_json(
                 json.dumps([p.model_dump() for p in project_list], default=str)
             )
-        elif format == "compact":
+        elif output_format == "compact":
             for p in project_list:
                 console.print(f"{p.project_name} ({p.project_id})")
         else:
@@ -236,16 +240,16 @@ def projects_list(
 @format_option
 @click.argument("project_id")
 def projects_get(
-    api_key: Optional[str], base_url: Optional[str], format: str, project_id: str
+    api_key: Optional[str], base_url: Optional[str], output_format: str, project_id: str
 ) -> None:
     """Get project details."""
     try:
         client = get_client(api_key, base_url)
         p = client.projects.get(project_id)
 
-        if format == "json":
+        if output_format == "json":
             console.print_json(p.model_dump_json())
-        elif format == "compact":
+        elif output_format == "compact":
             console.print(f"{p.project_name} ({p.project_id})")
         else:
             table = Table(
@@ -287,7 +291,9 @@ def projects_create(
 
         console.print(
             Panel(
-                f"[green]✓[/green] Project created!\n\n[cyan]ID:[/cyan] {p.project_id}\n[cyan]Name:[/cyan] {p.project_name}",
+                f"[green]✓[/green] Project created!\n\n"
+                f"[cyan]ID:[/cyan] {p.project_id}\n"
+                f"[cyan]Name:[/cyan] {p.project_name}",
                 title="Success",
                 border_style="green",
             )
@@ -356,7 +362,6 @@ def projects_delete(
 @cli.group(name="collections")
 def collections() -> None:
     """Manage data collections."""
-    pass
 
 
 @collections.command(name="list")
@@ -368,7 +373,7 @@ def collections() -> None:
 def collections_list(
     api_key: Optional[str],
     base_url: Optional[str],
-    format: str,
+    output_format: str,
     project: str,
     limit: Optional[int],
 ) -> None:
@@ -384,11 +389,11 @@ def collections_list(
         if limit:
             coll_list = coll_list[:limit]
 
-        if format == "json":
+        if output_format == "json":
             console.print_json(
                 json.dumps([c.model_dump() for c in coll_list], default=str)
             )
-        elif format == "compact":
+        elif output_format == "compact":
             for c in coll_list:
                 console.print(f"{c.collection_name} ({c.collection_id})")
         else:
@@ -424,7 +429,7 @@ def collections_list(
 def collections_get(
     api_key: Optional[str],
     base_url: Optional[str],
-    format: str,
+    output_format: str,
     project: str,
     collection_id: str,
 ) -> None:
@@ -433,9 +438,9 @@ def collections_get(
         client = get_client(api_key, base_url)
         c = client.collections.get(project_id=project, collection_id=collection_id)
 
-        if format == "json":
+        if output_format == "json":
             console.print_json(c.model_dump_json())
-        elif format == "compact":
+        elif output_format == "compact":
             console.print(f"{c.collection_name} ({c.collection_id})")
         else:
             table = Table(
@@ -479,7 +484,8 @@ def collections_create(
 
     \b
     Example:
-      nioto collections create -p PROJECT_ID -n "Sensors" -d "Temperature data" -s '{"type": "timeseries"}'
+      nioto collections create -p PROJECT_ID -n "Sensors" \\
+        -d "Temperature data" -s '{"type": "timeseries"}'
     """
     try:
         client = get_client(api_key, base_url)
@@ -496,7 +502,9 @@ def collections_create(
 
         console.print(
             Panel(
-                f"[green]✓[/green] Collection created!\n\n[cyan]ID:[/cyan] {c.collection_id}\n[cyan]Name:[/cyan] {c.collection_name}",
+                f"[green]✓[/green] Collection created!\n\n"
+                f"[cyan]ID:[/cyan] {c.collection_id}\n"
+                f"[cyan]Name:[/cyan] {c.collection_name}",
                 title="Success",
                 border_style="green",
             )
@@ -543,7 +551,6 @@ def collections_delete(
 @cli.group(name="data")
 def data() -> None:
     """Send and retrieve time-series data."""
-    pass
 
 
 @data.command(name="send")
@@ -590,7 +597,7 @@ def data_send(
 def data_get(
     api_key: Optional[str],
     base_url: Optional[str],
-    format: str,
+    output_format: str,
     project: str,
     collection: str,
     limit: Optional[int],
@@ -602,7 +609,7 @@ def data_get(
             project_id=project, collection_id=collection, limit=limit
         )
 
-        if format == "json":
+        if output_format == "json":
             console.print_json(json.dumps(result, default=str))
         else:
             console.print(f"[cyan]Collection:[/cyan] {collection}")
@@ -629,7 +636,6 @@ def data_get(
 @cli.group(name="keys")
 def keys() -> None:
     """Manage project API keys."""
-    pass
 
 
 @keys.command(name="list")
@@ -638,7 +644,7 @@ def keys() -> None:
 @format_option
 @click.option("--project", "-p", required=True, help="Project ID")
 def keys_list(
-    api_key: Optional[str], base_url: Optional[str], format: str, project: str
+    api_key: Optional[str], base_url: Optional[str], output_format: str, project: str
 ) -> None:
     """List project API keys."""
     try:
@@ -649,11 +655,11 @@ def keys_list(
             console.print("[yellow]No API keys found.[/yellow]")
             return
 
-        if format == "json":
+        if output_format == "json":
             console.print_json(
                 json.dumps([k.model_dump() for k in key_list], default=str)
             )
-        elif format == "compact":
+        elif output_format == "compact":
             for k in key_list:
                 console.print(f"{k.key_type} ({k.api_key[:16]}...)")
         else:
@@ -683,12 +689,13 @@ def keys_list(
 @click.option(
     "--type",
     "-t",
+    "key_type_name",
     required=True,
     type=click.Choice(["read", "write", "master"]),
     help="Key type",
 )
 def keys_create(
-    api_key: Optional[str], base_url: Optional[str], project: str, type: str
+    api_key: Optional[str], base_url: Optional[str], project: str, key_type_name: str
 ) -> None:
     """Create project API key.
 
@@ -698,7 +705,7 @@ def keys_create(
     """
     try:
         client = get_client(api_key, base_url)
-        key_type_enum = KeyType(type)
+        key_type_enum = KeyType(key_type_name)
         key = client.project_keys.create(project_id=project, key_type=key_type_enum)
 
         console.print(

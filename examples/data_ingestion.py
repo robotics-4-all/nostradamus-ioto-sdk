@@ -117,7 +117,9 @@ def main():
         print("\n[Query] Retrieving recent data...")
         recent_data = client.data.get(project.id, collection.id, limit=10)
         print(
-            f"  Retrieved {len(recent_data) if isinstance(recent_data, list) else 1} recent readings"
+            f"  Retrieved "
+            f"{len(recent_data) if isinstance(recent_data, list) else 1}"
+            f" recent readings"
         )
 
         # Get statistics

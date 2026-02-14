@@ -210,7 +210,8 @@ def main():
                     print("✅ Cleanup successful")
             except Exception as cleanup_err:
                 print(
-                    f"⚠️  Cleanup failed - you may need to manually delete the collection: {cleanup_err}"
+                    "⚠️  Cleanup failed - you may need to manually "
+                    f"delete the collection: {cleanup_err}"
                 )
 
         return 1

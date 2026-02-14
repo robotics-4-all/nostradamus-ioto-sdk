@@ -81,7 +81,9 @@ def main():
         print("\n8. Querying data from collection...")
         retrieved_data = client.data.get(new_project.id, new_collection.id, limit=5)
         print(
-            f"   Retrieved {len(retrieved_data) if isinstance(retrieved_data, list) else 1} data points"
+            f"   Retrieved "
+            f"{len(retrieved_data) if isinstance(retrieved_data, list) else 1}"
+            f" data points"
         )
 
         # 9. Update project
