@@ -159,7 +159,7 @@ class TestCliOrganization:
         assert "Updated" in result.output
 
     @patch(PATCH_CLIENT)
-    def test_org_update_no_params(self, mock_cls, runner):
+    def test_org_update_no_params(self, _mock_cls, runner):
         result = runner.invoke(cli, ["org", "update", "--api-key", "k"])
         assert result.exit_code == 0
         assert "No updates" in result.output
@@ -263,7 +263,7 @@ class TestCliProjects:
         assert "Updated" in result.output
 
     @patch(PATCH_CLIENT)
-    def test_projects_update_no_params(self, mock_cls, runner):
+    def test_projects_update_no_params(self, _mock_cls, runner):
         result = runner.invoke(cli, ["projects", "update", PID, "--api-key", "k"])
         assert result.exit_code == 0
         assert "No updates" in result.output
@@ -276,7 +276,7 @@ class TestCliProjects:
         assert "Deleted" in result.output
 
     @patch(PATCH_CLIENT)
-    def test_projects_delete_cancelled(self, mock_cls, runner):
+    def test_projects_delete_cancelled(self, _mock_cls, runner):
         result = runner.invoke(
             cli, ["projects", "delete", PID, "--api-key", "k"], input="n\n"
         )
@@ -401,7 +401,7 @@ class TestCliCollections:
         assert "created" in result.output.lower()
 
     @patch(PATCH_CLIENT)
-    def test_collections_create_invalid_json(self, mock_cls, runner):
+    def test_collections_create_invalid_json(self, _mock_cls, runner):
         result = runner.invoke(
             cli,
             [
@@ -432,7 +432,7 @@ class TestCliCollections:
         assert "Deleted" in result.output
 
     @patch(PATCH_CLIENT)
-    def test_collections_delete_cancelled(self, mock_cls, runner):
+    def test_collections_delete_cancelled(self, _mock_cls, runner):
         result = runner.invoke(
             cli,
             ["collections", "delete", CID, "-p", PID, "--api-key", "k"],
@@ -490,7 +490,7 @@ class TestCliData:
         assert "Sent 1 data point" in result.output
 
     @patch(PATCH_CLIENT)
-    def test_data_send_invalid_json(self, mock_cls, runner):
+    def test_data_send_invalid_json(self, _mock_cls, runner):
         result = runner.invoke(
             cli,
             [
@@ -602,7 +602,7 @@ class TestCliKeys:
         assert "Deleted" in result.output
 
     @patch(PATCH_CLIENT)
-    def test_keys_delete_cancelled(self, mock_cls, runner):
+    def test_keys_delete_cancelled(self, _mock_cls, runner):
         result = runner.invoke(
             cli,
             ["keys", "delete", "key-to-del", "-p", PID, "--api-key", "k"],
