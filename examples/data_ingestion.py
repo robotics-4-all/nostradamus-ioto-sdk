@@ -46,14 +46,21 @@ def main():
         project = client.projects.create(
             name="IoT Sensor Network", description="Network of environmental sensors"
         )
-        print(f"Created project: {project.name}")
+        print(f"Created project: {project.project_name}")
 
         collection = client.collections.create(
-            project.id,
+            project.project_id,
             name="Environmental Data",
             description="Temperature, humidity, and pressure readings",
+            collection_schema={
+                "sensor_id": "string",
+                "temperature": "float",
+                "humidity": "float",
+                "pressure": "float",
+                "timestamp": "string",
+            },
         )
-        print(f"Created collection: {collection.name}")
+        print(f"Created collection: {collection.collection_name}")
 
         # Simulate multiple sensors
         sensor_ids = ["sensor-001", "sensor-002", "sensor-003", "sensor-004"]
@@ -64,7 +71,7 @@ def main():
         )
         for sensor_id in sensor_ids:
             reading = generate_sensor_reading(sensor_id)
-            client.data.send(project.id, collection.id, reading)
+            client.data.send(project.project_id, collection.collection_id, reading)
             print(f"  Sent reading from {sensor_id}: {reading['temperature']}°C")
             time.sleep(0.1)  # Small delay to simulate real-time
 
@@ -78,7 +85,7 @@ def main():
             reading = generate_sensor_reading(sensor_id)
             batch.append(reading)
 
-        client.data.send(project.id, collection.id, batch)
+        client.data.send(project.project_id, collection.collection_id, batch)
         print(f"  Sent batch of {len(batch)} readings")
 
         # Example 3: Continuous ingestion simulation
@@ -96,7 +103,9 @@ def main():
 
             # Send batch if interval reached
             if len(batch_buffer) >= 5:  # Or use time-based batching
-                client.data.send(project.id, collection.id, batch_buffer)
+                client.data.send(
+                    project.project_id, collection.collection_id, batch_buffer
+                )
                 readings_sent += len(batch_buffer)
                 print(
                     f"  Sent batch of {len(batch_buffer)} readings (total: {readings_sent})"
@@ -107,7 +116,7 @@ def main():
 
         # Send remaining readings
         if batch_buffer:
-            client.data.send(project.id, collection.id, batch_buffer)
+            client.data.send(project.project_id, collection.collection_id, batch_buffer)
             readings_sent += len(batch_buffer)
             print(f"  Sent final batch of {len(batch_buffer)} readings")
 
@@ -115,7 +124,9 @@ def main():
 
         # Query recent data
         print("\n[Query] Retrieving recent data...")
-        recent_data = client.data.get(project.id, collection.id, limit=10)
+        recent_data = client.data.get(
+            project.project_id, collection.collection_id, limit=10
+        )
         print(
             f"  Retrieved "
             f"{len(recent_data) if isinstance(recent_data, list) else 1}"
@@ -126,10 +137,10 @@ def main():
         print("\n[Statistics] Getting data statistics...")
         try:
             stats = client.data.statistics(
-                project.id,
-                collection.id,
-                field="temperature",
+                project.project_id,
+                collection.collection_id,
                 operation="avg",
+                attribute="temperature",
             )
             print(f"  Average temperature: {stats}")
         except Exception as e:
@@ -137,8 +148,8 @@ def main():
 
         # Cleanup
         print("\n[Cleanup] Removing test data...")
-        client.collections.delete(project.id, collection.id)
-        client.projects.delete(project.id)
+        client.collections.delete(project.project_id, collection.collection_id)
+        client.projects.delete(project.project_id)
         print("  Cleanup complete")
 
         print("\n" + "=" * 60)

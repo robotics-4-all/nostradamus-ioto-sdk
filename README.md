@@ -121,13 +121,14 @@ export NOSTRADAMUS_API_KEY="your-api-key"
 nioto projects list
 
 # Create a project
-nioto projects create "My Project" --description "IoT sensors"
+nioto projects create --name "My Project" --description "IoT sensors"
 
 # List collections
-nioto collections list <project-id>
+nioto collections list --project <project-id>
 
 # Send data
-nioto data send <project-id> <collection-id> --file data.json
+nioto data send --project <project-id> --collection <collection-id> \
+  --data '[{"temperature": 22.5}]'
 ```
 
 ## API Coverage
@@ -154,6 +155,8 @@ The SDK covers all Nostradamus IoTO API endpoints:
 - Python 3.9 or higher
 - `httpx` >= 0.25.0
 - `pydantic` >= 2.0.0
+- `python-dateutil` >= 2.8.0
+- `typing-extensions` >= 4.5.0
 
 ## Configuration
 
