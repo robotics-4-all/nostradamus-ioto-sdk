@@ -206,7 +206,13 @@ class TestModelSerialization:
 
     def test_project_json_deserialization(self):
         """Test ProjectResponse JSON deserialization."""
-        json_str = '{"project_id": "650e8400-e29b-41d4-a716-446655440000", "project_name": "Test", "organization_id": "550e8400-e29b-41d4-a716-446655440000", "organization_name": "Org", "creation_date": "2024-01-01T00:00:00Z"}'
+        json_str = (
+            '{"project_id": "650e8400-e29b-41d4-a716-446655440000",'
+            ' "project_name": "Test",'
+            ' "organization_id": "550e8400-e29b-41d4-a716-446655440000",'
+            ' "organization_name": "Org",'
+            ' "creation_date": "2024-01-01T00:00:00Z"}'
+        )
         # Pydantic v2 uses model_validate_json
         project = ProjectResponse.model_validate_json(json_str)
         assert str(project.project_id) == "650e8400-e29b-41d4-a716-446655440000"

@@ -13,9 +13,9 @@ class TestOrganizationsResource:
 
     @pytest.fixture
     def mock_client(self):
-        """Create mock client with _request method."""
+        """Create mock client with request method."""
         client = Mock()
-        client._request = Mock()
+        client.request = Mock()
         return client
 
     @pytest.fixture
@@ -33,13 +33,13 @@ class TestOrganizationsResource:
             "description": "Test description",
             "creation_date": "2024-01-01T00:00:00Z",
         }
-        mock_client._request.return_value = mock_response
+        mock_client.request.return_value = mock_response
 
         # Call method
         result = resource.get()
 
         # Verify request was made correctly
-        mock_client._request.assert_called_once_with(
+        mock_client.request.assert_called_once_with(
             "GET", "/api/v1/organization/nostradamus"
         )
 
@@ -59,13 +59,13 @@ class TestOrganizationsResource:
             "description": "New description",
             "creation_date": "2024-01-01T00:00:00Z",
         }
-        mock_client._request.return_value = mock_response
+        mock_client.request.return_value = mock_response
 
         # Call method
         result = resource.update(description="New description")
 
         # Verify request was made correctly
-        mock_client._request.assert_called_once_with(
+        mock_client.request.assert_called_once_with(
             "PUT",
             "/api/v1/organization/nostradamus",
             json={"description": "New description"},
@@ -86,13 +86,13 @@ class TestOrganizationsResource:
             "creation_date": "2024-01-01T00:00:00Z",
             "tags": ["iot", "sensors"],
         }
-        mock_client._request.return_value = mock_response
+        mock_client.request.return_value = mock_response
 
         # Call method
         result = resource.update(tags=["iot", "sensors"])
 
         # Verify request was made correctly
-        mock_client._request.assert_called_once_with(
+        mock_client.request.assert_called_once_with(
             "PUT",
             "/api/v1/organization/nostradamus",
             json={"tags": ["iot", "sensors"]},
@@ -113,13 +113,13 @@ class TestOrganizationsResource:
             "creation_date": "2024-01-01T00:00:00Z",
             "tags": ["iot", "sensors"],
         }
-        mock_client._request.return_value = mock_response
+        mock_client.request.return_value = mock_response
 
         # Call method
         result = resource.update(description="New description", tags=["iot", "sensors"])
 
         # Verify request was made correctly
-        mock_client._request.assert_called_once_with(
+        mock_client.request.assert_called_once_with(
             "PUT",
             "/api/v1/organization/nostradamus",
             json={"description": "New description", "tags": ["iot", "sensors"]},
@@ -140,13 +140,13 @@ class TestOrganizationsResource:
             "description": "Test description",
             "creation_date": "2024-01-01T00:00:00Z",
         }
-        mock_client._request.return_value = mock_response
+        mock_client.request.return_value = mock_response
 
         # Call method
         result = resource.update()
 
         # Verify request was made with empty JSON (exclude_none=True)
-        mock_client._request.assert_called_once_with(
+        mock_client.request.assert_called_once_with(
             "PUT", "/api/v1/organization/nostradamus", json={}
         )
 
@@ -161,7 +161,7 @@ class TestOrganizationsResourceAsync:
     def mock_async_client(self):
         """Create mock async client."""
         client = Mock()
-        client._request = AsyncMock()
+        client.request = AsyncMock()
         return client
 
     @pytest.fixture
@@ -181,11 +181,11 @@ class TestOrganizationsResourceAsync:
             "description": "Test description",
             "creation_date": "2024-01-01T00:00:00Z",
         }
-        mock_async_client._request.return_value = mock_response
+        mock_async_client.request.return_value = mock_response
 
         result = await resource.aget()
 
-        mock_async_client._request.assert_called_once_with(
+        mock_async_client.request.assert_called_once_with(
             "GET", "/api/v1/organization/nostradamus"
         )
         assert isinstance(result, OrganizationResponse)
@@ -204,11 +204,11 @@ class TestOrganizationsResourceAsync:
             "creation_date": "2024-01-01T00:00:00Z",
             "tags": ["iot"],
         }
-        mock_async_client._request.return_value = mock_response
+        mock_async_client.request.return_value = mock_response
 
         result = await resource.aupdate(description="Updated description", tags=["iot"])
 
-        mock_async_client._request.assert_called_once_with(
+        mock_async_client.request.assert_called_once_with(
             "PUT",
             "/api/v1/organization/nostradamus",
             json={"description": "Updated description", "tags": ["iot"]},

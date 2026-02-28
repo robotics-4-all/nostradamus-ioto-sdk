@@ -3,9 +3,6 @@
 from typing import (
     TYPE_CHECKING,
     Any,
-    Dict,
-    List,
-    Type,
     TypeVar,
     Union,
     overload,
@@ -34,10 +31,10 @@ class BaseResource:
     def __init__(
         self, client: Union["NostradamusClient", "AsyncNostradamusClient"]
     ) -> None:
-        self._client = client
-        self._base_path = "/api/v1"
+        self.client = client
+        self.base_path = "/api/v1"
 
-    def _build_path(self, *parts: str) -> str:
+    def build_path(self, *parts: str) -> str:
         """Build URL path from parts.
 
         Args:
@@ -47,23 +44,23 @@ class BaseResource:
             Complete path string
 
         Example:
-            >>> self._build_path("projects", "123", "collections")
+            >>> self.build_path("projects", "123", "collections")
             '/api/v1/projects/123/collections'
         """
         clean_parts = [str(p).strip("/") for p in parts if p]
-        return f"{self._base_path}/{'/'.join(clean_parts)}"
+        return f"{self.base_path}/{'/'.join(clean_parts)}"
 
     @overload
-    def _parse_response(self, data: Dict[str, Any], model_class: Type[T]) -> T: ...
+    def parse_response(self, data: dict[str, Any], model_class: type[T]) -> T: ...
 
     @overload
-    def _parse_response(
-        self, data: List[Dict[str, Any]], model_class: Type[T]
-    ) -> List[T]: ...
+    def parse_response(
+        self, data: list[dict[str, Any]], model_class: type[T]
+    ) -> list[T]: ...
 
-    def _parse_response(
-        self, data: Union[Dict[str, Any], List[Dict[str, Any]]], model_class: Type[T]
-    ) -> Union[T, List[T]]:
+    def parse_response(
+        self, data: Union[dict[str, Any], list[dict[str, Any]]], model_class: type[T]
+    ) -> Union[T, list[T]]:
         """Parse response data into Pydantic model(s).
 
         Args:
@@ -77,7 +74,7 @@ class BaseResource:
             return [model_class(**item) for item in data]
         return model_class(**data)
 
-    def _validate_uuid(self, value: Union[str, UUID]) -> str:
+    def validate_uuid(self, value: Union[str, UUID]) -> str:
         """Validate and convert UUID to string.
 
         Args:

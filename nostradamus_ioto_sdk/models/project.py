@@ -1,7 +1,7 @@
 """Project models for the Nostradamus IoTO SDK."""
 
 from datetime import datetime
-from typing import List, Optional
+from typing import Optional
 from uuid import UUID
 
 from pydantic import Field
@@ -27,7 +27,7 @@ class ProjectResponse(BaseModel):
     organization_name: str = Field(..., description="Organization name")
     project_name: str = Field(..., description="Project name")
     description: Optional[str] = Field(default=None, description="Project description")
-    tags: List[str] = Field(default_factory=list, description="Project tags")
+    tags: list[str] = Field(default_factory=list, description="Project tags")
     creation_date: datetime = Field(..., description="Creation timestamp")
 
 
@@ -42,7 +42,7 @@ class ProjectCreateRequest(BaseModel):
 
     project_name: str = Field(..., description="Project name", min_length=1)
     description: Optional[str] = Field(default=None, description="Project description")
-    tags: List[str] = Field(default_factory=list, description="Project tags")
+    tags: list[str] = Field(default_factory=list, description="Project tags")
 
 
 class ProjectUpdateRequest(BaseModel):
@@ -54,4 +54,4 @@ class ProjectUpdateRequest(BaseModel):
     """
 
     description: Optional[str] = Field(default=None, description="New description")
-    tags: Optional[List[str]] = Field(default=None, description="New tags")
+    tags: Optional[list[str]] = Field(default=None, description="New tags")

@@ -5,14 +5,14 @@ from unittest.mock import Mock
 import httpx
 
 from nostradamus_ioto_sdk.exceptions import (
+    APIConnectionError,
     APIError,
     AuthenticationError,
     ConfigurationError,
-    ConnectionError,
     NostradamusError,
     RateLimitError,
+    RequestTimeoutError,
     ResourceNotFoundError,
-    TimeoutError,
     ValidationError,
 )
 
@@ -209,39 +209,39 @@ class TestRateLimitError:
         assert str(error) == "[429] Too many requests (retry after 30s)"
 
 
-class TestTimeoutError:
+class TestRequestTimeoutError:
     """Test timeout error."""
 
     def test_timeout_error_default(self):
         """Test default timeout error."""
-        error = TimeoutError()
+        error = RequestTimeoutError()
         assert error.message == "Request timed out"
         assert error.timeout is None
 
     def test_timeout_error_with_timeout_value(self):
         """Test timeout error with timeout value."""
-        error = TimeoutError(timeout=30.0)
+        error = RequestTimeoutError(timeout=30.0)
         assert error.timeout == 30.0
         assert error.message == "Request timed out"
 
     def test_timeout_error_custom_message(self):
         """Test custom message."""
-        error = TimeoutError("Connection timed out after 60s", timeout=60.0)
+        error = RequestTimeoutError("Connection timed out after 60s", timeout=60.0)
         assert error.message == "Connection timed out after 60s"
         assert error.timeout == 60.0
 
 
-class TestConnectionError:
+class TestAPIConnectionError:
     """Test connection error."""
 
     def test_connection_error_creation(self):
         """Test creating connection error."""
-        error = ConnectionError("Failed to connect")
+        error = APIConnectionError("Failed to connect")
         assert error.message == "Failed to connect"
         assert isinstance(error, APIError)
 
     def test_connection_error_inheritance(self):
-        """Test ConnectionError inherits from APIError."""
-        error = ConnectionError("Test")
+        """Test APIConnectionError inherits from APIError."""
+        error = APIConnectionError("Test")
         assert isinstance(error, APIError)
         assert isinstance(error, NostradamusError)

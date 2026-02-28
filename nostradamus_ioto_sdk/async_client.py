@@ -44,10 +44,10 @@ async def make_async_request_with_retry(
     from ._base_client import handle_response
     from ._http import should_retry
     from .exceptions import (
+        APIConnectionError,
         AuthenticationError,
-        ConnectionError,
         RateLimitError,
-        TimeoutError,
+        RequestTimeoutError,
         ValidationError,
     )
 
@@ -69,7 +69,7 @@ async def make_async_request_with_retry(
             return handle_response(response)
 
         except httpx.TimeoutException as err:
-            last_exception = TimeoutError(f"Request timed out: {err}")
+            last_exception = RequestTimeoutError(f"Request timed out: {err}")
             if attempt < retry_config.max_retries:
                 delay = retry_config.get_backoff_delay(attempt)
                 logger.debug(f"Request timed out, retrying in {delay}s...")
@@ -78,7 +78,7 @@ async def make_async_request_with_retry(
                 raise last_exception from err
 
         except httpx.RequestError as err:
-            last_exception = ConnectionError(f"Connection error: {err}")
+            last_exception = APIConnectionError(f"Connection error: {err}")
             if attempt < retry_config.max_retries:
                 delay = retry_config.get_backoff_delay(attempt)
                 logger.debug(f"Connection error, retrying in {delay}s...")
@@ -191,7 +191,27 @@ class AsyncNostradamusClient:
         self.collections = CollectionsResource(self)
         self.data = DataResource(self)
 
-    async def _request(
+    @property
+    def base_url(self) -> str:
+        """The base URL for API requests."""
+        return self._base_url
+
+    @property
+    def auth_handler(self) -> Any:
+        """The authentication handler (OAuth2Handler or APIKeyHandler)."""
+        return self._auth_handler
+
+    @property
+    def rate_limiter(self) -> Optional[RateLimiter]:
+        """The rate limiter instance, or None if disabled."""
+        return self._rate_limiter
+
+    @property
+    def http_client(self) -> httpx.AsyncClient:
+        """The underlying async HTTP client."""
+        return self._http_client
+
+    async def request(
         self,
         method: str,
         path: str,
@@ -207,20 +227,16 @@ class AsyncNostradamusClient:
         Returns:
             HTTP response
         """
-        # Acquire rate limit permit if enabled
         if self._rate_limiter:
             await self._rate_limiter.aacquire()
 
-        # Add authentication headers
         headers = kwargs.pop("headers", {})
         auth_headers = self._auth_handler.get_headers()
         headers.update(auth_headers)
         kwargs["headers"] = headers
 
-        # Build full URL
         url = f"{self._base_url}{path}"
 
-        # Make request with retry
         return await make_async_request_with_retry(
             client=self._http_client,
             method=method,

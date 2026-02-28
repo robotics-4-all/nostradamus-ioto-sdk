@@ -20,7 +20,7 @@ help:
 	@echo "    make pylint            Run pylint only"
 	@echo ""
 	@echo "  CI:"
-	@echo "    make ci                Run full CI pipeline (lint + typecheck + test + coverage threshold)"
+	@echo "    make ci                Run full CI pipeline (lint + typecheck + test + build)"
 	@echo ""
 	@echo "  Other:"
 	@echo "    make docs              Serve documentation locally"
@@ -84,26 +84,33 @@ ci:
 	@echo "  CI Pipeline"
 	@echo "========================================"
 	@echo ""
-	@echo "[1/5] Formatting check (black + isort)"
+	@echo "[1/6] Formatting check (black + isort)"
 	@echo "----------------------------------------"
 	black --check .
 	isort --check-only .
 	@echo ""
-	@echo "[2/5] Linting (ruff)"
+	@echo "[2/6] Linting (ruff)"
 	@echo "----------------------------------------"
 	ruff check .
 	@echo ""
-	@echo "[3/5] Linting (pylint)"
+	@echo "[3/6] Linting (pylint)"
 	@echo "----------------------------------------"
 	pylint nostradamus_ioto_sdk
 	@echo ""
-	@echo "[4/5] Type checking (mypy)"
+	@echo "[4/6] Type checking (mypy)"
 	@echo "----------------------------------------"
 	mypy nostradamus_ioto_sdk
 	@echo ""
-	@echo "[5/5] Tests + coverage (pytest, threshold: 80%)"
+	@echo "[5/6] Tests + coverage (pytest, threshold: 80%)"
 	@echo "----------------------------------------"
 	pytest -v --cov=nostradamus_ioto_sdk --cov-report=term-missing --cov-fail-under=80
+	@echo ""
+	@echo "[6/6] Build verification"
+	@echo "----------------------------------------"
+	pip install --quiet build twine
+	python -m build --outdir dist/
+	twine check dist/*
+	rm -rf dist/
 	@echo ""
 	@echo "========================================"
 	@echo "  CI Pipeline: ALL CHECKS PASSED"

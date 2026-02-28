@@ -34,7 +34,10 @@ class ProjectKeyCreateRequest(BaseModel):
 
     key_type: KeyType = Field(
         ...,
-        description="Type of key to create: read (read-only), write (write data), or master (full access)",
+        description=(
+            "Type of key to create: read (read-only),"
+            " write (write data), or master (full access)"
+        ),
     )
 
 

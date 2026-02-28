@@ -1,7 +1,7 @@
 """Data resource for the Nostradamus IoTO SDK."""
 
 from datetime import datetime
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional, Union
 from uuid import UUID
 
 from ..exceptions import ValidationError
@@ -19,14 +19,14 @@ class DataResource(BaseResource):
         self,
         project_id: Union[str, UUID],
         collection_id: Union[str, UUID],
-        data: Union[Dict[str, Any], List[Dict[str, Any]]],
+        data: Union[dict[str, Any], list[dict[str, Any]]],
     ) -> None:
         """Send data to collection."""
-        project_id_str = self._validate_uuid(project_id)
-        collection_id_str = self._validate_uuid(collection_id)
-        self._client._request(
+        project_id_str = self.validate_uuid(project_id)
+        collection_id_str = self.validate_uuid(collection_id)
+        self.client.request(
             "POST",
-            self._build_path(
+            self.build_path(
                 "projects",
                 project_id_str,
                 "collections",
@@ -40,14 +40,14 @@ class DataResource(BaseResource):
         self,
         project_id: Union[str, UUID],
         collection_id: Union[str, UUID],
-        data: Union[Dict[str, Any], List[Dict[str, Any]]],
+        data: Union[dict[str, Any], list[dict[str, Any]]],
     ) -> None:
         """Send data to collection (async)."""
-        project_id_str = self._validate_uuid(project_id)
-        collection_id_str = self._validate_uuid(collection_id)
-        await self._client._request(
+        project_id_str = self.validate_uuid(project_id)
+        collection_id_str = self.validate_uuid(collection_id)
+        await self.client.request(
             "POST",
-            self._build_path(
+            self.build_path(
                 "projects",
                 project_id_str,
                 "collections",
@@ -61,19 +61,19 @@ class DataResource(BaseResource):
         self,
         project_id: Union[str, UUID],
         collection_id: Union[str, UUID],
-        attributes: Optional[List[str]] = None,
-        filters: Optional[List[Dict[str, Any]]] = None,
+        attributes: Optional[list[str]] = None,
+        filters: Optional[list[dict[str, Any]]] = None,
         order_by: Optional[str] = None,
         limit: Optional[int] = None,
         nested: bool = False,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """Query data from collection."""
         import json
 
-        project_id_str = self._validate_uuid(project_id)
-        collection_id_str = self._validate_uuid(collection_id)
+        project_id_str = self.validate_uuid(project_id)
+        collection_id_str = self.validate_uuid(collection_id)
 
-        params: Dict[str, Any] = {}
+        params: dict[str, Any] = {}
         if attributes:
             params["attributes"] = attributes
         if filters:
@@ -86,9 +86,9 @@ class DataResource(BaseResource):
         if nested:
             params["nested"] = nested
 
-        response = self._client._request(
+        response = self.client.request(
             "GET",
-            self._build_path(
+            self.build_path(
                 "projects", project_id_str, "collections", collection_id_str, "get_data"
             ),
             params=params,
@@ -99,19 +99,19 @@ class DataResource(BaseResource):
         self,
         project_id: Union[str, UUID],
         collection_id: Union[str, UUID],
-        attributes: Optional[List[str]] = None,
-        filters: Optional[List[Dict[str, Any]]] = None,
+        attributes: Optional[list[str]] = None,
+        filters: Optional[list[dict[str, Any]]] = None,
         order_by: Optional[str] = None,
         limit: Optional[int] = None,
         nested: bool = False,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """Query data from collection (async)."""
         import json
 
-        project_id_str = self._validate_uuid(project_id)
-        collection_id_str = self._validate_uuid(collection_id)
+        project_id_str = self.validate_uuid(project_id)
+        collection_id_str = self.validate_uuid(collection_id)
 
-        params: Dict[str, Any] = {}
+        params: dict[str, Any] = {}
         if attributes:
             params["attributes"] = attributes
         if filters:
@@ -124,9 +124,9 @@ class DataResource(BaseResource):
         if nested:
             params["nested"] = nested
 
-        response = await self._client._request(
+        response = await self.client.request(
             "GET",
-            self._build_path(
+            self.build_path(
                 "projects", project_id_str, "collections", collection_id_str, "get_data"
             ),
             params=params,
@@ -142,12 +142,12 @@ class DataResource(BaseResource):
         group_by: Optional[str] = None,
         interval: Optional[str] = None,
         limit: Optional[int] = None,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Get statistics/aggregations."""
-        project_id_str = self._validate_uuid(project_id)
-        collection_id_str = self._validate_uuid(collection_id)
+        project_id_str = self.validate_uuid(project_id)
+        collection_id_str = self.validate_uuid(collection_id)
 
-        params: Dict[str, Any] = {
+        params: dict[str, Any] = {
             "operation": operation if isinstance(operation, str) else operation.value,
             "attribute": attribute,
         }
@@ -158,9 +158,9 @@ class DataResource(BaseResource):
         if limit:
             params["limit"] = limit
 
-        response = self._client._request(
+        response = self.client.request(
             "GET",
-            self._build_path(
+            self.build_path(
                 "projects",
                 project_id_str,
                 "collections",
@@ -180,12 +180,12 @@ class DataResource(BaseResource):
         group_by: Optional[str] = None,
         interval: Optional[str] = None,
         limit: Optional[int] = None,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Get statistics/aggregations (async)."""
-        project_id_str = self._validate_uuid(project_id)
-        collection_id_str = self._validate_uuid(collection_id)
+        project_id_str = self.validate_uuid(project_id)
+        collection_id_str = self.validate_uuid(collection_id)
 
-        params: Dict[str, Any] = {
+        params: dict[str, Any] = {
             "operation": operation if isinstance(operation, str) else operation.value,
             "attribute": attribute,
         }
@@ -196,9 +196,9 @@ class DataResource(BaseResource):
         if limit:
             params["limit"] = limit
 
-        response = await self._client._request(
+        response = await self.client.request(
             "GET",
-            self._build_path(
+            self.build_path(
                 "projects",
                 project_id_str,
                 "collections",
@@ -216,7 +216,7 @@ class DataResource(BaseResource):
         key: Optional[str] = None,
         timestamp_from: Optional[Union[str, datetime]] = None,
         timestamp_to: Optional[Union[str, datetime]] = None,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Delete data from collection based on criteria.
 
         Args:
@@ -233,10 +233,10 @@ class DataResource(BaseResource):
             At least one parameter (key, timestamp_from, or timestamp_to) must be provided.
             Can delete by key, timestamp range, or both.
         """
-        project_id_str = self._validate_uuid(project_id)
-        collection_id_str = self._validate_uuid(collection_id)
+        project_id_str = self.validate_uuid(project_id)
+        collection_id_str = self.validate_uuid(collection_id)
 
-        delete_request: Dict[str, Any] = {}
+        delete_request: dict[str, Any] = {}
         if key:
             delete_request["key"] = key
         if timestamp_from:
@@ -257,9 +257,9 @@ class DataResource(BaseResource):
                 "At least one parameter (key, timestamp_from, or timestamp_to) must be provided"
             )
 
-        response = self._client._request(
+        response = self.client.request(
             "DELETE",
-            self._build_path(
+            self.build_path(
                 "projects",
                 project_id_str,
                 "collections",
@@ -277,7 +277,7 @@ class DataResource(BaseResource):
         key: Optional[str] = None,
         timestamp_from: Optional[Union[str, datetime]] = None,
         timestamp_to: Optional[Union[str, datetime]] = None,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Delete data from collection based on criteria (async).
 
         Args:
@@ -294,10 +294,10 @@ class DataResource(BaseResource):
             At least one parameter (key, timestamp_from, or timestamp_to) must be provided.
             Can delete by key, timestamp range, or both.
         """
-        project_id_str = self._validate_uuid(project_id)
-        collection_id_str = self._validate_uuid(collection_id)
+        project_id_str = self.validate_uuid(project_id)
+        collection_id_str = self.validate_uuid(collection_id)
 
-        delete_request: Dict[str, Any] = {}
+        delete_request: dict[str, Any] = {}
         if key:
             delete_request["key"] = key
         if timestamp_from:
@@ -318,9 +318,9 @@ class DataResource(BaseResource):
                 "At least one parameter (key, timestamp_from, or timestamp_to) must be provided"
             )
 
-        response = await self._client._request(
+        response = await self.client.request(
             "DELETE",
-            self._build_path(
+            self.build_path(
                 "projects",
                 project_id_str,
                 "collections",

@@ -1,6 +1,6 @@
 """Custom exceptions for the Nostradamus IoTO SDK."""
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 import httpx
 
@@ -15,8 +15,6 @@ class NostradamusError(Exception):
 
 class ConfigurationError(NostradamusError):
     """Raised when the SDK is misconfigured."""
-
-    pass
 
 
 class AuthenticationError(NostradamusError):
@@ -61,7 +59,7 @@ class ValidationError(APIError):
     def __init__(
         self,
         message: str,
-        errors: Optional[List[Dict[str, Any]]] = None,
+        errors: Optional[list[dict[str, Any]]] = None,
         response: Optional[httpx.Response] = None,
     ) -> None:
         super().__init__(message, status_code=422, response=response)
@@ -113,7 +111,7 @@ class RateLimitError(APIError):
         return base_msg
 
 
-class TimeoutError(APIError):
+class RequestTimeoutError(APIError):
     """Raised when a request times out."""
 
     def __init__(
@@ -123,7 +121,5 @@ class TimeoutError(APIError):
         self.timeout = timeout
 
 
-class ConnectionError(APIError):
+class APIConnectionError(APIError):
     """Raised when connection to API fails."""
-
-    pass

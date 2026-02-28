@@ -350,7 +350,8 @@ def main():
 
     print("   Deleting first 12 hours of data for key 'SOIL_001'...")
     print(
-        f"   Time range: {from_time[:19]} to {(datetime.now() - timedelta(hours=12)).strftime('%Y-%m-%dT%H:%M:%S')}"
+        f"   Time range: {from_time[:19]} to "
+        f"{(datetime.now() - timedelta(hours=12)).strftime('%Y-%m-%dT%H:%M:%S')}"
     )
 
     with NostradamusClient(api_key=master_key) as master_client:

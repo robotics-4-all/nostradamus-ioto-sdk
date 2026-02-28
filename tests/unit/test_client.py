@@ -17,8 +17,8 @@ class TestNostradamusClientInitialization:
     def test_client_init_with_api_key(self):
         """Test client initialization with API key."""
         client = NostradamusClient(api_key="test-key")
-        assert isinstance(client._auth_handler, APIKeyHandler)
-        assert client._auth_handler._api_key == "test-key"
+        assert isinstance(client.auth_handler, APIKeyHandler)
+        assert client.auth_handler.api_key == "test-key"
 
     def test_client_init_without_credentials(self):
         """Test client initialization without credentials raises error."""
@@ -60,7 +60,7 @@ class TestNostradamusClientInitialization:
             username="testuser",
             password="testpass",
         )
-        assert client._auth_handler is mock_handler
+        assert client.auth_handler is mock_handler
 
     def test_client_has_resources(self):
         """Test client has all resource managers."""
@@ -109,7 +109,7 @@ class TestNostradamusClientMethods:
         client = NostradamusClient(api_key="test-key-123")
 
         # Make a request
-        client._request("GET", "/test")
+        client.request("GET", "/test")
 
         # Verify request was made
         assert mock_request.called
@@ -129,7 +129,7 @@ class TestNostradamusClientMethods:
 
         client = NostradamusClient(api_key="test-key")
         test_data = {"key": "value"}
-        client._request("POST", "/test", json=test_data)
+        client.request("POST", "/test", json=test_data)
 
         # Verify JSON was passed
         call_kwargs = mock_request.call_args[1]
@@ -145,7 +145,7 @@ class TestNostradamusClientMethods:
 
         client = NostradamusClient(api_key="test-key")
         params = {"limit": 10, "offset": 0}
-        client._request("GET", "/test", params=params)
+        client.request("GET", "/test", params=params)
 
         # Verify params were passed
         call_kwargs = mock_request.call_args[1]
@@ -159,40 +159,40 @@ class TestNostradamusClientRateLimiter:
     def test_client_init_without_rate_limiter(self):
         """Test rate limiter is None by default."""
         client = NostradamusClient(api_key="test-key")
-        assert client._rate_limiter is None
+        assert client.rate_limiter is None
 
     def test_client_init_with_rate_limiter(self):
         """Test rate limiter is created when rate_limit_rps > 0."""
         client = NostradamusClient(api_key="test-key", rate_limit_rps=10.0)
-        assert client._rate_limiter is not None
-        assert isinstance(client._rate_limiter, RateLimiter)
+        assert client.rate_limiter is not None
+        assert isinstance(client.rate_limiter, RateLimiter)
 
     def test_client_init_rate_limiter_zero_disabled(self):
         """Test rate limiter is disabled when rate_limit_rps is 0."""
         client = NostradamusClient(api_key="test-key", rate_limit_rps=0.0)
-        assert client._rate_limiter is None
+        assert client.rate_limiter is None
 
     @patch("nostradamus_ioto_sdk.client.make_request_with_retry")
     def test_client_request_acquires_rate_limit(self, mock_request):
-        """Test that _request calls rate limiter acquire before making request."""
+        """Test that request calls rate limiter acquire before making request."""
         mock_response = Mock(spec=httpx.Response)
         mock_response.status_code = 200
         mock_request.return_value = mock_response
 
         client = NostradamusClient(api_key="test-key", rate_limit_rps=100.0)
         with patch.object(
-            client._rate_limiter, "acquire", return_value=True
+            client.rate_limiter, "acquire", return_value=True
         ) as mock_acquire:
-            client._request("GET", "/test")
+            client.request("GET", "/test")
             mock_acquire.assert_called_once()
 
     @patch("nostradamus_ioto_sdk.client.make_request_with_retry")
     def test_client_request_skips_rate_limit_when_disabled(self, mock_request):
-        """Test that _request does not call rate limiter when disabled."""
+        """Test that request does not call rate limiter when disabled."""
         mock_response = Mock(spec=httpx.Response)
         mock_response.status_code = 200
         mock_request.return_value = mock_response
 
         client = NostradamusClient(api_key="test-key")
-        client._request("GET", "/test")
+        client.request("GET", "/test")
         assert mock_request.called

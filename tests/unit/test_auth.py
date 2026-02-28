@@ -62,7 +62,7 @@ class TestAPIKeyHandler:
     def test_api_key_handler_creation(self):
         """Test APIKeyHandler creation."""
         handler = APIKeyHandler("test-api-key")
-        assert handler._api_key == "test-api-key"
+        assert handler.api_key == "test-api-key"
 
     def test_api_key_handler_get_headers(self):
         """Test APIKeyHandler returns correct headers."""
@@ -86,9 +86,9 @@ class TestOAuth2Handler:
             username="testuser",
             password="testpass",
         )
-        assert handler._base_url == "https://api.example.com"
-        assert handler._username == "testuser"
-        assert handler._password == "testpass"
+        assert handler.base_url == "https://api.example.com"
+        assert handler.username == "testuser"
+        assert handler.password == "testpass"
 
     @patch("httpx.post")
     def test_oauth2_handler_get_headers_success(self, mock_post):
@@ -327,7 +327,7 @@ class TestOAuth2Handler:
         assert mock_post.call_count == 1
 
         handler.clear_token()
-        assert handler._token is None
+        assert handler.token is None
 
         handler.get_headers()
         assert mock_post.call_count == 2
@@ -339,4 +339,4 @@ class TestOAuth2Handler:
             username="testuser",
             password="testpass",
         )
-        assert handler._base_url == "https://api.example.com"
+        assert handler.base_url == "https://api.example.com"

@@ -7,14 +7,14 @@ from .async_client import AsyncNostradamusClient
 from .client import NostradamusClient
 from .config import ClientConfig
 from .exceptions import (
+    APIConnectionError,
     APIError,
     AuthenticationError,
     ConfigurationError,
-    ConnectionError,
     NostradamusError,
     RateLimitError,
+    RequestTimeoutError,
     ResourceNotFoundError,
-    TimeoutError,
     ValidationError,
 )
 from .models import (
@@ -51,8 +51,8 @@ __all__ = [
     "ValidationError",
     "ResourceNotFoundError",
     "RateLimitError",
-    "TimeoutError",
-    "ConnectionError",
+    "RequestTimeoutError",
+    "APIConnectionError",
     # Enums
     "KeyType",
     "StatOperation",

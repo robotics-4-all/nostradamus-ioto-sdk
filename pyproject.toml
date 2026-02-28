@@ -75,7 +75,7 @@ include = ["nostradamus_ioto_sdk*"]
 
 [tool.black]
 line-length = 88
-target-version = ["py38", "py39", "py310", "py311", "py312"]
+target-version = ["py39", "py310", "py311", "py312", "py313"]
 include = '\.pyi?$'
 extend-exclude = '''
 /(
@@ -103,7 +103,7 @@ skip_gitignore = true
 
 [tool.ruff]
 line-length = 88
-target-version = "py38"
+target-version = "py39"
 exclude = [
     ".git",
     ".mypy_cache",
@@ -186,22 +186,18 @@ disable = [
     "R0903",  # too-few-public-methods — Pydantic models / config dataclasses
     "R0801",  # duplicate-code — sync/async twins are intentionally duplicated
     "W0622",  # redefined-builtin — SDK intentionally defines ConnectionError, TimeoutError, ValidationError
-    "E0611",  # no-name-in-module — false positives with pydantic re-exports
     "C0209",  # consider-using-f-string — let black/ruff handle style
     "W0511",  # fixme — allow TODO/FIXME comments
     "C0301",  # line-too-long — handled by black
     "W0107",  # unnecessary-pass — used in abstract/placeholder methods
-    "W0212",  # protected-access — resources access _client._request() by design
     "C0415",  # import-outside-toplevel — circular import guards are intentional
     "R0917",  # too-many-positional-arguments — SDK API surface requires many params
     "R0902",  # too-many-instance-attributes — client classes need many attributes
     "R0912",  # too-many-branches — retry logic is inherently branchy
     "R0914",  # too-many-locals — retry functions need many local vars
     "W0718",  # broad-exception-caught — CLI uses catch-all at boundary; _base_client wraps httpx
-    "W0621",  # redefined-outer-name — Click decorator pattern
     "W0221",  # arguments-differ — Pydantic v2 model_post_init signature
     "C0103",  # invalid-name — auto-generated enum values are lowercase
-    "E1120",  # no-value-for-parameter — false positive with Click decorators
 ]
 
 [tool.pylint.format]

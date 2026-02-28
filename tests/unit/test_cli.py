@@ -19,68 +19,26 @@ from nostradamus_ioto_sdk.models import (
     ProjectResponse,
 )
 
-
-@pytest.fixture
-def runner():
-    return CliRunner()
-
-
-@pytest.fixture
-def mock_org():
-    return OrganizationResponse(
-        organization_id="12345678-1234-5678-1234-567812345678",
-        organization_name="Test Org",
-        description="Test description",
-        creation_date="2024-01-01T00:00:00Z",
-        tags=["iot"],
-    )
-
-
-@pytest.fixture
-def mock_project():
-    return ProjectResponse(
-        organization_id="12345678-1234-5678-1234-567812345678",
-        project_id="22345678-1234-5678-1234-567812345678",
-        organization_name="Test Org",
-        project_name="Test Project",
-        description="Test description",
-        tags=["iot"],
-        creation_date="2024-01-01T00:00:00Z",
-    )
-
-
-@pytest.fixture
-def mock_collection():
-    return CollectionResponse(
-        collection_name="Test Collection",
-        collection_id="32345678-1234-5678-1234-567812345678",
-        project_id="22345678-1234-5678-1234-567812345678",
-        project_name="Test Project",
-        organization_id="12345678-1234-5678-1234-567812345678",
-        organization_name="Test Org",
-        description="Test description",
-        tags=["iot"],
-        creation_date="2024-01-01T00:00:00Z",
-        collection_schema={"type": "timeseries"},
-    )
-
-
-@pytest.fixture
-def mock_key():
-    return ProjectKeyResponse(
-        api_key="test-api-key-12345",
-        project_id="22345678-1234-5678-1234-567812345678",
-        key_type="read",
-        created_at="2024-01-01T00:00:00Z",
-    )
-
-
 PID = "22345678-1234-5678-1234-567812345678"
 CID = "32345678-1234-5678-1234-567812345678"
 PATCH_CLIENT = "nostradamus_ioto_sdk.cli.main.NostradamusClient"
 
 
 class TestCliRoot:
+    @pytest.fixture
+    def runner(self):
+        return CliRunner()
+
+    @pytest.fixture
+    def mock_org(self):
+        return OrganizationResponse(
+            organization_id="12345678-1234-5678-1234-567812345678",
+            organization_name="Test Org",
+            description="Test description",
+            creation_date="2024-01-01T00:00:00Z",
+            tags=["iot"],
+        )
+
     def test_version(self, runner):
         result = runner.invoke(cli, ["--version"])
         assert result.exit_code == 0
@@ -95,6 +53,10 @@ class TestCliRoot:
 
 
 class TestCliGetClient:
+    @pytest.fixture
+    def runner(self):
+        return CliRunner()
+
     def test_no_api_key_exits(self, runner, monkeypatch):
         monkeypatch.delenv("NOSTRADAMUS_API_KEY", raising=False)
         result = runner.invoke(cli, ["org", "get"])
@@ -103,6 +65,10 @@ class TestCliGetClient:
 
 
 class TestCliHandleError:
+    @pytest.fixture
+    def runner(self):
+        return CliRunner()
+
     @patch(PATCH_CLIENT)
     def test_authentication_error(self, mock_cls, runner):
         mock_cls.return_value.organizations.get.side_effect = AuthenticationError(
@@ -148,6 +114,20 @@ class TestCliHandleError:
 
 
 class TestCliOrganization:
+    @pytest.fixture
+    def runner(self):
+        return CliRunner()
+
+    @pytest.fixture
+    def mock_org(self):
+        return OrganizationResponse(
+            organization_id="12345678-1234-5678-1234-567812345678",
+            organization_name="Test Org",
+            description="Test description",
+            creation_date="2024-01-01T00:00:00Z",
+            tags=["iot"],
+        )
+
     @patch(PATCH_CLIENT)
     def test_org_get_table(self, mock_cls, runner, mock_org):
         mock_cls.return_value.organizations.get.return_value = mock_org
@@ -179,13 +159,29 @@ class TestCliOrganization:
         assert "Updated" in result.output
 
     @patch(PATCH_CLIENT)
-    def test_org_update_no_params(self, mock_cls, runner):
+    def test_org_update_no_params(self, _mock_cls, runner):
         result = runner.invoke(cli, ["org", "update", "--api-key", "k"])
         assert result.exit_code == 0
         assert "No updates" in result.output
 
 
 class TestCliProjects:
+    @pytest.fixture
+    def runner(self):
+        return CliRunner()
+
+    @pytest.fixture
+    def mock_project(self):
+        return ProjectResponse(
+            organization_id="12345678-1234-5678-1234-567812345678",
+            project_id="22345678-1234-5678-1234-567812345678",
+            organization_name="Test Org",
+            project_name="Test Project",
+            description="Test description",
+            tags=["iot"],
+            creation_date="2024-01-01T00:00:00Z",
+        )
+
     @patch(PATCH_CLIENT)
     def test_projects_list_table(self, mock_cls, runner, mock_project):
         mock_cls.return_value.projects.list.return_value = [mock_project]
@@ -267,7 +263,7 @@ class TestCliProjects:
         assert "Updated" in result.output
 
     @patch(PATCH_CLIENT)
-    def test_projects_update_no_params(self, mock_cls, runner):
+    def test_projects_update_no_params(self, _mock_cls, runner):
         result = runner.invoke(cli, ["projects", "update", PID, "--api-key", "k"])
         assert result.exit_code == 0
         assert "No updates" in result.output
@@ -280,7 +276,7 @@ class TestCliProjects:
         assert "Deleted" in result.output
 
     @patch(PATCH_CLIENT)
-    def test_projects_delete_cancelled(self, mock_cls, runner):
+    def test_projects_delete_cancelled(self, _mock_cls, runner):
         result = runner.invoke(
             cli, ["projects", "delete", PID, "--api-key", "k"], input="n\n"
         )
@@ -289,6 +285,25 @@ class TestCliProjects:
 
 
 class TestCliCollections:
+    @pytest.fixture
+    def runner(self):
+        return CliRunner()
+
+    @pytest.fixture
+    def mock_collection(self):
+        return CollectionResponse(
+            collection_name="Test Collection",
+            collection_id="32345678-1234-5678-1234-567812345678",
+            project_id="22345678-1234-5678-1234-567812345678",
+            project_name="Test Project",
+            organization_id="12345678-1234-5678-1234-567812345678",
+            organization_name="Test Org",
+            description="Test description",
+            tags=["iot"],
+            creation_date="2024-01-01T00:00:00Z",
+            collection_schema={"type": "timeseries"},
+        )
+
     @patch(PATCH_CLIENT)
     def test_collections_list_table(self, mock_cls, runner, mock_collection):
         mock_cls.return_value.collections.list.return_value = [mock_collection]
@@ -386,7 +401,7 @@ class TestCliCollections:
         assert "created" in result.output.lower()
 
     @patch(PATCH_CLIENT)
-    def test_collections_create_invalid_json(self, mock_cls, runner):
+    def test_collections_create_invalid_json(self, _mock_cls, runner):
         result = runner.invoke(
             cli,
             [
@@ -417,7 +432,7 @@ class TestCliCollections:
         assert "Deleted" in result.output
 
     @patch(PATCH_CLIENT)
-    def test_collections_delete_cancelled(self, mock_cls, runner):
+    def test_collections_delete_cancelled(self, _mock_cls, runner):
         result = runner.invoke(
             cli,
             ["collections", "delete", CID, "-p", PID, "--api-key", "k"],
@@ -428,6 +443,10 @@ class TestCliCollections:
 
 
 class TestCliData:
+    @pytest.fixture
+    def runner(self):
+        return CliRunner()
+
     @patch(PATCH_CLIENT)
     def test_data_send(self, mock_cls, runner):
         mock_cls.return_value.data.send.return_value = None
@@ -471,7 +490,7 @@ class TestCliData:
         assert "Sent 1 data point" in result.output
 
     @patch(PATCH_CLIENT)
-    def test_data_send_invalid_json(self, mock_cls, runner):
+    def test_data_send_invalid_json(self, _mock_cls, runner):
         result = runner.invoke(
             cli,
             [
@@ -519,6 +538,19 @@ class TestCliData:
 
 
 class TestCliKeys:
+    @pytest.fixture
+    def runner(self):
+        return CliRunner()
+
+    @pytest.fixture
+    def mock_key(self):
+        return ProjectKeyResponse(
+            api_key="test-api-key-12345",
+            project_id="22345678-1234-5678-1234-567812345678",
+            key_type="read",
+            created_at="2024-01-01T00:00:00Z",
+        )
+
     @patch(PATCH_CLIENT)
     def test_keys_list_table(self, mock_cls, runner, mock_key):
         mock_cls.return_value.project_keys.list.return_value = [mock_key]
@@ -570,7 +602,7 @@ class TestCliKeys:
         assert "Deleted" in result.output
 
     @patch(PATCH_CLIENT)
-    def test_keys_delete_cancelled(self, mock_cls, runner):
+    def test_keys_delete_cancelled(self, _mock_cls, runner):
         result = runner.invoke(
             cli,
             ["keys", "delete", "key-to-del", "-p", PID, "--api-key", "k"],

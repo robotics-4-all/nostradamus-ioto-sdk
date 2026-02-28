@@ -1,9 +1,10 @@
 """Collections resource for the Nostradamus IoTO SDK."""
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+import builtins
+from typing import TYPE_CHECKING, Any, Optional, Union
 from uuid import UUID
 
-from ..models import (
+from ..models.collection import (
     CollectionCreateRequest,
     CollectionResponse,
     CollectionUpdateRequest,
@@ -17,21 +18,23 @@ if TYPE_CHECKING:
 class CollectionsResource(BaseResource):
     """Collection management operations."""
 
-    def list(self, project_id: Union[str, UUID]) -> List[CollectionResponse]:
+    def list(self, project_id: Union[str, UUID]) -> list[CollectionResponse]:
         """List all collections in a project."""
-        project_id_str = self._validate_uuid(project_id)
-        response = self._client._request(
-            "GET", self._build_path("projects", project_id_str, "collections")
+        project_id_str = self.validate_uuid(project_id)
+        response = self.client.request(
+            "GET", self.build_path("projects", project_id_str, "collections")
         )
-        return self._parse_response(response.json(), CollectionResponse)
+        return self.parse_response(response.json(), CollectionResponse)
 
-    async def alist(self, project_id: Union[str, UUID]) -> List[CollectionResponse]:
+    async def alist(
+        self, project_id: Union[str, UUID]
+    ) -> builtins.list[CollectionResponse]:
         """List all collections in a project (async)."""
-        project_id_str = self._validate_uuid(project_id)
-        response = await self._client._request(
-            "GET", self._build_path("projects", project_id_str, "collections")
+        project_id_str = self.validate_uuid(project_id)
+        response = await self.client.request(
+            "GET", self.build_path("projects", project_id_str, "collections")
         )
-        return self._parse_response(response.json(), CollectionResponse)
+        return self.parse_response(response.json(), CollectionResponse)
 
     def get(
         self,
@@ -39,15 +42,15 @@ class CollectionsResource(BaseResource):
         collection_id: Union[str, UUID],
     ) -> CollectionResponse:
         """Get collection by ID."""
-        project_id_str = self._validate_uuid(project_id)
-        collection_id_str = self._validate_uuid(collection_id)
-        response = self._client._request(
+        project_id_str = self.validate_uuid(project_id)
+        collection_id_str = self.validate_uuid(collection_id)
+        response = self.client.request(
             "GET",
-            self._build_path(
+            self.build_path(
                 "projects", project_id_str, "collections", collection_id_str
             ),
         )
-        return self._parse_response(response.json(), CollectionResponse)
+        return self.parse_response(response.json(), CollectionResponse)
 
     async def aget(
         self,
@@ -55,35 +58,35 @@ class CollectionsResource(BaseResource):
         collection_id: Union[str, UUID],
     ) -> CollectionResponse:
         """Get collection by ID (async)."""
-        project_id_str = self._validate_uuid(project_id)
-        collection_id_str = self._validate_uuid(collection_id)
-        response = await self._client._request(
+        project_id_str = self.validate_uuid(project_id)
+        collection_id_str = self.validate_uuid(collection_id)
+        response = await self.client.request(
             "GET",
-            self._build_path(
+            self.build_path(
                 "projects", project_id_str, "collections", collection_id_str
             ),
         )
-        return self._parse_response(response.json(), CollectionResponse)
+        return self.parse_response(response.json(), CollectionResponse)
 
     def create(
         self,
         project_id: Union[str, UUID],
         name: str,
         description: str,
-        collection_schema: Dict[str, Any],
-        tags: Optional[List[str]] = None,
+        collection_schema: dict[str, Any],
+        tags: Optional[builtins.list[str]] = None,
     ) -> CollectionResponse:
         """Create a new collection."""
-        project_id_str = self._validate_uuid(project_id)
+        project_id_str = self.validate_uuid(project_id)
         request_data = CollectionCreateRequest(
             name=name,
             description=description,
             tags=tags or [],
             collection_schema=collection_schema,
         )
-        response = self._client._request(
+        response = self.client.request(
             "POST",
-            self._build_path("projects", project_id_str, "collections"),
+            self.build_path("projects", project_id_str, "collections"),
             json=request_data.model_dump(),
         )
 
@@ -93,7 +96,7 @@ class CollectionsResource(BaseResource):
         # Check if the response is already a full CollectionResponse
         if "collection_name" in response_data:
             # API returned full object
-            return self._parse_response(response_data, CollectionResponse)
+            return self.parse_response(response_data, CollectionResponse)
 
         # Otherwise, extract the ID and fetch full details
         # Try different possible field names
@@ -132,20 +135,20 @@ class CollectionsResource(BaseResource):
         project_id: Union[str, UUID],
         name: str,
         description: str,
-        collection_schema: Dict[str, Any],
-        tags: Optional[List[str]] = None,
+        collection_schema: dict[str, Any],
+        tags: Optional[builtins.list[str]] = None,
     ) -> CollectionResponse:
         """Create a new collection (async)."""
-        project_id_str = self._validate_uuid(project_id)
+        project_id_str = self.validate_uuid(project_id)
         request_data = CollectionCreateRequest(
             name=name,
             description=description,
             tags=tags or [],
             collection_schema=collection_schema,
         )
-        response = await self._client._request(
+        response = await self.client.request(
             "POST",
-            self._build_path("projects", project_id_str, "collections"),
+            self.build_path("projects", project_id_str, "collections"),
             json=request_data.model_dump(),
         )
 
@@ -155,7 +158,7 @@ class CollectionsResource(BaseResource):
         # Check if the response is already a full CollectionResponse
         if "collection_name" in response_data:
             # API returned full object
-            return self._parse_response(response_data, CollectionResponse)
+            return self.parse_response(response_data, CollectionResponse)
 
         # Otherwise, extract the ID and fetch full details
         # Try different possible field names
@@ -194,40 +197,40 @@ class CollectionsResource(BaseResource):
         project_id: Union[str, UUID],
         collection_id: Union[str, UUID],
         description: Optional[str] = None,
-        tags: Optional[List[str]] = None,
+        tags: Optional[builtins.list[str]] = None,
     ) -> CollectionResponse:
         """Update collection."""
-        project_id_str = self._validate_uuid(project_id)
-        collection_id_str = self._validate_uuid(collection_id)
+        project_id_str = self.validate_uuid(project_id)
+        collection_id_str = self.validate_uuid(collection_id)
         request_data = CollectionUpdateRequest(description=description, tags=tags)
-        response = self._client._request(
+        response = self.client.request(
             "PUT",
-            self._build_path(
+            self.build_path(
                 "projects", project_id_str, "collections", collection_id_str
             ),
             json=request_data.model_dump(exclude_none=True),
         )
-        return self._parse_response(response.json(), CollectionResponse)
+        return self.parse_response(response.json(), CollectionResponse)
 
     async def aupdate(
         self,
         project_id: Union[str, UUID],
         collection_id: Union[str, UUID],
         description: Optional[str] = None,
-        tags: Optional[List[str]] = None,
+        tags: Optional[builtins.list[str]] = None,
     ) -> CollectionResponse:
         """Update collection (async)."""
-        project_id_str = self._validate_uuid(project_id)
-        collection_id_str = self._validate_uuid(collection_id)
+        project_id_str = self.validate_uuid(project_id)
+        collection_id_str = self.validate_uuid(collection_id)
         request_data = CollectionUpdateRequest(description=description, tags=tags)
-        response = await self._client._request(
+        response = await self.client.request(
             "PUT",
-            self._build_path(
+            self.build_path(
                 "projects", project_id_str, "collections", collection_id_str
             ),
             json=request_data.model_dump(exclude_none=True),
         )
-        return self._parse_response(response.json(), CollectionResponse)
+        return self.parse_response(response.json(), CollectionResponse)
 
     def delete(
         self,
@@ -235,11 +238,11 @@ class CollectionsResource(BaseResource):
         collection_id: Union[str, UUID],
     ) -> None:
         """Delete collection."""
-        project_id_str = self._validate_uuid(project_id)
-        collection_id_str = self._validate_uuid(collection_id)
-        self._client._request(
+        project_id_str = self.validate_uuid(project_id)
+        collection_id_str = self.validate_uuid(collection_id)
+        self.client.request(
             "DELETE",
-            self._build_path(
+            self.build_path(
                 "projects", project_id_str, "collections", collection_id_str
             ),
         )
@@ -250,11 +253,11 @@ class CollectionsResource(BaseResource):
         collection_id: Union[str, UUID],
     ) -> None:
         """Delete collection (async)."""
-        project_id_str = self._validate_uuid(project_id)
-        collection_id_str = self._validate_uuid(collection_id)
-        await self._client._request(
+        project_id_str = self.validate_uuid(project_id)
+        collection_id_str = self.validate_uuid(collection_id)
+        await self.client.request(
             "DELETE",
-            self._build_path(
+            self.build_path(
                 "projects", project_id_str, "collections", collection_id_str
             ),
         )
