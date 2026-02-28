@@ -1,6 +1,7 @@
 """Collections resource for the Nostradamus IoTO SDK."""
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+import builtins
+from typing import TYPE_CHECKING, Any, Optional, Union
 from uuid import UUID
 
 from ..models.collection import (
@@ -17,7 +18,7 @@ if TYPE_CHECKING:
 class CollectionsResource(BaseResource):
     """Collection management operations."""
 
-    def list(self, project_id: Union[str, UUID]) -> List[CollectionResponse]:
+    def list(self, project_id: Union[str, UUID]) -> list[CollectionResponse]:
         """List all collections in a project."""
         project_id_str = self.validate_uuid(project_id)
         response = self.client.request(
@@ -25,7 +26,9 @@ class CollectionsResource(BaseResource):
         )
         return self.parse_response(response.json(), CollectionResponse)
 
-    async def alist(self, project_id: Union[str, UUID]) -> List[CollectionResponse]:
+    async def alist(
+        self, project_id: Union[str, UUID]
+    ) -> builtins.list[CollectionResponse]:
         """List all collections in a project (async)."""
         project_id_str = self.validate_uuid(project_id)
         response = await self.client.request(
@@ -70,8 +73,8 @@ class CollectionsResource(BaseResource):
         project_id: Union[str, UUID],
         name: str,
         description: str,
-        collection_schema: Dict[str, Any],
-        tags: Optional[List[str]] = None,
+        collection_schema: dict[str, Any],
+        tags: Optional[builtins.list[str]] = None,
     ) -> CollectionResponse:
         """Create a new collection."""
         project_id_str = self.validate_uuid(project_id)
@@ -132,8 +135,8 @@ class CollectionsResource(BaseResource):
         project_id: Union[str, UUID],
         name: str,
         description: str,
-        collection_schema: Dict[str, Any],
-        tags: Optional[List[str]] = None,
+        collection_schema: dict[str, Any],
+        tags: Optional[builtins.list[str]] = None,
     ) -> CollectionResponse:
         """Create a new collection (async)."""
         project_id_str = self.validate_uuid(project_id)
@@ -194,7 +197,7 @@ class CollectionsResource(BaseResource):
         project_id: Union[str, UUID],
         collection_id: Union[str, UUID],
         description: Optional[str] = None,
-        tags: Optional[List[str]] = None,
+        tags: Optional[builtins.list[str]] = None,
     ) -> CollectionResponse:
         """Update collection."""
         project_id_str = self.validate_uuid(project_id)
@@ -214,7 +217,7 @@ class CollectionsResource(BaseResource):
         project_id: Union[str, UUID],
         collection_id: Union[str, UUID],
         description: Optional[str] = None,
-        tags: Optional[List[str]] = None,
+        tags: Optional[builtins.list[str]] = None,
     ) -> CollectionResponse:
         """Update collection (async)."""
         project_id_str = self.validate_uuid(project_id)

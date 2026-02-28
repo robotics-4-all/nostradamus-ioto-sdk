@@ -1,6 +1,6 @@
 """Error response models for the Nostradamus IoTO SDK."""
 
-from typing import List, Optional, Union
+from typing import Optional, Union
 
 from pydantic import Field
 
@@ -16,7 +16,7 @@ class ValidationError(BaseModel):
         type: Error type identifier
     """
 
-    loc: List[Union[str, int]] = Field(..., description="Error location (field path)")
+    loc: list[Union[str, int]] = Field(..., description="Error location (field path)")
     msg: str = Field(..., description="Error message")
     type: str = Field(..., description="Error type identifier")
 
@@ -28,6 +28,6 @@ class HTTPValidationError(BaseModel):
         detail: List of validation errors
     """
 
-    detail: Optional[List[ValidationError]] = Field(
+    detail: Optional[list[ValidationError]] = Field(
         default=None, description="List of validation errors"
     )

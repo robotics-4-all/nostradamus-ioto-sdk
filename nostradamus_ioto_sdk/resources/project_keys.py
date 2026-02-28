@@ -1,6 +1,7 @@
 """Project Keys resource for the Nostradamus IoTO SDK."""
 
-from typing import TYPE_CHECKING, List, Union
+import builtins
+from typing import TYPE_CHECKING, Union
 from uuid import UUID
 
 from ..models.enums import KeyType
@@ -146,7 +147,7 @@ class ProjectKeysResource(BaseResource):
         # Fetch full key details
         return await self.aget(project_id, key_id)
 
-    def list(self, project_id: Union[str, UUID]) -> List[ProjectKeyResponse]:
+    def list(self, project_id: Union[str, UUID]) -> list[ProjectKeyResponse]:
         """List all API keys for a project.
 
         Args:
@@ -172,7 +173,9 @@ class ProjectKeysResource(BaseResource):
         )
         return self.parse_response(response.json(), ProjectKeyResponse)
 
-    async def alist(self, project_id: Union[str, UUID]) -> List[ProjectKeyResponse]:
+    async def alist(
+        self, project_id: Union[str, UUID]
+    ) -> builtins.list[ProjectKeyResponse]:
         """List all API keys for a project (async)."""
         project_id_str = self.validate_uuid(project_id)
         response = await self.client.request(

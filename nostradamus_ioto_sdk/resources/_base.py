@@ -3,9 +3,6 @@
 from typing import (
     TYPE_CHECKING,
     Any,
-    Dict,
-    List,
-    Type,
     TypeVar,
     Union,
     overload,
@@ -54,16 +51,16 @@ class BaseResource:
         return f"{self.base_path}/{'/'.join(clean_parts)}"
 
     @overload
-    def parse_response(self, data: Dict[str, Any], model_class: Type[T]) -> T: ...
+    def parse_response(self, data: dict[str, Any], model_class: type[T]) -> T: ...
 
     @overload
     def parse_response(
-        self, data: List[Dict[str, Any]], model_class: Type[T]
-    ) -> List[T]: ...
+        self, data: list[dict[str, Any]], model_class: type[T]
+    ) -> list[T]: ...
 
     def parse_response(
-        self, data: Union[Dict[str, Any], List[Dict[str, Any]]], model_class: Type[T]
-    ) -> Union[T, List[T]]:
+        self, data: Union[dict[str, Any], list[dict[str, Any]]], model_class: type[T]
+    ) -> Union[T, list[T]]:
         """Parse response data into Pydantic model(s).
 
         Args:

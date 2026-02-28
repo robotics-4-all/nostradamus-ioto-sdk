@@ -1,6 +1,6 @@
 """Custom exceptions for the Nostradamus IoTO SDK."""
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 import httpx
 
@@ -59,7 +59,7 @@ class ValidationError(APIError):
     def __init__(
         self,
         message: str,
-        errors: Optional[List[Dict[str, Any]]] = None,
+        errors: Optional[list[dict[str, Any]]] = None,
         response: Optional[httpx.Response] = None,
     ) -> None:
         super().__init__(message, status_code=422, response=response)

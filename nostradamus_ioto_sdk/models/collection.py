@@ -1,7 +1,7 @@
 """Collection models for the Nostradamus IoTO SDK."""
 
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 from uuid import UUID
 
 from pydantic import Field
@@ -32,9 +32,9 @@ class CollectionResponse(BaseModel):
     organization_id: UUID = Field(..., description="Parent organization UUID")
     organization_name: str = Field(..., description="Organization name")
     description: str = Field(..., description="Collection description")
-    tags: List[str] = Field(default_factory=list, description="Collection tags")
+    tags: list[str] = Field(default_factory=list, description="Collection tags")
     creation_date: datetime = Field(..., description="Creation timestamp")
-    collection_schema: Dict[str, Any] = Field(
+    collection_schema: dict[str, Any] = Field(
         ..., description="Schema definition for collection data"
     )
 
@@ -51,8 +51,8 @@ class CollectionCreateRequest(BaseModel):
 
     name: str = Field(..., description="Collection name", min_length=1)
     description: str = Field(..., description="Collection description")
-    tags: List[str] = Field(default_factory=list, description="Collection tags")
-    collection_schema: Dict[str, Any] = Field(
+    tags: list[str] = Field(default_factory=list, description="Collection tags")
+    collection_schema: dict[str, Any] = Field(
         ..., description="Schema definition for collection data"
     )
 
@@ -66,4 +66,4 @@ class CollectionUpdateRequest(BaseModel):
     """
 
     description: Optional[str] = Field(default=None, description="New description")
-    tags: Optional[List[str]] = Field(default=None, description="New tags")
+    tags: Optional[list[str]] = Field(default=None, description="New tags")

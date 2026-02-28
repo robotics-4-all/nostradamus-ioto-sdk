@@ -2,7 +2,7 @@
 
 import logging
 import re
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 # Patterns for sensitive data masking
 SENSITIVE_PATTERNS = [
@@ -41,7 +41,7 @@ def mask_sensitive_data(text: str) -> str:
     return text
 
 
-def mask_dict(data: Dict[str, Any]) -> Dict[str, Any]:
+def mask_dict(data: dict[str, Any]) -> dict[str, Any]:
     """Mask sensitive information in dictionary.
 
     Args:
@@ -50,7 +50,7 @@ def mask_dict(data: Dict[str, Any]) -> Dict[str, Any]:
     Returns:
         Dictionary with sensitive data masked
     """
-    masked: Dict[str, Any] = {}
+    masked: dict[str, Any] = {}
     sensitive_keys = {
         "api_key",
         "api-key",
@@ -105,7 +105,7 @@ class SDKLogger:
         self,
         method: str,
         url: str,
-        headers: Optional[Dict[str, str]] = None,
+        headers: Optional[dict[str, str]] = None,
         body: Optional[Any] = None,
     ) -> None:
         """Log HTTP request with masked sensitive data.
@@ -155,7 +155,7 @@ class SDKLogger:
         self._logger.debug(log_msg)
 
     def log_error(
-        self, error: Exception, context: Optional[Dict[str, Any]] = None
+        self, error: Exception, context: Optional[dict[str, Any]] = None
     ) -> None:
         """Log error with context.
 

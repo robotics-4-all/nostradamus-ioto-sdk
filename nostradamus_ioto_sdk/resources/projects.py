@@ -1,6 +1,7 @@
 """Projects resource for the Nostradamus IoTO SDK."""
 
-from typing import TYPE_CHECKING, List, Optional, Union
+import builtins
+from typing import TYPE_CHECKING, Optional, Union
 from uuid import UUID
 
 from ..models.project import (
@@ -20,7 +21,7 @@ class ProjectsResource(BaseResource):
     Provides full CRUD operations for projects.
     """
 
-    def list(self) -> List[ProjectResponse]:
+    def list(self) -> list[ProjectResponse]:
         """List all projects.
 
         Returns:
@@ -39,7 +40,7 @@ class ProjectsResource(BaseResource):
         response = self.client.request("GET", self.build_path("projects"))
         return self.parse_response(response.json(), ProjectResponse)
 
-    async def alist(self) -> List[ProjectResponse]:
+    async def alist(self) -> builtins.list[ProjectResponse]:
         """List all projects (async).
 
         Returns:
@@ -92,7 +93,7 @@ class ProjectsResource(BaseResource):
         self,
         name: str,
         description: Optional[str] = None,
-        tags: Optional[List[str]] = None,
+        tags: Optional[builtins.list[str]] = None,
     ) -> ProjectResponse:
         """Create a new project.
 
@@ -171,7 +172,7 @@ class ProjectsResource(BaseResource):
         self,
         name: str,
         description: Optional[str] = None,
-        tags: Optional[List[str]] = None,
+        tags: Optional[builtins.list[str]] = None,
     ) -> ProjectResponse:
         """Create a new project (async).
 
@@ -236,7 +237,7 @@ class ProjectsResource(BaseResource):
         self,
         project_id: Union[str, UUID],
         description: Optional[str] = None,
-        tags: Optional[List[str]] = None,
+        tags: Optional[builtins.list[str]] = None,
     ) -> ProjectResponse:
         """Update project.
 
@@ -274,7 +275,7 @@ class ProjectsResource(BaseResource):
         self,
         project_id: Union[str, UUID],
         description: Optional[str] = None,
-        tags: Optional[List[str]] = None,
+        tags: Optional[builtins.list[str]] = None,
     ) -> ProjectResponse:
         """Update project (async).
 

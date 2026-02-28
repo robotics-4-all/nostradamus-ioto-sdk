@@ -2,7 +2,7 @@
 
 import threading
 from datetime import datetime, timedelta
-from typing import Dict, Optional
+from typing import Optional
 from urllib.parse import urljoin
 
 import httpx
@@ -173,7 +173,7 @@ class OAuth2Handler:
         except (TypeError, KeyError, PydanticValidationError) as err:
             raise AuthenticationError(f"Invalid token response format: {err}") from err
 
-    def get_headers(self) -> Dict[str, str]:
+    def get_headers(self) -> dict[str, str]:
         """Get authentication headers for API requests.
 
         Returns:
@@ -214,7 +214,7 @@ class APIKeyHandler:
         """The API key value."""
         return self._api_key
 
-    def get_headers(self) -> Dict[str, str]:
+    def get_headers(self) -> dict[str, str]:
         """Get authentication headers for API requests.
 
         Returns:

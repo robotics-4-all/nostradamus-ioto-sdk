@@ -1,6 +1,6 @@
 """Organization resource for the Nostradamus IoTO SDK."""
 
-from typing import TYPE_CHECKING, List, Optional, cast
+from typing import TYPE_CHECKING, Optional, cast
 
 import httpx
 
@@ -65,7 +65,7 @@ class OrganizationsResource(BaseResource):
     def update(
         self,
         description: Optional[str] = None,
-        tags: Optional[List[str]] = None,
+        tags: Optional[list[str]] = None,
     ) -> OrganizationResponse:
         """Update organization information.
 
@@ -105,7 +105,7 @@ class OrganizationsResource(BaseResource):
     async def aupdate(
         self,
         description: Optional[str] = None,
-        tags: Optional[List[str]] = None,
+        tags: Optional[list[str]] = None,
     ) -> OrganizationResponse:
         """Update organization information (async).
 

@@ -75,7 +75,7 @@ include = ["nostradamus_ioto_sdk*"]
 
 [tool.black]
 line-length = 88
-target-version = ["py38", "py39", "py310", "py311", "py312"]
+target-version = ["py39", "py310", "py311", "py312", "py313"]
 include = '\.pyi?$'
 extend-exclude = '''
 /(
@@ -103,7 +103,7 @@ skip_gitignore = true
 
 [tool.ruff]
 line-length = 88
-target-version = "py38"
+target-version = "py39"
 exclude = [
     ".git",
     ".mypy_cache",

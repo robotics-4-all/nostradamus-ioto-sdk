@@ -5,7 +5,7 @@ import threading
 import time
 from collections import deque
 from datetime import datetime, timedelta
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Optional
 
 from .config import RetryConfig
 
@@ -28,7 +28,7 @@ class ResponseCache:
     def __init__(self, ttl: int = 60, max_size: int = 100) -> None:
         self._ttl = ttl
         self._max_size = max_size
-        self._cache: Dict[str, Tuple[Any, datetime]] = {}
+        self._cache: dict[str, tuple[Any, datetime]] = {}
         self._lock = threading.Lock()
         self._access_order: deque = deque(maxlen=max_size)
 
@@ -43,7 +43,7 @@ class ResponseCache:
         return self._max_size
 
     def generate_key(
-        self, method: str, url: str, params: Optional[Dict[str, Any]] = None
+        self, method: str, url: str, params: Optional[dict[str, Any]] = None
     ) -> str:
         """Generate cache key from request parameters.
 
