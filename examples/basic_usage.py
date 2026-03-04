@@ -5,7 +5,11 @@ This example demonstrates the basic operations you can perform with the SDK.
 
 import os
 
+from _load_env import load_dotenv
+
 from nostradamus_ioto_sdk import NostradamusClient
+
+load_dotenv()
 
 
 def main():

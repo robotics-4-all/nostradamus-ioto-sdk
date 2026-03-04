@@ -18,8 +18,12 @@ import random
 import time
 from datetime import datetime, timedelta
 
+from _load_env import load_dotenv
+
 from nostradamus_ioto_sdk import NostradamusClient
 from nostradamus_ioto_sdk.exceptions import APIError
+
+load_dotenv()
 
 
 def generate_soil_data(num_sensors=3, num_readings=24):

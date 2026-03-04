@@ -8,7 +8,11 @@ import random
 import time
 from datetime import datetime
 
+from _load_env import load_dotenv
+
 from nostradamus_ioto_sdk import NostradamusClient
+
+load_dotenv()
 
 
 def generate_sensor_reading(sensor_id: str) -> dict:

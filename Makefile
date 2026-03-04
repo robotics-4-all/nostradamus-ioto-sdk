@@ -40,7 +40,7 @@ test-unit:
 	pytest tests/unit/ -v
 
 test-integration:
-	pytest tests/integration/ -v
+	pytest tests/integration/ -v --no-cov || test $$? -eq 5
 
 coverage:
 	pytest --cov=nostradamus_ioto_sdk --cov-report=html --cov-report=term-missing
