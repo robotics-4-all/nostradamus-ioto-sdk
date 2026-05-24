@@ -10,11 +10,14 @@ from ._logging import get_logger
 from .auth import APIKeyHandler, OAuth2Handler
 from .config import RetryConfig
 from .exceptions import APIError, ConfigurationError
+from .resources.collection_keys import CollectionKeysResource
 from .resources.collections import CollectionsResource
 from .resources.data import DataResource
+from .resources.health import HealthResource
 from .resources.organizations import OrganizationsResource
 from .resources.project_keys import ProjectKeysResource
 from .resources.projects import ProjectsResource
+from .resources.users import UsersResource
 
 
 async def make_async_request_with_retry(
@@ -189,7 +192,10 @@ class AsyncNostradamusClient:
         self.projects = ProjectsResource(self)
         self.project_keys = ProjectKeysResource(self)
         self.collections = CollectionsResource(self)
+        self.collection_keys = CollectionKeysResource(self)
         self.data = DataResource(self)
+        self.users = UsersResource(self)
+        self.health = HealthResource(self)
 
     @property
     def base_url(self) -> str:

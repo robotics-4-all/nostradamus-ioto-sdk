@@ -21,7 +21,7 @@ from nostradamus_ioto_sdk.models import (
 
 PID = "22345678-1234-5678-1234-567812345678"
 CID = "32345678-1234-5678-1234-567812345678"
-PATCH_CLIENT = "nostradamus_ioto_sdk.cli.main.NostradamusClient"
+PATCH_CLIENT = "nostradamus_ioto_sdk.cli._shared.NostradamusClient"
 
 
 class TestCliRoot:
