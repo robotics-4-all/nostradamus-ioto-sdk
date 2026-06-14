@@ -2,7 +2,7 @@ import builtins
 from typing import TYPE_CHECKING, Union
 from uuid import UUID
 
-from ..models.user import UserRequest, Username
+from ..models.user import Username, UserRequest
 from ._base import BaseResource
 
 if TYPE_CHECKING:

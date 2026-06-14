@@ -8,7 +8,6 @@ from nostradamus_ioto_sdk._http import RateLimiter, should_retry
 from nostradamus_ioto_sdk.config import RetryConfig
 
 
-
 class TestRateLimiter:
     """Test rate limiter functionality."""
 

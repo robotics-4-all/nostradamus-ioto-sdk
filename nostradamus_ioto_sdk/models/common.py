@@ -5,7 +5,6 @@ from typing import Any, Generic, TypeVar
 
 from nostradamus_ioto_sdk.models._base import BaseModel
 
-
 T = TypeVar("T")
 
 

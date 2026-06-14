@@ -27,7 +27,7 @@ from .project_key import (
     ProjectKeyResponse,
     RegenerateKeyRequest,
 )
-from .user import UserRequest, Username
+from .user import Username, UserRequest
 
 __all__ = [
     # Base

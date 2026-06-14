@@ -42,8 +42,8 @@ from .models import (
     ReadyResponse,
     RegenerateKeyRequest,
     StatOperation,
-    UserRequest,
     Username,
+    UserRequest,
 )
 
 __version__ = "0.1.0"
