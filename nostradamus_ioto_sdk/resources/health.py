@@ -1,11 +1,5 @@
-from typing import TYPE_CHECKING
-
 from ..models.common import HealthResponse, ReadyResponse
 from ._base import BaseResource
-
-if TYPE_CHECKING:
-    from ..async_client import AsyncNostradamusClient
-    from ..client import NostradamusClient
 
 
 class HealthResource(BaseResource):
