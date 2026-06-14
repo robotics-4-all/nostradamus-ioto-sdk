@@ -117,19 +117,19 @@ def data_get(
         )
 
         if output_format == "json":
-            console.print_json(json.dumps(result, default=str))
+            console.print_json(json.dumps(result.model_dump(), default=str))
         else:
             console.print(f"[cyan]Collection:[/cyan] {collection}")
-            console.print(f"[cyan]Records:[/cyan] {len(result)}\n")
+            console.print(f"[cyan]Records:[/cyan] {result.total_count}\n")
 
-            if result:
-                display_count = min(10, len(result))
+            if result.data:
+                display_count = min(10, len(result.data))
                 console.print(f"[dim]Showing first {display_count} records:[/dim]\n")
-                console.print_json(json.dumps(result[:display_count], default=str))
+                console.print_json(json.dumps(result.data[:display_count], default=str))
 
-                if len(result) > display_count:
+                if result.total_count > display_count:
                     console.print(
-                        f"\n[dim]... and {len(result) - display_count} more[/dim]"
+                        f"\n[dim]... and {result.total_count - display_count} more[/dim]"
                     )
     except Exception as e:
         handle_error(e)
@@ -177,7 +177,7 @@ def data_statistics(
         result = client.data.statistics(
             project_id=project,
             collection_id=collection,
-            operation=op_enum,
+            stat=op_enum,
             attribute=attribute,
             group_by=group_by,
             interval=interval,
@@ -247,6 +247,6 @@ def data_delete(
             timestamp_to=timestamp_to,
         )
 
-        console.print(f"[green]✓[/green] {result.get('message', 'Data deleted')}")
+        console.print(f"[green]✓[/green] {result.message}")
     except Exception as e:
         handle_error(e)

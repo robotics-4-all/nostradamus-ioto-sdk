@@ -232,7 +232,9 @@ class OAuth2Handler:
             try:
                 self._token = Token(**token_data)
             except (TypeError, KeyError, PydanticValidationError) as err:
-                raise AuthenticationError(f"Invalid token response format: {err}") from err
+                raise AuthenticationError(
+                    f"Invalid token response format: {err}"
+                ) from err
 
             return self._token
 
