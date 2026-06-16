@@ -1,6 +1,5 @@
 """Project key models for the Nostradamus IoTO SDK."""
 
-from datetime import datetime
 from uuid import UUID
 
 from pydantic import Field
@@ -22,7 +21,7 @@ class ProjectKeyResponse(BaseModel):
     api_key: str = Field(..., description="API key value")
     project_id: UUID = Field(..., description="Parent project UUID")
     key_type: str = Field(..., description="Key type (read/write/master)")
-    created_at: datetime = Field(..., description="Creation timestamp")
+    created_at: str = Field(..., description="Creation timestamp")
 
 
 class ProjectKeyCreateRequest(BaseModel):
@@ -49,3 +48,23 @@ class BaseKeyModel(BaseModel):
     """
 
     key_value: str = Field(..., description="Key value")
+
+
+class DeleteKeyRequest(BaseModel):
+    """Request to delete a project key.
+
+    Attributes:
+        key_value: The key value to delete
+    """
+
+    key_value: str = Field(..., description="Key value to delete")
+
+
+class RegenerateKeyRequest(BaseModel):
+    """Request to regenerate a project key.
+
+    Attributes:
+        key_value: The key value to regenerate
+    """
+
+    key_value: str = Field(..., description="Key value to regenerate")

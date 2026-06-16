@@ -14,6 +14,7 @@ from nostradamus_ioto_sdk.exceptions import (
 )
 from nostradamus_ioto_sdk.models import (
     CollectionResponse,
+    DataListResponse,
     OrganizationResponse,
     ProjectKeyResponse,
     ProjectResponse,
@@ -21,7 +22,7 @@ from nostradamus_ioto_sdk.models import (
 
 PID = "22345678-1234-5678-1234-567812345678"
 CID = "32345678-1234-5678-1234-567812345678"
-PATCH_CLIENT = "nostradamus_ioto_sdk.cli.main.NostradamusClient"
+PATCH_CLIENT = "nostradamus_ioto_sdk.cli._shared.NostradamusClient"
 
 
 class TestCliRoot:
@@ -511,7 +512,9 @@ class TestCliData:
 
     @patch(PATCH_CLIENT)
     def test_data_get_json(self, mock_cls, runner):
-        mock_cls.return_value.data.get.return_value = [{"value": 25.5}]
+        mock_cls.return_value.data.get.return_value = DataListResponse(
+            data=[{"value": 25.5}], total_count=1
+        )
         result = runner.invoke(
             cli,
             ["data", "get", "-p", PID, "-c", CID, "--api-key", "k", "-f", "json"],
@@ -520,7 +523,9 @@ class TestCliData:
 
     @patch(PATCH_CLIENT)
     def test_data_get_table(self, mock_cls, runner):
-        mock_cls.return_value.data.get.return_value = [{"value": 25.5}]
+        mock_cls.return_value.data.get.return_value = DataListResponse(
+            data=[{"value": 25.5}], total_count=1
+        )
         result = runner.invoke(
             cli, ["data", "get", "-p", PID, "-c", CID, "--api-key", "k"]
         )
@@ -529,7 +534,9 @@ class TestCliData:
 
     @patch(PATCH_CLIENT)
     def test_data_get_empty(self, mock_cls, runner):
-        mock_cls.return_value.data.get.return_value = []
+        mock_cls.return_value.data.get.return_value = DataListResponse(
+            data=[], total_count=0
+        )
         result = runner.invoke(
             cli, ["data", "get", "-p", PID, "-c", CID, "--api-key", "k"]
         )
