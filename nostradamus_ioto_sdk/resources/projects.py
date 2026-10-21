@@ -38,7 +38,7 @@ class ProjectsResource(BaseResource):
             ...     print(project.project_name)
         """
         response = self.client.request("GET", self.build_path("projects"))
-        return self.parse_response(response.json(), ProjectResponse)
+        return self.parse_list_response(response.json(), ProjectResponse)
 
     async def alist(self) -> builtins.list[ProjectResponse]:
         """List all projects (async).
@@ -47,7 +47,7 @@ class ProjectsResource(BaseResource):
             List[ProjectResponse]: List of all projects
         """
         response = await self.client.request("GET", self.build_path("projects"))
-        return self.parse_response(response.json(), ProjectResponse)
+        return self.parse_list_response(response.json(), ProjectResponse)
 
     def get(self, project_id: Union[str, UUID]) -> ProjectResponse:
         """Get project by ID.
@@ -143,6 +143,13 @@ class ProjectsResource(BaseResource):
             or response_data.get("id")
             or response_data.get("projectId")
         )
+        if isinstance(project_id, dict):
+            # Server nests the id one level, e.g. {"id": {"project_id": ...}}
+            project_id = (
+                project_id.get("project_id")
+                or project_id.get("id")
+                or project_id.get("projectId")
+            )
 
         # If no direct ID field, try to extract from message
         if not project_id and "message" in response_data:
@@ -208,6 +215,13 @@ class ProjectsResource(BaseResource):
             or response_data.get("id")
             or response_data.get("projectId")
         )
+        if isinstance(project_id, dict):
+            # Server nests the id one level, e.g. {"id": {"project_id": ...}}
+            project_id = (
+                project_id.get("project_id")
+                or project_id.get("id")
+                or project_id.get("projectId")
+            )
 
         # If no direct ID field, try to extract from message
         if not project_id and "message" in response_data:
@@ -264,12 +278,14 @@ class ProjectsResource(BaseResource):
         """
         project_id_str = self.validate_uuid(project_id)
         request_data = ProjectUpdateRequest(description=description, tags=tags)
-        response = self.client.request(
+        self.client.request(
             "PUT",
             self.build_path("projects", project_id_str),
             json=request_data.model_dump(exclude_none=True),
         )
-        return self.parse_response(response.json(), ProjectResponse)
+        # The API returns {"message": ...}, not the updated object —
+        # refetch so callers get the ProjectResponse this method promises.
+        return self.get(project_id_str)
 
     async def aupdate(
         self,
@@ -289,12 +305,14 @@ class ProjectsResource(BaseResource):
         """
         project_id_str = self.validate_uuid(project_id)
         request_data = ProjectUpdateRequest(description=description, tags=tags)
-        response = await self.client.request(
+        await self.client.request(
             "PUT",
             self.build_path("projects", project_id_str),
             json=request_data.model_dump(exclude_none=True),
         )
-        return self.parse_response(response.json(), ProjectResponse)
+        # The API returns {"message": ...}, not the updated object —
+        # refetch so callers get the ProjectResponse this method promises.
+        return await self.aget(project_id_str)
 
     def delete(self, project_id: Union[str, UUID]) -> None:
         """Delete project.

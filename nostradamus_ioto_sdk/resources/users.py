@@ -73,7 +73,14 @@ class UsersResource(BaseResource):
         response = self.client.request(
             "GET", self.build_path("organizations", org_id_str, "users")
         )
-        return response.json()
+        payload = response.json()
+        # The API paginates ({items, total, ...}); items hold
+        # {id, username, role} dicts — return plain usernames.
+        if isinstance(payload, dict) and isinstance(payload.get("items"), list):
+            payload = payload["items"]
+        if isinstance(payload, list):
+            return [u["username"] if isinstance(u, dict) else str(u) for u in payload]
+        return [str(payload)]
 
     async def alist(
         self,
@@ -84,16 +91,25 @@ class UsersResource(BaseResource):
         response = await self.client.request(
             "GET", self.build_path("organizations", org_id_str, "users")
         )
-        return response.json()
+        payload = response.json()
+        # The API paginates ({items, total, ...}); items hold
+        # {id, username, role} dicts — return plain usernames.
+        if isinstance(payload, dict) and isinstance(payload.get("items"), list):
+            payload = payload["items"]
+        if isinstance(payload, list):
+            return [u["username"] if isinstance(u, dict) else str(u) for u in payload]
+        return [str(payload)]
 
     def update_password(
         self,
+        organization_id: Union[str, UUID],
         username: str,
         new_password: str,
     ) -> None:
         """Update a user's password.
 
         Args:
+            organization_id: Organization UUID
             username: Username to update
             new_password: New password
 
@@ -102,54 +118,62 @@ class UsersResource(BaseResource):
             ValidationError: If input is invalid
             APIError: If request fails
         """
+        org_id_str = self.validate_uuid(organization_id)
         request_data = UserRequest(username=username, password=new_password)
         self.client.request(
             "PUT",
-            self.build_path("update_password"),
+            self.build_path("organizations", org_id_str, "users", "update_password"),
             json=request_data.model_dump(),
         )
 
     async def aupdate_password(
         self,
+        organization_id: Union[str, UUID],
         username: str,
         new_password: str,
     ) -> None:
         """Update a user's password (async)."""
+        org_id_str = self.validate_uuid(organization_id)
         request_data = UserRequest(username=username, password=new_password)
         await self.client.request(
             "PUT",
-            self.build_path("update_password"),
+            self.build_path("organizations", org_id_str, "users", "update_password"),
             json=request_data.model_dump(),
         )
 
     def delete(
         self,
+        organization_id: Union[str, UUID],
         username: str,
     ) -> None:
         """Delete a user.
 
         Args:
+            organization_id: Organization UUID
             username: Username to delete
 
         Raises:
             AuthenticationError: If not authenticated
             APIError: If request fails
         """
+        org_id_str = self.validate_uuid(organization_id)
         request_data = Username(username=username)
         self.client.request(
             "DELETE",
-            self.build_path("users"),
+            self.build_path("organizations", org_id_str, "users"),
             json=request_data.model_dump(),
         )
 
     async def adelete(
         self,
+        organization_id: Union[str, UUID],
         username: str,
     ) -> None:
         """Delete a user (async)."""
+        org_id_str = self.validate_uuid(organization_id)
         request_data = Username(username=username)
         await self.client.request(
             "DELETE",
-            self.build_path("users"),
+            self.build_path("organizations", org_id_str, "users"),
             json=request_data.model_dump(),
         )

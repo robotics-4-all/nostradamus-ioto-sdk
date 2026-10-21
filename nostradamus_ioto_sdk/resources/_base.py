@@ -74,6 +74,28 @@ class BaseResource:
             return [model_class(**item) for item in data]
         return model_class(**data)
 
+    def parse_list_response(
+        self, data: Union[dict[str, Any], list[dict[str, Any]]], model_class: type[T]
+    ) -> list[T]:
+        """Parse a list endpoint payload into model instances.
+
+        The API paginates list responses as
+        `{"items": [...], "total": N, ...}` — unwrap the envelope.
+        A bare list (or, defensively, a single object) still parses.
+
+        Args:
+            data: Response data (paginated envelope, list, or single object)
+            model_class: Pydantic model class to parse items into
+
+        Returns:
+            List of parsed model instances
+        """
+        if isinstance(data, dict) and isinstance(data.get("items"), list):
+            data = data["items"]
+        if isinstance(data, list):
+            return [model_class(**item) for item in data]
+        return [model_class(**data)]
+
     def validate_uuid(self, value: Union[str, UUID]) -> str:
         """Validate and convert UUID to string.
 

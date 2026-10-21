@@ -24,7 +24,7 @@ class CollectionsResource(BaseResource):
         response = self.client.request(
             "GET", self.build_path("projects", project_id_str, "collections")
         )
-        return self.parse_response(response.json(), CollectionResponse)
+        return self.parse_list_response(response.json(), CollectionResponse)
 
     async def alist(
         self, project_id: Union[str, UUID]
@@ -34,7 +34,7 @@ class CollectionsResource(BaseResource):
         response = await self.client.request(
             "GET", self.build_path("projects", project_id_str, "collections")
         )
-        return self.parse_response(response.json(), CollectionResponse)
+        return self.parse_list_response(response.json(), CollectionResponse)
 
     def get(
         self,
@@ -203,14 +203,16 @@ class CollectionsResource(BaseResource):
         project_id_str = self.validate_uuid(project_id)
         collection_id_str = self.validate_uuid(collection_id)
         request_data = CollectionUpdateRequest(description=description, tags=tags)
-        response = self.client.request(
+        self.client.request(
             "PUT",
             self.build_path(
                 "projects", project_id_str, "collections", collection_id_str
             ),
             json=request_data.model_dump(exclude_none=True),
         )
-        return self.parse_response(response.json(), CollectionResponse)
+        # The API returns {"message": ...}, not the updated object —
+        # refetch so callers get the CollectionResponse this method promises.
+        return self.get(project_id_str, collection_id_str)
 
     async def aupdate(
         self,
@@ -223,14 +225,16 @@ class CollectionsResource(BaseResource):
         project_id_str = self.validate_uuid(project_id)
         collection_id_str = self.validate_uuid(collection_id)
         request_data = CollectionUpdateRequest(description=description, tags=tags)
-        response = await self.client.request(
+        await self.client.request(
             "PUT",
             self.build_path(
                 "projects", project_id_str, "collections", collection_id_str
             ),
             json=request_data.model_dump(exclude_none=True),
         )
-        return self.parse_response(response.json(), CollectionResponse)
+        # The API returns {"message": ...}, not the updated object —
+        # refetch so callers get the CollectionResponse this method promises.
+        return await self.aget(project_id_str, collection_id_str)
 
     def delete(
         self,
