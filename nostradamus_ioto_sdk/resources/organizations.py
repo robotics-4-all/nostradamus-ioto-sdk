@@ -35,7 +35,9 @@ class OrganizationsResource(BaseResource):
         """
         response = cast(
             httpx.Response,
-            self.client.request("GET", self.build_path("organization", "nostradamus")),
+            # The API scopes /organization to the caller's auth context —
+            # no name segment. (A hardcoded name matched no route → 404.)
+            self.client.request("GET", self.build_path("organization")),
         )
         return cast(
             OrganizationResponse,
@@ -57,9 +59,7 @@ class OrganizationsResource(BaseResource):
             ...     org = await client.organizations.aget()
             ...     print(org.organization_name)
         """
-        response = await self.client.request(
-            "GET", self.build_path("organization", "nostradamus")
-        )
+        response = await self.client.request("GET", self.build_path("organization"))
         return self.parse_response(response.json(), OrganizationResponse)
 
     def update(
@@ -93,7 +93,7 @@ class OrganizationsResource(BaseResource):
             httpx.Response,
             self.client.request(
                 "PUT",
-                self.build_path("organization", "nostradamus"),
+                self.build_path("organization"),
                 json=request_data.model_dump(exclude_none=True),
             ),
         )
@@ -130,7 +130,7 @@ class OrganizationsResource(BaseResource):
         request_data = OrganizationUpdateRequest(description=description, tags=tags)
         response = await self.client.request(
             "PUT",
-            self.build_path("organization", "nostradamus"),
+            self.build_path("organization"),
             json=request_data.model_dump(exclude_none=True),
         )
         return self.parse_response(response.json(), OrganizationResponse)

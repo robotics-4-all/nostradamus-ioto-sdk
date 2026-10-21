@@ -39,9 +39,7 @@ class TestOrganizationsResource:
         result = resource.get()
 
         # Verify request was made correctly
-        mock_client.request.assert_called_once_with(
-            "GET", "/api/v1/organization/nostradamus"
-        )
+        mock_client.request.assert_called_once_with("GET", "/api/v1/organization")
 
         # Verify response parsing
         assert isinstance(result, OrganizationResponse)
@@ -67,7 +65,7 @@ class TestOrganizationsResource:
         # Verify request was made correctly
         mock_client.request.assert_called_once_with(
             "PUT",
-            "/api/v1/organization/nostradamus",
+            "/api/v1/organization",
             json={"description": "New description"},
         )
 
@@ -94,7 +92,7 @@ class TestOrganizationsResource:
         # Verify request was made correctly
         mock_client.request.assert_called_once_with(
             "PUT",
-            "/api/v1/organization/nostradamus",
+            "/api/v1/organization",
             json={"tags": ["iot", "sensors"]},
         )
 
@@ -121,7 +119,7 @@ class TestOrganizationsResource:
         # Verify request was made correctly
         mock_client.request.assert_called_once_with(
             "PUT",
-            "/api/v1/organization/nostradamus",
+            "/api/v1/organization",
             json={"description": "New description", "tags": ["iot", "sensors"]},
         )
 
@@ -147,7 +145,7 @@ class TestOrganizationsResource:
 
         # Verify request was made with empty JSON (exclude_none=True)
         mock_client.request.assert_called_once_with(
-            "PUT", "/api/v1/organization/nostradamus", json={}
+            "PUT", "/api/v1/organization", json={}
         )
 
         # Verify response
@@ -185,9 +183,7 @@ class TestOrganizationsResourceAsync:
 
         result = await resource.aget()
 
-        mock_async_client.request.assert_called_once_with(
-            "GET", "/api/v1/organization/nostradamus"
-        )
+        mock_async_client.request.assert_called_once_with("GET", "/api/v1/organization")
         assert isinstance(result, OrganizationResponse)
         assert result.organization_name == "Test Org"
 
@@ -210,7 +206,7 @@ class TestOrganizationsResourceAsync:
 
         mock_async_client.request.assert_called_once_with(
             "PUT",
-            "/api/v1/organization/nostradamus",
+            "/api/v1/organization",
             json={"description": "Updated description", "tags": ["iot"]},
         )
         assert isinstance(result, OrganizationResponse)
