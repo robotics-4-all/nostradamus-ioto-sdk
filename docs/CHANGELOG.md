@@ -8,8 +8,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Initial project structure and configuration
-- Phase 1: Foundation complete (pyproject.toml, Makefile, CI/CD)
+- `DailyBreakdownItem` model for collection-key statistics daily buckets
+
+### Fixed (verified live against Cenotoo API)
+- Organization routes no longer append a hardcoded org name: the API exposes
+  only `/organization` scoped to the caller's JWT; `update()` now refetches
+  via `get()` since the server returns `{message}`
+- `projects`/`collections` `list()` unwrap the server's paginated
+  `{items, total, ...}` envelope; `create()` unwraps the nested
+  `{id: {project_id}}` response; `update()` refetches via `get()`
+- `project_keys` `create()` unwraps the nested key id; `get()` resolves via
+  list+match (no single-key server route, miss raises
+  `ResourceNotFoundError`); `regenerate()`/`delete()` use the real body-based
+  `PUT .../keys/regenerate` / `DELETE .../keys/delete_key` routes and return
+  `ProjectKeyResponse` (`.api_key`)
+- `users.update_password()`/`delete()` take `organization_id` and hit the real
+  org-scoped routes; `list()` unwraps the envelope to plain usernames
+- `KeyStatisticsResponse.daily_breakdown` is a list of `{date, record_count}`
+  items, matching the server payload
 
 ## [0.1.0] - TBD
 
