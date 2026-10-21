@@ -89,18 +89,14 @@ class OrganizationsResource(BaseResource):
             ... )
         """
         request_data = OrganizationUpdateRequest(description=description, tags=tags)
-        response = cast(
-            httpx.Response,
-            self.client.request(
-                "PUT",
-                self.build_path("organization"),
-                json=request_data.model_dump(exclude_none=True),
-            ),
+        self.client.request(
+            "PUT",
+            self.build_path("organization"),
+            json=request_data.model_dump(exclude_none=True),
         )
-        return cast(
-            OrganizationResponse,
-            self.parse_response(response.json(), OrganizationResponse),
-        )
+        # The API returns {"message": ...}, not the updated object —
+        # refetch so callers get the OrganizationResponse this method promises.
+        return cast(OrganizationResponse, self.get())
 
     async def aupdate(
         self,
@@ -128,9 +124,11 @@ class OrganizationsResource(BaseResource):
             ...     )
         """
         request_data = OrganizationUpdateRequest(description=description, tags=tags)
-        response = await self.client.request(
+        await self.client.request(
             "PUT",
             self.build_path("organization"),
             json=request_data.model_dump(exclude_none=True),
         )
-        return self.parse_response(response.json(), OrganizationResponse)
+        # The API returns {"message": ...}, not the updated object —
+        # refetch so callers get the OrganizationResponse this method promises.
+        return await self.aget()

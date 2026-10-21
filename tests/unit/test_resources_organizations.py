@@ -48,107 +48,105 @@ class TestOrganizationsResource:
         assert result.description == "Test description"
 
     def test_update_with_description_only(self, resource, mock_client):
-        """Test updating organization with description only."""
-        # Mock response
-        mock_response = Mock()
-        mock_response.json.return_value = {
+        """Test updating organization with description only (PUT + refetch)."""
+        put_response = Mock()
+        put_response.json.return_value = {"message": "Organization updated"}
+        get_response = Mock()
+        get_response.json.return_value = {
             "organization_id": "12345678-1234-5678-1234-567812345678",
             "organization_name": "Test Org",
             "description": "New description",
             "creation_date": "2024-01-01T00:00:00Z",
         }
-        mock_client.request.return_value = mock_response
+        mock_client.request.side_effect = [put_response, get_response]
 
-        # Call method
         result = resource.update(description="New description")
 
-        # Verify request was made correctly
-        mock_client.request.assert_called_once_with(
+        assert mock_client.request.call_count == 2
+        mock_client.request.assert_any_call(
             "PUT",
             "/api/v1/organization",
             json={"description": "New description"},
         )
+        mock_client.request.assert_called_with("GET", "/api/v1/organization")
 
-        # Verify response
         assert isinstance(result, OrganizationResponse)
         assert result.description == "New description"
 
     def test_update_with_tags_only(self, resource, mock_client):
-        """Test updating organization with tags only."""
-        # Mock response
-        mock_response = Mock()
-        mock_response.json.return_value = {
+        """Test updating organization with tags only (PUT + refetch)."""
+        put_response = Mock()
+        put_response.json.return_value = {"message": "Organization updated"}
+        get_response = Mock()
+        get_response.json.return_value = {
             "organization_id": "12345678-1234-5678-1234-567812345678",
             "organization_name": "Test Org",
             "description": "Test description",
             "creation_date": "2024-01-01T00:00:00Z",
             "tags": ["iot", "sensors"],
         }
-        mock_client.request.return_value = mock_response
+        mock_client.request.side_effect = [put_response, get_response]
 
-        # Call method
         result = resource.update(tags=["iot", "sensors"])
 
-        # Verify request was made correctly
-        mock_client.request.assert_called_once_with(
+        assert mock_client.request.call_count == 2
+        mock_client.request.assert_any_call(
             "PUT",
             "/api/v1/organization",
             json={"tags": ["iot", "sensors"]},
         )
+        mock_client.request.assert_called_with("GET", "/api/v1/organization")
 
-        # Verify response
         assert isinstance(result, OrganizationResponse)
         assert result.tags == ["iot", "sensors"]
 
     def test_update_with_both_description_and_tags(self, resource, mock_client):
-        """Test updating organization with both description and tags."""
-        # Mock response
-        mock_response = Mock()
-        mock_response.json.return_value = {
+        """Test updating organization with both description and tags (PUT + refetch)."""
+        put_response = Mock()
+        put_response.json.return_value = {"message": "Organization updated"}
+        get_response = Mock()
+        get_response.json.return_value = {
             "organization_id": "12345678-1234-5678-1234-567812345678",
             "organization_name": "Test Org",
             "description": "New description",
             "creation_date": "2024-01-01T00:00:00Z",
             "tags": ["iot", "sensors"],
         }
-        mock_client.request.return_value = mock_response
+        mock_client.request.side_effect = [put_response, get_response]
 
-        # Call method
         result = resource.update(description="New description", tags=["iot", "sensors"])
 
-        # Verify request was made correctly
-        mock_client.request.assert_called_once_with(
+        assert mock_client.request.call_count == 2
+        mock_client.request.assert_any_call(
             "PUT",
             "/api/v1/organization",
             json={"description": "New description", "tags": ["iot", "sensors"]},
         )
+        mock_client.request.assert_called_with("GET", "/api/v1/organization")
 
-        # Verify response
         assert isinstance(result, OrganizationResponse)
         assert result.description == "New description"
         assert result.tags == ["iot", "sensors"]
 
     def test_update_with_no_parameters(self, resource, mock_client):
-        """Test updating organization with no parameters sends empty JSON."""
-        # Mock response
-        mock_response = Mock()
-        mock_response.json.return_value = {
+        """Test updating organization with no parameters sends empty JSON (PUT + refetch)."""
+        put_response = Mock()
+        put_response.json.return_value = {"message": "Organization updated"}
+        get_response = Mock()
+        get_response.json.return_value = {
             "organization_id": "12345678-1234-5678-1234-567812345678",
             "organization_name": "Test Org",
             "description": "Test description",
             "creation_date": "2024-01-01T00:00:00Z",
         }
-        mock_client.request.return_value = mock_response
+        mock_client.request.side_effect = [put_response, get_response]
 
-        # Call method
         result = resource.update()
 
-        # Verify request was made with empty JSON (exclude_none=True)
-        mock_client.request.assert_called_once_with(
-            "PUT", "/api/v1/organization", json={}
-        )
+        assert mock_client.request.call_count == 2
+        mock_client.request.assert_any_call("PUT", "/api/v1/organization", json={})
+        mock_client.request.assert_called_with("GET", "/api/v1/organization")
 
-        # Verify response
         assert isinstance(result, OrganizationResponse)
 
 
@@ -191,23 +189,27 @@ class TestOrganizationsResourceAsync:
     async def test_aupdate_returns_organization_response(
         self, resource, mock_async_client
     ):
-        """Test aupdate returns OrganizationResponse."""
-        mock_response = Mock()
-        mock_response.json.return_value = {
+        """Test aupdate returns OrganizationResponse (PUT + refetch)."""
+        put_response = Mock()
+        put_response.json.return_value = {"message": "Organization updated"}
+        get_response = Mock()
+        get_response.json.return_value = {
             "organization_id": "12345678-1234-5678-1234-567812345678",
             "organization_name": "Test Org",
             "description": "Updated description",
             "creation_date": "2024-01-01T00:00:00Z",
             "tags": ["iot"],
         }
-        mock_async_client.request.return_value = mock_response
+        mock_async_client.request.side_effect = [put_response, get_response]
 
         result = await resource.aupdate(description="Updated description", tags=["iot"])
 
-        mock_async_client.request.assert_called_once_with(
+        assert mock_async_client.request.call_count == 2
+        mock_async_client.request.assert_any_call(
             "PUT",
             "/api/v1/organization",
             json={"description": "Updated description", "tags": ["iot"]},
         )
+        mock_async_client.request.assert_called_with("GET", "/api/v1/organization")
         assert isinstance(result, OrganizationResponse)
         assert result.description == "Updated description"
