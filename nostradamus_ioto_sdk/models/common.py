@@ -37,6 +37,13 @@ class DeleteDataResponse(BaseModel):
     criteria: dict[str, Any]
 
 
+class DailyBreakdownItem(BaseModel):
+    """One day bucket of the key-statistics daily breakdown."""
+
+    date: str
+    record_count: int
+
+
 class KeyStatisticsResponse(BaseModel):
     """Response model for collection key statistics."""
 
@@ -45,7 +52,8 @@ class KeyStatisticsResponse(BaseModel):
     total_records: int
     first_timestamp: datetime
     last_timestamp: datetime
-    daily_breakdown: dict[str, int]
+    # The API returns a list of {date, record_count} buckets, not a dict.
+    daily_breakdown: list[DailyBreakdownItem]
 
 
 class HealthResponse(BaseModel):

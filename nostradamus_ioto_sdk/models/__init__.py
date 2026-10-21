@@ -7,6 +7,7 @@ from .collection import (
     CollectionUpdateRequest,
 )
 from .common import (
+    DailyBreakdownItem,
     DataListResponse,
     DeleteDataResponse,
     HealthResponse,
@@ -63,6 +64,7 @@ __all__ = [
     "PaginatedResponse",
     "MessageResponse",
     "KeyStatisticsResponse",
+    "DailyBreakdownItem",
     "HealthResponse",
     "ReadyResponse",
     # Errors
