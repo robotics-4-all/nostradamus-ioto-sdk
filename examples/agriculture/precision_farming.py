@@ -9,11 +9,18 @@ statistics, and cleanup using sync clients.
 import json
 import os
 import random
+import sys
 import time
 from datetime import datetime, timedelta
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from _load_env import load_dotenv
 
 from nostradamus_ioto_sdk import NostradamusClient
 from nostradamus_ioto_sdk.exceptions import APIError
+
+load_dotenv()
 
 # --- Configuration ---
 COLLECTION_NAME = "precision_farming_data"

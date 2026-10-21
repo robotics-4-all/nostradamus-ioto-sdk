@@ -32,8 +32,12 @@ import os
 import random
 from datetime import datetime, timedelta
 
+from _load_env import load_dotenv
+
 from nostradamus_ioto_sdk import NostradamusClient
 from nostradamus_ioto_sdk.exceptions import APIError
+
+load_dotenv()
 
 # ─── Configuration ───────────────────────────────────────────
 PROJECT_ID = os.getenv("NOSTRADAMUS_PROJECT_ID")

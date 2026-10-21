@@ -2,10 +2,31 @@
 """Diagnostic script to test SDK and API connection."""
 
 import os
+from pathlib import Path
 
 import httpx
 
 from nostradamus_ioto_sdk import NostradamusClient
+
+
+def _load_dotenv():
+    """Load .env file from project root into os.environ (without overwriting)."""
+    env_path = Path(__file__).resolve().parent.parent / ".env"
+    if not env_path.is_file():
+        return
+    with open(env_path) as f:
+        for line in f:
+            line = line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            key, _, value = line.partition("=")
+            key = key.strip()
+            value = value.strip().strip("'\"")
+            if key not in os.environ:
+                os.environ[key] = value
+
+
+_load_dotenv()
 
 print("=" * 70)
 print("NOSTRADAMUS IOTO SDK - DIAGNOSTIC TOOL")
@@ -13,9 +34,10 @@ print("=" * 70)
 print()
 
 # Check credentials
-api_key = os.getenv("NOSTRADAMUS_API_KEY")
+api_key = os.getenv("NOSTRADAMUS_API_KEY") or os.getenv("NOSTRADAMUS_MASTER_KEY")
 username = os.getenv("NOSTRADAMUS_USERNAME")
 password = os.getenv("NOSTRADAMUS_PASSWORD")
+project_id = os.getenv("NOSTRADAMUS_PROJECT_ID")
 
 print("1️⃣  Checking Credentials...")
 if api_key:
@@ -39,9 +61,13 @@ else:
 
 print()
 print("2️⃣  Testing Raw API Connection...")
-url = "https://nostradamus-ioto.issel.ee.auth.gr/api/v1/organization/nostradamus"
 
+base_url = "https://nostradamus-ioto.issel.ee.auth.gr"
 if api_key:
+    if project_id:
+        url = f"{base_url}/api/v1/projects/{project_id}/collections"
+    else:
+        url = f"{base_url}/api/v1/organization/nostradamus"
     headers = {"X-API-Key": api_key}
     print("   Making GET request to:")
     print(f"   {url}")
@@ -55,7 +81,11 @@ if api_key:
             if response.status_code == 200:
                 print("   ✅ SUCCESS! API key is valid!")
                 data = response.json()
-                print(f"   Organization: {data.get('organization_name', 'N/A')}")
+                if project_id:
+                    count = len(data) if isinstance(data, list) else "unknown"
+                    print(f"   Collections found: {count}")
+                else:
+                    print(f"   Organization: {data.get('organization_name', 'N/A')}")
             elif response.status_code == 401:
                 print("   ❌ AUTHENTICATION FAILED!")
                 print(f"   Response: {response.text}")
@@ -114,12 +144,21 @@ try:
 
     print("   SDK client created successfully")
 
-    # Try to get organization
-    print("   Attempting to get organization info...")
-    org = client.organizations.get()
-    print("   ✅ SUCCESS!")
-    print(f"   Organization: {org.organization_name}")
-    print(f"   ID: {org.organization_id}")
+    if project_id:
+        print(f"   Listing collections for project {project_id[:8]}...")
+        collections = client.collections.list(project_id)
+        print("   ✅ SUCCESS!")
+        print(f"   Collections found: {len(collections)}")
+        for col in collections[:5]:
+            print(f"     - {col.collection_name}")
+        if len(collections) > 5:
+            print(f"     ... and {len(collections) - 5} more")
+    else:
+        print("   Attempting to get organization info...")
+        org = client.organizations.get()
+        print("   ✅ SUCCESS!")
+        print(f"   Organization: {org.organization_name}")
+        print(f"   ID: {org.organization_id}")
 
     client.close()
 
@@ -127,9 +166,6 @@ try:
     print("=" * 70)
     print("✅ ALL TESTS PASSED! SDK IS WORKING CORRECTLY!")
     print("=" * 70)
-    print()
-    print("You can now use the SDK:")
-    print("  .venv/bin/python test_client.py")
 
 except Exception as e:
     print(f"   ❌ SDK Error: {e}")

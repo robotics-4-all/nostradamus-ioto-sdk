@@ -18,6 +18,7 @@ class Token(BaseModel):
     access_token: str
     token_type: str = "bearer"
     expires_in: Optional[int] = None  # Seconds until expiration
+    refresh_token: Optional[str] = None
 
     _created_at: Optional[datetime] = None
 
@@ -183,6 +184,93 @@ class OAuth2Handler:
         return {
             "Authorization": f"{token.token_type.capitalize()} {token.access_token}"
         }
+
+    def refresh(self) -> Token:
+        """Refresh the access token using the refresh token.
+
+        Returns:
+            New access token
+
+        Raises:
+            AuthenticationError: If refresh fails or no refresh token available
+        """
+        with self._lock:
+            if self._token is None or not self._token.refresh_token:
+                raise AuthenticationError(
+                    "No refresh token available. Perform initial authentication first."
+                )
+
+            url = urljoin(self._base_url, "/api/v1/token/refresh")
+            data = {"refresh_token": self._token.refresh_token}
+
+            try:
+                response = httpx.post(
+                    url,
+                    json=data,
+                    headers={"Content-Type": "application/json"},
+                    timeout=30.0,
+                )
+                response.raise_for_status()
+            except httpx.HTTPStatusError as err:
+                raise AuthenticationError(
+                    f"Token refresh failed: {err.response.text}",
+                    status_code=err.response.status_code,
+                    response=err.response,
+                ) from err
+            except httpx.RequestError as err:
+                raise AuthenticationError(
+                    f"Failed to connect to authentication server: {err}"
+                ) from err
+
+            try:
+                token_data = response.json()
+            except (ValueError, UnicodeDecodeError) as err:
+                raise AuthenticationError(
+                    f"Failed to decode token response: {err}"
+                ) from err
+
+            try:
+                self._token = Token(**token_data)
+            except (TypeError, KeyError, PydanticValidationError) as err:
+                raise AuthenticationError(
+                    f"Invalid token response format: {err}"
+                ) from err
+
+            return self._token
+
+    def revoke(self) -> None:
+        """Revoke the current access token.
+
+        Raises:
+            AuthenticationError: If revocation fails
+        """
+        with self._lock:
+            if self._token is None:
+                raise AuthenticationError("No token to revoke. Not authenticated.")
+
+            url = urljoin(self._base_url, "/api/v1/token/revoke")
+            data = {"token": self._token.access_token}
+
+            try:
+                response = httpx.post(
+                    url,
+                    json=data,
+                    headers={"Content-Type": "application/json"},
+                    timeout=30.0,
+                )
+                response.raise_for_status()
+            except httpx.HTTPStatusError as err:
+                raise AuthenticationError(
+                    f"Token revocation failed: {err.response.text}",
+                    status_code=err.response.status_code,
+                    response=err.response,
+                ) from err
+            except httpx.RequestError as err:
+                raise AuthenticationError(
+                    f"Failed to connect to authentication server: {err}"
+                ) from err
+
+            self._token = None
 
     def clear_token(self) -> None:
         """Clear the cached token, forcing refresh on next request."""

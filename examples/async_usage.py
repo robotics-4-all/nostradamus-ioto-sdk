@@ -6,7 +6,11 @@ This example demonstrates how to use the async client for concurrent operations.
 import asyncio
 import os
 
+from _load_env import load_dotenv
+
 from nostradamus_ioto_sdk import AsyncNostradamusClient
+
+load_dotenv()
 
 
 async def main():

@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Any, Optional, Union
 from uuid import UUID
 
 from ..exceptions import ValidationError
+from ..models.common import DataListResponse, DeleteDataResponse
 from ..models.enums import StatOperation
 from ._base import BaseResource
 
@@ -66,7 +67,7 @@ class DataResource(BaseResource):
         order_by: Optional[str] = None,
         limit: Optional[int] = None,
         nested: bool = False,
-    ) -> list[dict[str, Any]]:
+    ) -> DataListResponse:
         """Query data from collection."""
         import json
 
@@ -93,7 +94,7 @@ class DataResource(BaseResource):
             ),
             params=params,
         )
-        return response.json()
+        return self.parse_response(response.json(), DataListResponse)
 
     async def aget(
         self,
@@ -104,7 +105,7 @@ class DataResource(BaseResource):
         order_by: Optional[str] = None,
         limit: Optional[int] = None,
         nested: bool = False,
-    ) -> list[dict[str, Any]]:
+    ) -> DataListResponse:
         """Query data from collection (async)."""
         import json
 
@@ -131,13 +132,13 @@ class DataResource(BaseResource):
             ),
             params=params,
         )
-        return response.json()
+        return self.parse_response(response.json(), DataListResponse)
 
     def statistics(
         self,
         project_id: Union[str, UUID],
         collection_id: Union[str, UUID],
-        operation: Union[str, StatOperation],
+        stat: Union[str, StatOperation],
         attribute: str,
         group_by: Optional[str] = None,
         interval: Optional[str] = None,
@@ -148,7 +149,7 @@ class DataResource(BaseResource):
         collection_id_str = self.validate_uuid(collection_id)
 
         params: dict[str, Any] = {
-            "operation": operation if isinstance(operation, str) else operation.value,
+            "stat": stat if isinstance(stat, str) else stat.value,
             "attribute": attribute,
         }
         if group_by:
@@ -175,7 +176,7 @@ class DataResource(BaseResource):
         self,
         project_id: Union[str, UUID],
         collection_id: Union[str, UUID],
-        operation: Union[str, StatOperation],
+        stat: Union[str, StatOperation],
         attribute: str,
         group_by: Optional[str] = None,
         interval: Optional[str] = None,
@@ -186,7 +187,7 @@ class DataResource(BaseResource):
         collection_id_str = self.validate_uuid(collection_id)
 
         params: dict[str, Any] = {
-            "operation": operation if isinstance(operation, str) else operation.value,
+            "stat": stat if isinstance(stat, str) else stat.value,
             "attribute": attribute,
         }
         if group_by:
@@ -216,7 +217,7 @@ class DataResource(BaseResource):
         key: Optional[str] = None,
         timestamp_from: Optional[Union[str, datetime]] = None,
         timestamp_to: Optional[Union[str, datetime]] = None,
-    ) -> dict[str, Any]:
+    ) -> DeleteDataResponse:
         """Delete data from collection based on criteria.
 
         Args:
@@ -268,7 +269,7 @@ class DataResource(BaseResource):
             ),
             json=delete_request,
         )
-        return response.json()
+        return self.parse_response(response.json(), DeleteDataResponse)
 
     async def adelete(
         self,
@@ -277,7 +278,7 @@ class DataResource(BaseResource):
         key: Optional[str] = None,
         timestamp_from: Optional[Union[str, datetime]] = None,
         timestamp_to: Optional[Union[str, datetime]] = None,
-    ) -> dict[str, Any]:
+    ) -> DeleteDataResponse:
         """Delete data from collection based on criteria (async).
 
         Args:
@@ -329,4 +330,4 @@ class DataResource(BaseResource):
             ),
             json=delete_request,
         )
-        return response.json()
+        return self.parse_response(response.json(), DeleteDataResponse)
