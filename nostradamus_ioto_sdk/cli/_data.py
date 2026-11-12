@@ -48,7 +48,9 @@ def data_send(
             data_points = [data_points]
 
         client.data.send(project_id=project, collection_id=collection, data=data_points)
-        console.print(f"[green]✓[/green] Sent {len(data_points)} data point(s)")
+        console.print(
+            f"[green]✓[/green] Sent {len(data_points)} data point(s)", highlight=False
+        )
     except json.JSONDecodeError as e:
         console.print(f"[red]Invalid JSON:[/red] {e}")
         sys.exit(1)

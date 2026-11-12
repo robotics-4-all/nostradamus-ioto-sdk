@@ -145,7 +145,7 @@ def keys_regenerate(
         console.print(
             Panel(
                 f"[green]✓[/green] API key regenerated!\n\n"
-                f"[cyan]New Key:[/cyan] {new_key.key_value}\n"
+                f"[cyan]New Key:[/cyan] {new_key.api_key}\n"
                 f"[red]⚠ Save securely - won't be shown again![/red]",
                 title="Success",
                 border_style="green",
