@@ -1,7 +1,7 @@
 """Project Keys resource for the Nostradamus IoTO SDK."""
 
 import builtins
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING
 from uuid import UUID
 
 from ..models.enums import KeyType
@@ -25,7 +25,7 @@ class ProjectKeysResource(BaseResource):
 
     def create(
         self,
-        project_id: Union[str, UUID],
+        project_id: str | UUID,
         key_type: KeyType,
     ) -> ProjectKeyResponse:
         """Create a new API key for a project.
@@ -108,7 +108,7 @@ class ProjectKeysResource(BaseResource):
 
     async def acreate(
         self,
-        project_id: Union[str, UUID],
+        project_id: str | UUID,
         key_type: KeyType,
     ) -> ProjectKeyResponse:
         """Create a new API key for a project (async)."""
@@ -168,7 +168,7 @@ class ProjectKeysResource(BaseResource):
         # Fetch full key details
         return await self.aget(project_id, key_id)
 
-    def list(self, project_id: Union[str, UUID]) -> list[ProjectKeyResponse]:
+    def list(self, project_id: str | UUID) -> list[ProjectKeyResponse]:
         """List all API keys for a project.
 
         Args:
@@ -194,9 +194,7 @@ class ProjectKeysResource(BaseResource):
         )
         return self.parse_list_response(response.json(), ProjectKeyResponse)
 
-    async def alist(
-        self, project_id: Union[str, UUID]
-    ) -> builtins.list[ProjectKeyResponse]:
+    async def alist(self, project_id: str | UUID) -> builtins.list[ProjectKeyResponse]:
         """List all API keys for a project (async)."""
         project_id_str = self.validate_uuid(project_id)
         response = await self.client.request(
@@ -206,7 +204,7 @@ class ProjectKeysResource(BaseResource):
 
     def get(
         self,
-        project_id: Union[str, UUID],
+        project_id: str | UUID,
         api_key: str,
     ) -> ProjectKeyResponse:
         """Get API key details.
@@ -243,7 +241,7 @@ class ProjectKeysResource(BaseResource):
 
     async def aget(
         self,
-        project_id: Union[str, UUID],
+        project_id: str | UUID,
         api_key: str,
     ) -> ProjectKeyResponse:
         """Get API key details (async)."""
@@ -256,7 +254,7 @@ class ProjectKeysResource(BaseResource):
 
     def regenerate(
         self,
-        project_id: Union[str, UUID],
+        project_id: str | UUID,
         api_key: str,
     ) -> ProjectKeyResponse:
         """Regenerate an API key.
@@ -292,7 +290,7 @@ class ProjectKeysResource(BaseResource):
 
     async def aregenerate(
         self,
-        project_id: Union[str, UUID],
+        project_id: str | UUID,
         api_key: str,
     ) -> ProjectKeyResponse:
         """Regenerate an API key (async)."""
@@ -307,7 +305,7 @@ class ProjectKeysResource(BaseResource):
 
     def delete(
         self,
-        project_id: Union[str, UUID],
+        project_id: str | UUID,
         api_key: str,
     ) -> None:
         """Delete an API key.
@@ -338,7 +336,7 @@ class ProjectKeysResource(BaseResource):
 
     async def adelete(
         self,
-        project_id: Union[str, UUID],
+        project_id: str | UUID,
         api_key: str,
     ) -> None:
         """Delete an API key (async)."""
