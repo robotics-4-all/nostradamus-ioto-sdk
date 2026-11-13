@@ -1,7 +1,7 @@
 """Data resource for the Nostradamus IoTO SDK."""
 
 from datetime import datetime
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any
 from uuid import UUID
 
 from ..exceptions import ValidationError
@@ -18,9 +18,9 @@ class DataResource(BaseResource):
 
     def send(
         self,
-        project_id: Union[str, UUID],
-        collection_id: Union[str, UUID],
-        data: Union[dict[str, Any], list[dict[str, Any]]],
+        project_id: str | UUID,
+        collection_id: str | UUID,
+        data: dict[str, Any] | list[dict[str, Any]],
     ) -> None:
         """Send data to collection."""
         project_id_str = self.validate_uuid(project_id)
@@ -39,9 +39,9 @@ class DataResource(BaseResource):
 
     async def asend(
         self,
-        project_id: Union[str, UUID],
-        collection_id: Union[str, UUID],
-        data: Union[dict[str, Any], list[dict[str, Any]]],
+        project_id: str | UUID,
+        collection_id: str | UUID,
+        data: dict[str, Any] | list[dict[str, Any]],
     ) -> None:
         """Send data to collection (async)."""
         project_id_str = self.validate_uuid(project_id)
@@ -60,12 +60,12 @@ class DataResource(BaseResource):
 
     def get(
         self,
-        project_id: Union[str, UUID],
-        collection_id: Union[str, UUID],
-        attributes: Optional[list[str]] = None,
-        filters: Optional[list[dict[str, Any]]] = None,
-        order_by: Optional[str] = None,
-        limit: Optional[int] = None,
+        project_id: str | UUID,
+        collection_id: str | UUID,
+        attributes: list[str] | None = None,
+        filters: list[dict[str, Any]] | None = None,
+        order_by: str | None = None,
+        limit: int | None = None,
         nested: bool = False,
     ) -> DataListResponse:
         """Query data from collection."""
@@ -98,12 +98,12 @@ class DataResource(BaseResource):
 
     async def aget(
         self,
-        project_id: Union[str, UUID],
-        collection_id: Union[str, UUID],
-        attributes: Optional[list[str]] = None,
-        filters: Optional[list[dict[str, Any]]] = None,
-        order_by: Optional[str] = None,
-        limit: Optional[int] = None,
+        project_id: str | UUID,
+        collection_id: str | UUID,
+        attributes: list[str] | None = None,
+        filters: list[dict[str, Any]] | None = None,
+        order_by: str | None = None,
+        limit: int | None = None,
         nested: bool = False,
     ) -> DataListResponse:
         """Query data from collection (async)."""
@@ -136,13 +136,13 @@ class DataResource(BaseResource):
 
     def statistics(
         self,
-        project_id: Union[str, UUID],
-        collection_id: Union[str, UUID],
-        stat: Union[str, StatOperation],
+        project_id: str | UUID,
+        collection_id: str | UUID,
+        stat: str | StatOperation,
         attribute: str,
-        group_by: Optional[str] = None,
-        interval: Optional[str] = None,
-        limit: Optional[int] = None,
+        group_by: str | None = None,
+        interval: str | None = None,
+        limit: int | None = None,
     ) -> dict[str, Any]:
         """Get statistics/aggregations."""
         project_id_str = self.validate_uuid(project_id)
@@ -174,13 +174,13 @@ class DataResource(BaseResource):
 
     async def astatistics(
         self,
-        project_id: Union[str, UUID],
-        collection_id: Union[str, UUID],
-        stat: Union[str, StatOperation],
+        project_id: str | UUID,
+        collection_id: str | UUID,
+        stat: str | StatOperation,
         attribute: str,
-        group_by: Optional[str] = None,
-        interval: Optional[str] = None,
-        limit: Optional[int] = None,
+        group_by: str | None = None,
+        interval: str | None = None,
+        limit: int | None = None,
     ) -> dict[str, Any]:
         """Get statistics/aggregations (async)."""
         project_id_str = self.validate_uuid(project_id)
@@ -212,11 +212,11 @@ class DataResource(BaseResource):
 
     def delete(
         self,
-        project_id: Union[str, UUID],
-        collection_id: Union[str, UUID],
-        key: Optional[str] = None,
-        timestamp_from: Optional[Union[str, datetime]] = None,
-        timestamp_to: Optional[Union[str, datetime]] = None,
+        project_id: str | UUID,
+        collection_id: str | UUID,
+        key: str | None = None,
+        timestamp_from: str | datetime | None = None,
+        timestamp_to: str | datetime | None = None,
     ) -> DeleteDataResponse:
         """Delete data from collection based on criteria.
 
@@ -273,11 +273,11 @@ class DataResource(BaseResource):
 
     async def adelete(
         self,
-        project_id: Union[str, UUID],
-        collection_id: Union[str, UUID],
-        key: Optional[str] = None,
-        timestamp_from: Optional[Union[str, datetime]] = None,
-        timestamp_to: Optional[Union[str, datetime]] = None,
+        project_id: str | UUID,
+        collection_id: str | UUID,
+        key: str | None = None,
+        timestamp_from: str | datetime | None = None,
+        timestamp_to: str | datetime | None = None,
     ) -> DeleteDataResponse:
         """Delete data from collection based on criteria (async).
 

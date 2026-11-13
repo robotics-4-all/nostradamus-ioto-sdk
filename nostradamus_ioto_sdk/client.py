@@ -1,6 +1,6 @@
 """Synchronous client for Nostradamus IoTO SDK."""
 
-from typing import Any, Optional
+from typing import Any
 
 import httpx
 
@@ -49,9 +49,9 @@ class NostradamusClient:
 
     def __init__(
         self,
-        api_key: Optional[str] = None,
-        username: Optional[str] = None,
-        password: Optional[str] = None,
+        api_key: str | None = None,
+        username: str | None = None,
+        password: str | None = None,
         base_url: str = "https://nostradamus-ioto.issel.ee.auth.gr",
         timeout: float = 30.0,
         max_retries: int = 3,
@@ -83,7 +83,7 @@ class NostradamusClient:
             )
 
         # Setup rate limiter (disabled by default)
-        self._rate_limiter: Optional[RateLimiter] = None
+        self._rate_limiter: RateLimiter | None = None
         if rate_limit_rps > 0:
             self._rate_limiter = RateLimiter(requests_per_second=int(rate_limit_rps))
 
@@ -111,7 +111,7 @@ class NostradamusClient:
         return self._auth_handler
 
     @property
-    def rate_limiter(self) -> Optional[RateLimiter]:
+    def rate_limiter(self) -> RateLimiter | None:
         """The rate limiter instance, or None if disabled."""
         return self._rate_limiter
 

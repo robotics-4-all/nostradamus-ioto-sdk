@@ -2,7 +2,7 @@
 
 import logging
 import re
-from typing import Any, Optional
+from typing import Any
 
 # Patterns for sensitive data masking
 SENSITIVE_PATTERNS = [
@@ -105,8 +105,8 @@ class SDKLogger:
         self,
         method: str,
         url: str,
-        headers: Optional[dict[str, str]] = None,
-        body: Optional[Any] = None,
+        headers: dict[str, str] | None = None,
+        body: Any | None = None,
     ) -> None:
         """Log HTTP request with masked sensitive data.
 
@@ -132,8 +132,8 @@ class SDKLogger:
     def log_response(
         self,
         status_code: int,
-        body: Optional[Any] = None,
-        duration: Optional[float] = None,
+        body: Any | None = None,
+        duration: float | None = None,
     ) -> None:
         """Log HTTP response.
 
@@ -155,7 +155,7 @@ class SDKLogger:
         self._logger.debug(log_msg)
 
     def log_error(
-        self, error: Exception, context: Optional[dict[str, Any]] = None
+        self, error: Exception, context: dict[str, Any] | None = None
     ) -> None:
         """Log error with context.
 

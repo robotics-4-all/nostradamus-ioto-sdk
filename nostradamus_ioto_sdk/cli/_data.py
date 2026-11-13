@@ -2,7 +2,6 @@
 
 import json
 import sys
-from typing import Optional
 
 import click
 
@@ -29,8 +28,8 @@ def data() -> None:
 @click.option("--collection", "-c", required=True, help="Collection ID")
 @click.option("--data", "-d", "payload", required=True, help="Data points (JSON array)")
 def data_send(
-    api_key: Optional[str],
-    base_url: Optional[str],
+    api_key: str | None,
+    base_url: str | None,
     project: str,
     collection: str,
     payload: str,
@@ -77,15 +76,15 @@ def data_send(
 @click.option("--order-by", "-o", help="Attribute to order by")
 @click.option("--nested", is_flag=True, default=False, help="Include nested data")
 def data_get(
-    api_key: Optional[str],
-    base_url: Optional[str],
+    api_key: str | None,
+    base_url: str | None,
     output_format: str,
     project: str,
     collection: str,
-    limit: Optional[int],
-    attributes: Optional[str],
-    filters: Optional[str],
-    order_by: Optional[str],
+    limit: int | None,
+    attributes: str | None,
+    filters: str | None,
+    order_by: str | None,
     nested: bool,
 ) -> None:
     """Get data from collection.
@@ -155,16 +154,16 @@ def data_get(
 @click.option("--interval", "-i", help="Time interval for grouping")
 @click.option("--limit", "-n", type=int, help="Limit results")
 def data_statistics(
-    api_key: Optional[str],
-    base_url: Optional[str],
+    api_key: str | None,
+    base_url: str | None,
     output_format: str,
     project: str,
     collection: str,
     operation: str,
     attribute: str,
-    group_by: Optional[str],
-    interval: Optional[str],
-    limit: Optional[int],
+    group_by: str | None,
+    interval: str | None,
+    limit: int | None,
 ) -> None:
     """Get statistics/aggregations from collection.
 
@@ -208,13 +207,13 @@ def data_statistics(
 @click.option("--to", "timestamp_to", help="End of timestamp range (ISO 8601)")
 @click.option("--yes", "-y", is_flag=True, help="Skip confirmation")
 def data_delete(
-    api_key: Optional[str],
-    base_url: Optional[str],
+    api_key: str | None,
+    base_url: str | None,
     project: str,
     collection: str,
-    key: Optional[str],
-    timestamp_from: Optional[str],
-    timestamp_to: Optional[str],
+    key: str | None,
+    timestamp_from: str | None,
+    timestamp_to: str | None,
     yes: bool,
 ) -> None:
     """Delete data from collection.
