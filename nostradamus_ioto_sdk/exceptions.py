@@ -1,6 +1,6 @@
 """Custom exceptions for the Nostradamus IoTO SDK."""
 
-from typing import Any, Optional
+from typing import Any
 
 import httpx
 
@@ -23,8 +23,8 @@ class AuthenticationError(NostradamusError):
     def __init__(
         self,
         message: str,
-        status_code: Optional[int] = None,
-        response: Optional[httpx.Response] = None,
+        status_code: int | None = None,
+        response: httpx.Response | None = None,
     ) -> None:
         super().__init__(message)
         self.status_code = status_code
@@ -37,9 +37,9 @@ class APIError(NostradamusError):
     def __init__(
         self,
         message: str,
-        status_code: Optional[int] = None,
-        response: Optional[httpx.Response] = None,
-        request: Optional[httpx.Request] = None,
+        status_code: int | None = None,
+        response: httpx.Response | None = None,
+        request: httpx.Request | None = None,
     ) -> None:
         super().__init__(message)
         self.status_code = status_code
@@ -59,8 +59,8 @@ class ValidationError(APIError):
     def __init__(
         self,
         message: str,
-        errors: Optional[list[dict[str, Any]]] = None,
-        response: Optional[httpx.Response] = None,
+        errors: list[dict[str, Any]] | None = None,
+        response: httpx.Response | None = None,
     ) -> None:
         super().__init__(message, status_code=422, response=response)
         self.errors = errors or []
@@ -87,7 +87,7 @@ class ResourceNotFoundError(APIError):
     def __init__(
         self,
         message: str = "Resource not found",
-        response: Optional[httpx.Response] = None,
+        response: httpx.Response | None = None,
     ) -> None:
         super().__init__(message, status_code=404, response=response)
 
@@ -98,8 +98,8 @@ class RateLimitError(APIError):
     def __init__(
         self,
         message: str = "Rate limit exceeded",
-        retry_after: Optional[int] = None,
-        response: Optional[httpx.Response] = None,
+        retry_after: int | None = None,
+        response: httpx.Response | None = None,
     ) -> None:
         super().__init__(message, status_code=429, response=response)
         self.retry_after = retry_after
@@ -115,7 +115,7 @@ class RequestTimeoutError(APIError):
     """Raised when a request times out."""
 
     def __init__(
-        self, message: str = "Request timed out", timeout: Optional[float] = None
+        self, message: str = "Request timed out", timeout: float | None = None
     ) -> None:
         super().__init__(message)
         self.timeout = timeout

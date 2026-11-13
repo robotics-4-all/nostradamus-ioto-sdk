@@ -1,7 +1,7 @@
 """Base client functionality for Nostradamus IoTO SDK."""
 
 import time
-from typing import Any, Optional
+from typing import Any
 
 import httpx
 
@@ -99,7 +99,7 @@ def make_request_with_retry(
     Raises:
         Various exceptions based on response
     """
-    last_exception: Optional[Exception] = None
+    last_exception: Exception | None = None
 
     for attempt in range(retry_config.max_retries + 1):
         try:

@@ -2,7 +2,6 @@
 
 import os
 import sys
-from typing import Optional
 
 import click
 from rich.console import Console
@@ -19,7 +18,7 @@ console = Console()
 
 
 def get_client(
-    api_key: Optional[str] = None, base_url: Optional[str] = None
+    api_key: str | None = None, base_url: str | None = None
 ) -> NostradamusClient:
     """Get authenticated client instance."""
     key = api_key or os.getenv("NOSTRADAMUS_API_KEY")
