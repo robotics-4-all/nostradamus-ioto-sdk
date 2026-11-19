@@ -2,7 +2,6 @@
 
 import threading
 from datetime import datetime, timedelta
-from typing import Optional
 from urllib.parse import urljoin
 
 import httpx
@@ -17,17 +16,17 @@ class Token(BaseModel):
 
     access_token: str
     token_type: str = "bearer"
-    expires_in: Optional[int] = None  # Seconds until expiration
-    refresh_token: Optional[str] = None
+    expires_in: int | None = None  # Seconds until expiration
+    refresh_token: str | None = None
 
-    _created_at: Optional[datetime] = None
+    _created_at: datetime | None = None
 
     def model_post_init(self, __context: object) -> None:
         """Initialize created_at timestamp."""
         self._created_at = datetime.now()
 
     @property
-    def expires_at(self) -> Optional[datetime]:
+    def expires_at(self) -> datetime | None:
         """Calculate expiration timestamp."""
         if self.expires_in and self._created_at:
             return self._created_at + timedelta(seconds=self.expires_in)
@@ -81,7 +80,7 @@ class OAuth2Handler:
         self._username = username
         self._password = password
         self._token_url = token_url
-        self._token: Optional[Token] = None
+        self._token: Token | None = None
         self._lock = threading.Lock()
 
     @property
@@ -105,7 +104,7 @@ class OAuth2Handler:
         return self._token_url
 
     @property
-    def token(self) -> Optional[Token]:
+    def token(self) -> Token | None:
         """The current cached token, or None if not yet authenticated."""
         return self._token
 

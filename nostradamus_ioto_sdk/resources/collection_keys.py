@@ -1,6 +1,6 @@
 """Collection Keys resource for the Nostradamus IoTO SDK."""
 
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING
 from uuid import UUID
 
 from ..models.common import KeyStatisticsResponse
@@ -15,8 +15,8 @@ class CollectionKeysResource(BaseResource):
 
     def get_statistics(
         self,
-        project_id: Union[str, UUID],
-        collection_id: Union[str, UUID],
+        project_id: str | UUID,
+        collection_id: str | UUID,
         key: str,
     ) -> KeyStatisticsResponse:
         """Get statistics for a specific key in a collection.
@@ -52,8 +52,8 @@ class CollectionKeysResource(BaseResource):
 
     async def aget_statistics(
         self,
-        project_id: Union[str, UUID],
-        collection_id: Union[str, UUID],
+        project_id: str | UUID,
+        collection_id: str | UUID,
         key: str,
     ) -> KeyStatisticsResponse:
         """Get statistics for a specific key in a collection (async)."""

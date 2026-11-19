@@ -1,7 +1,5 @@
 """Organization CLI commands."""
 
-from typing import Optional
-
 import click
 from rich import box
 from rich.table import Table
@@ -25,9 +23,7 @@ def org() -> None:
 @api_key_option
 @base_url_option
 @format_option
-def org_get(
-    api_key: Optional[str], base_url: Optional[str], output_format: str
-) -> None:
+def org_get(api_key: str | None, base_url: str | None, output_format: str) -> None:
     """Get organization information."""
     try:
         client = get_client(api_key, base_url)
@@ -67,10 +63,10 @@ def org_get(
 @click.option("--description", "-d", help="Description")
 @click.option("--tags", "-t", help="Comma-separated tags")
 def org_update(
-    api_key: Optional[str],
-    base_url: Optional[str],
-    description: Optional[str],
-    tags: Optional[str],
+    api_key: str | None,
+    base_url: str | None,
+    description: str | None,
+    tags: str | None,
 ) -> None:
     """Update organization."""
     try:

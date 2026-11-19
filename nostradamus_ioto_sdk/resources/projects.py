@@ -1,7 +1,7 @@
 """Projects resource for the Nostradamus IoTO SDK."""
 
 import builtins
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING
 from uuid import UUID
 
 from ..models.project import (
@@ -49,7 +49,7 @@ class ProjectsResource(BaseResource):
         response = await self.client.request("GET", self.build_path("projects"))
         return self.parse_list_response(response.json(), ProjectResponse)
 
-    def get(self, project_id: Union[str, UUID]) -> ProjectResponse:
+    def get(self, project_id: str | UUID) -> ProjectResponse:
         """Get project by ID.
 
         Args:
@@ -74,7 +74,7 @@ class ProjectsResource(BaseResource):
         )
         return self.parse_response(response.json(), ProjectResponse)
 
-    async def aget(self, project_id: Union[str, UUID]) -> ProjectResponse:
+    async def aget(self, project_id: str | UUID) -> ProjectResponse:
         """Get project by ID (async).
 
         Args:
@@ -92,8 +92,8 @@ class ProjectsResource(BaseResource):
     def create(
         self,
         name: str,
-        description: Optional[str] = None,
-        tags: Optional[builtins.list[str]] = None,
+        description: str | None = None,
+        tags: builtins.list[str] | None = None,
     ) -> ProjectResponse:
         """Create a new project.
 
@@ -178,8 +178,8 @@ class ProjectsResource(BaseResource):
     async def acreate(
         self,
         name: str,
-        description: Optional[str] = None,
-        tags: Optional[builtins.list[str]] = None,
+        description: str | None = None,
+        tags: builtins.list[str] | None = None,
     ) -> ProjectResponse:
         """Create a new project (async).
 
@@ -249,9 +249,9 @@ class ProjectsResource(BaseResource):
 
     def update(
         self,
-        project_id: Union[str, UUID],
-        description: Optional[str] = None,
-        tags: Optional[builtins.list[str]] = None,
+        project_id: str | UUID,
+        description: str | None = None,
+        tags: builtins.list[str] | None = None,
     ) -> ProjectResponse:
         """Update project.
 
@@ -289,9 +289,9 @@ class ProjectsResource(BaseResource):
 
     async def aupdate(
         self,
-        project_id: Union[str, UUID],
-        description: Optional[str] = None,
-        tags: Optional[builtins.list[str]] = None,
+        project_id: str | UUID,
+        description: str | None = None,
+        tags: builtins.list[str] | None = None,
     ) -> ProjectResponse:
         """Update project (async).
 
@@ -314,7 +314,7 @@ class ProjectsResource(BaseResource):
         # refetch so callers get the ProjectResponse this method promises.
         return await self.aget(project_id_str)
 
-    def delete(self, project_id: Union[str, UUID]) -> None:
+    def delete(self, project_id: str | UUID) -> None:
         """Delete project.
 
         Args:
@@ -332,7 +332,7 @@ class ProjectsResource(BaseResource):
         project_id_str = self.validate_uuid(project_id)
         self.client.request("DELETE", self.build_path("projects", project_id_str))
 
-    async def adelete(self, project_id: Union[str, UUID]) -> None:
+    async def adelete(self, project_id: str | UUID) -> None:
         """Delete project (async).
 
         Args:

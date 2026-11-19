@@ -2,7 +2,6 @@
 
 import json
 import sys
-from typing import Optional
 
 import click
 from rich import box
@@ -31,11 +30,11 @@ def collections() -> None:
 @click.option("--project", "-p", required=True, help="Project ID")
 @click.option("--limit", "-n", type=int, help="Limit results")
 def collections_list(
-    api_key: Optional[str],
-    base_url: Optional[str],
+    api_key: str | None,
+    base_url: str | None,
     output_format: str,
     project: str,
-    limit: Optional[int],
+    limit: int | None,
 ) -> None:
     """List collections in project."""
     try:
@@ -87,8 +86,8 @@ def collections_list(
 @click.option("--project", "-p", required=True, help="Project ID")
 @click.argument("collection_id")
 def collections_get(
-    api_key: Optional[str],
-    base_url: Optional[str],
+    api_key: str | None,
+    base_url: str | None,
     output_format: str,
     project: str,
     collection_id: str,
@@ -132,13 +131,13 @@ def collections_get(
 @click.option("--schema", "-s", required=True, help="Schema (JSON)")
 @click.option("--tags", "-t", help="Tags")
 def collections_create(
-    api_key: Optional[str],
-    base_url: Optional[str],
+    api_key: str | None,
+    base_url: str | None,
     project: str,
     name: str,
     description: str,
     schema: str,
-    tags: Optional[str],
+    tags: str | None,
 ) -> None:
     """Create collection.
 
@@ -184,12 +183,12 @@ def collections_create(
 @click.option("--description", "-d", help="Description")
 @click.option("--tags", "-t", help="Comma-separated tags")
 def collections_update(
-    api_key: Optional[str],
-    base_url: Optional[str],
+    api_key: str | None,
+    base_url: str | None,
     project: str,
     collection_id: str,
-    description: Optional[str],
-    tags: Optional[str],
+    description: str | None,
+    tags: str | None,
 ) -> None:
     """Update collection."""
     try:
@@ -218,8 +217,8 @@ def collections_update(
 @click.argument("collection_id")
 @click.option("--yes", "-y", is_flag=True, help="Skip confirmation")
 def collections_delete(
-    api_key: Optional[str],
-    base_url: Optional[str],
+    api_key: str | None,
+    base_url: str | None,
     project: str,
     collection_id: str,
     yes: bool,

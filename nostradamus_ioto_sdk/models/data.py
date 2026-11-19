@@ -1,7 +1,6 @@
 """Data operation models for the Nostradamus IoTO SDK."""
 
 from datetime import datetime
-from typing import Optional
 
 from pydantic import Field
 
@@ -21,10 +20,10 @@ class DeleteDataRequest(BaseModel):
         Can delete by key, timestamp range, or both.
     """
 
-    key: Optional[str] = Field(default=None, description="Specific data key to delete")
-    timestamp_from: Optional[datetime] = Field(
+    key: str | None = Field(default=None, description="Specific data key to delete")
+    timestamp_from: datetime | None = Field(
         default=None, description="Start of timestamp range (ISO 8601)"
     )
-    timestamp_to: Optional[datetime] = Field(
+    timestamp_to: datetime | None = Field(
         default=None, description="End of timestamp range (ISO 8601)"
     )

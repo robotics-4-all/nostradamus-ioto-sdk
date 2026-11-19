@@ -1,7 +1,6 @@
 """Organization models for the Nostradamus IoTO SDK."""
 
 from datetime import datetime
-from typing import Optional
 from uuid import UUID
 
 from pydantic import Field
@@ -24,7 +23,7 @@ class OrganizationResponse(BaseModel):
     organization_name: str = Field(..., description="Organization name")
     description: str = Field(..., description="Organization description")
     creation_date: datetime = Field(..., description="Creation timestamp")
-    tags: Optional[list[str]] = Field(default=None, description="Organization tags")
+    tags: list[str] | None = Field(default=None, description="Organization tags")
 
 
 class OrganizationUpdateRequest(BaseModel):
@@ -35,5 +34,5 @@ class OrganizationUpdateRequest(BaseModel):
         tags: New tags for the organization
     """
 
-    description: Optional[str] = Field(default=None, description="New description")
-    tags: Optional[list[str]] = Field(default=None, description="New tags")
+    description: str | None = Field(default=None, description="New description")
+    tags: list[str] | None = Field(default=None, description="New tags")

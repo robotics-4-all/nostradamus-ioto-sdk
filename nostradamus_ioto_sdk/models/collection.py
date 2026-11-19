@@ -1,7 +1,7 @@
 """Collection models for the Nostradamus IoTO SDK."""
 
 from datetime import datetime
-from typing import Any, Optional
+from typing import Any
 from uuid import UUID
 
 from pydantic import Field
@@ -65,5 +65,5 @@ class CollectionUpdateRequest(BaseModel):
         tags: New tags for the collection
     """
 
-    description: Optional[str] = Field(default=None, description="New description")
-    tags: Optional[list[str]] = Field(default=None, description="New tags")
+    description: str | None = Field(default=None, description="New description")
+    tags: list[str] | None = Field(default=None, description="New tags")

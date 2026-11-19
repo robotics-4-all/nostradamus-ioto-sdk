@@ -1,7 +1,6 @@
 """Project API key CLI commands."""
 
 import json
-from typing import Optional
 
 import click
 from rich import box
@@ -30,7 +29,7 @@ def keys() -> None:
 @format_option
 @click.option("--project", "-p", required=True, help="Project ID")
 def keys_list(
-    api_key: Optional[str], base_url: Optional[str], output_format: str, project: str
+    api_key: str | None, base_url: str | None, output_format: str, project: str
 ) -> None:
     """List project API keys."""
     try:
@@ -75,8 +74,8 @@ def keys_list(
 @click.option("--project", "-p", required=True, help="Project ID")
 @click.argument("api_key_value")
 def keys_get(
-    api_key: Optional[str],
-    base_url: Optional[str],
+    api_key: str | None,
+    base_url: str | None,
     output_format: str,
     project: str,
     api_key_value: str,
@@ -119,8 +118,8 @@ def keys_get(
 @click.argument("api_key_value")
 @click.option("--yes", "-y", is_flag=True, help="Skip confirmation")
 def keys_regenerate(
-    api_key: Optional[str],
-    base_url: Optional[str],
+    api_key: str | None,
+    base_url: str | None,
     project: str,
     api_key_value: str,
     yes: bool,
@@ -145,7 +144,7 @@ def keys_regenerate(
         console.print(
             Panel(
                 f"[green]✓[/green] API key regenerated!\n\n"
-                f"[cyan]New Key:[/cyan] {new_key.key_value}\n"
+                f"[cyan]New Key:[/cyan] {new_key.api_key}\n"
                 f"[red]⚠ Save securely - won't be shown again![/red]",
                 title="Success",
                 border_style="green",
@@ -168,7 +167,7 @@ def keys_regenerate(
     help="Key type",
 )
 def keys_create(
-    api_key: Optional[str], base_url: Optional[str], project: str, key_type_name: str
+    api_key: str | None, base_url: str | None, project: str, key_type_name: str
 ) -> None:
     """Create project API key.
 
@@ -202,8 +201,8 @@ def keys_create(
 @click.argument("api_key_to_delete")
 @click.option("--yes", "-y", is_flag=True, help="Skip confirmation")
 def keys_delete(
-    api_key: Optional[str],
-    base_url: Optional[str],
+    api_key: str | None,
+    base_url: str | None,
     project: str,
     api_key_to_delete: str,
     yes: bool,

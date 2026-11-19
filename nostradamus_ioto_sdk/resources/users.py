@@ -1,5 +1,5 @@
 import builtins
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING
 from uuid import UUID
 
 from ..models.user import Username, UserRequest
@@ -14,7 +14,7 @@ class UsersResource(BaseResource):
 
     def create(
         self,
-        organization_id: Union[str, UUID],
+        organization_id: str | UUID,
         username: str,
         password: str,
     ) -> None:
@@ -40,7 +40,7 @@ class UsersResource(BaseResource):
 
     async def acreate(
         self,
-        organization_id: Union[str, UUID],
+        organization_id: str | UUID,
         username: str,
         password: str,
     ) -> None:
@@ -55,7 +55,7 @@ class UsersResource(BaseResource):
 
     def list(
         self,
-        organization_id: Union[str, UUID],
+        organization_id: str | UUID,
     ) -> builtins.list[str]:
         """List all users in an organization.
 
@@ -84,7 +84,7 @@ class UsersResource(BaseResource):
 
     async def alist(
         self,
-        organization_id: Union[str, UUID],
+        organization_id: str | UUID,
     ) -> builtins.list[str]:
         """List all users in an organization (async)."""
         org_id_str = self.validate_uuid(organization_id)
@@ -102,7 +102,7 @@ class UsersResource(BaseResource):
 
     def update_password(
         self,
-        organization_id: Union[str, UUID],
+        organization_id: str | UUID,
         username: str,
         new_password: str,
     ) -> None:
@@ -128,7 +128,7 @@ class UsersResource(BaseResource):
 
     async def aupdate_password(
         self,
-        organization_id: Union[str, UUID],
+        organization_id: str | UUID,
         username: str,
         new_password: str,
     ) -> None:
@@ -143,7 +143,7 @@ class UsersResource(BaseResource):
 
     def delete(
         self,
-        organization_id: Union[str, UUID],
+        organization_id: str | UUID,
         username: str,
     ) -> None:
         """Delete a user.
@@ -166,7 +166,7 @@ class UsersResource(BaseResource):
 
     async def adelete(
         self,
-        organization_id: Union[str, UUID],
+        organization_id: str | UUID,
         username: str,
     ) -> None:
         """Delete a user (async)."""

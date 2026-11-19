@@ -59,8 +59,8 @@ class BaseResource:
     ) -> list[T]: ...
 
     def parse_response(
-        self, data: Union[dict[str, Any], list[dict[str, Any]]], model_class: type[T]
-    ) -> Union[T, list[T]]:
+        self, data: dict[str, Any] | list[dict[str, Any]], model_class: type[T]
+    ) -> T | list[T]:
         """Parse response data into Pydantic model(s).
 
         Args:
@@ -75,7 +75,7 @@ class BaseResource:
         return model_class(**data)
 
     def parse_list_response(
-        self, data: Union[dict[str, Any], list[dict[str, Any]]], model_class: type[T]
+        self, data: dict[str, Any] | list[dict[str, Any]], model_class: type[T]
     ) -> list[T]:
         """Parse a list endpoint payload into model instances.
 
@@ -96,7 +96,7 @@ class BaseResource:
             return [model_class(**item) for item in data]
         return [model_class(**data)]
 
-    def validate_uuid(self, value: Union[str, UUID]) -> str:
+    def validate_uuid(self, value: str | UUID) -> str:
         """Validate and convert UUID to string.
 
         Args:

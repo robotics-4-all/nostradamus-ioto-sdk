@@ -3,7 +3,6 @@
 import asyncio
 import threading
 import time
-from typing import Optional
 
 from .config import RetryConfig
 
@@ -27,7 +26,7 @@ class RateLimiter:
         self._tokens = float(requests_per_second)
         self._last_update = time.monotonic()
         self._lock = threading.Lock()
-        self._async_lock: Optional[asyncio.Lock] = None
+        self._async_lock: asyncio.Lock | None = None
 
     @property
     def rate(self) -> float:
@@ -39,7 +38,7 @@ class RateLimiter:
         """Current number of available tokens."""
         return self._tokens
 
-    def acquire(self, timeout: Optional[float] = None) -> bool:
+    def acquire(self, timeout: float | None = None) -> bool:
         """Acquire permission to make a request (blocking).
 
         Args:
@@ -70,7 +69,7 @@ class RateLimiter:
             self._async_lock = asyncio.Lock()
         return self._async_lock
 
-    async def aacquire(self, timeout: Optional[float] = None) -> bool:
+    async def aacquire(self, timeout: float | None = None) -> bool:
         """Async acquire permission to make a request.
 
         Args:
@@ -102,7 +101,7 @@ class RateLimiter:
         self._tokens = min(self._rate, self._tokens + elapsed * self._rate)
         self._last_update = now
 
-    def handle_rate_limit(self, retry_after: Optional[int] = None) -> None:
+    def handle_rate_limit(self, retry_after: int | None = None) -> None:
         """Adapt rate limit based on 429 response.
 
         Args:

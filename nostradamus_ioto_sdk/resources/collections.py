@@ -1,7 +1,7 @@
 """Collections resource for the Nostradamus IoTO SDK."""
 
 import builtins
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any
 from uuid import UUID
 
 from ..models.collection import (
@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 class CollectionsResource(BaseResource):
     """Collection management operations."""
 
-    def list(self, project_id: Union[str, UUID]) -> list[CollectionResponse]:
+    def list(self, project_id: str | UUID) -> list[CollectionResponse]:
         """List all collections in a project."""
         project_id_str = self.validate_uuid(project_id)
         response = self.client.request(
@@ -26,9 +26,7 @@ class CollectionsResource(BaseResource):
         )
         return self.parse_list_response(response.json(), CollectionResponse)
 
-    async def alist(
-        self, project_id: Union[str, UUID]
-    ) -> builtins.list[CollectionResponse]:
+    async def alist(self, project_id: str | UUID) -> builtins.list[CollectionResponse]:
         """List all collections in a project (async)."""
         project_id_str = self.validate_uuid(project_id)
         response = await self.client.request(
@@ -38,8 +36,8 @@ class CollectionsResource(BaseResource):
 
     def get(
         self,
-        project_id: Union[str, UUID],
-        collection_id: Union[str, UUID],
+        project_id: str | UUID,
+        collection_id: str | UUID,
     ) -> CollectionResponse:
         """Get collection by ID."""
         project_id_str = self.validate_uuid(project_id)
@@ -54,8 +52,8 @@ class CollectionsResource(BaseResource):
 
     async def aget(
         self,
-        project_id: Union[str, UUID],
-        collection_id: Union[str, UUID],
+        project_id: str | UUID,
+        collection_id: str | UUID,
     ) -> CollectionResponse:
         """Get collection by ID (async)."""
         project_id_str = self.validate_uuid(project_id)
@@ -70,11 +68,11 @@ class CollectionsResource(BaseResource):
 
     def create(
         self,
-        project_id: Union[str, UUID],
+        project_id: str | UUID,
         name: str,
         description: str,
         collection_schema: dict[str, Any],
-        tags: Optional[builtins.list[str]] = None,
+        tags: builtins.list[str] | None = None,
     ) -> CollectionResponse:
         """Create a new collection."""
         project_id_str = self.validate_uuid(project_id)
@@ -132,11 +130,11 @@ class CollectionsResource(BaseResource):
 
     async def acreate(
         self,
-        project_id: Union[str, UUID],
+        project_id: str | UUID,
         name: str,
         description: str,
         collection_schema: dict[str, Any],
-        tags: Optional[builtins.list[str]] = None,
+        tags: builtins.list[str] | None = None,
     ) -> CollectionResponse:
         """Create a new collection (async)."""
         project_id_str = self.validate_uuid(project_id)
@@ -194,10 +192,10 @@ class CollectionsResource(BaseResource):
 
     def update(
         self,
-        project_id: Union[str, UUID],
-        collection_id: Union[str, UUID],
-        description: Optional[str] = None,
-        tags: Optional[builtins.list[str]] = None,
+        project_id: str | UUID,
+        collection_id: str | UUID,
+        description: str | None = None,
+        tags: builtins.list[str] | None = None,
     ) -> CollectionResponse:
         """Update collection."""
         project_id_str = self.validate_uuid(project_id)
@@ -216,10 +214,10 @@ class CollectionsResource(BaseResource):
 
     async def aupdate(
         self,
-        project_id: Union[str, UUID],
-        collection_id: Union[str, UUID],
-        description: Optional[str] = None,
-        tags: Optional[builtins.list[str]] = None,
+        project_id: str | UUID,
+        collection_id: str | UUID,
+        description: str | None = None,
+        tags: builtins.list[str] | None = None,
     ) -> CollectionResponse:
         """Update collection (async)."""
         project_id_str = self.validate_uuid(project_id)
@@ -238,8 +236,8 @@ class CollectionsResource(BaseResource):
 
     def delete(
         self,
-        project_id: Union[str, UUID],
-        collection_id: Union[str, UUID],
+        project_id: str | UUID,
+        collection_id: str | UUID,
     ) -> None:
         """Delete collection."""
         project_id_str = self.validate_uuid(project_id)
@@ -253,8 +251,8 @@ class CollectionsResource(BaseResource):
 
     async def adelete(
         self,
-        project_id: Union[str, UUID],
-        collection_id: Union[str, UUID],
+        project_id: str | UUID,
+        collection_id: str | UUID,
     ) -> None:
         """Delete collection (async)."""
         project_id_str = self.validate_uuid(project_id)

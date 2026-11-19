@@ -1,7 +1,6 @@
 """Project CLI commands."""
 
 import json
-from typing import Optional
 
 import click
 from rich import box
@@ -29,10 +28,10 @@ def projects() -> None:
 @format_option
 @click.option("--limit", "-n", type=int, help="Limit results")
 def projects_list(
-    api_key: Optional[str],
-    base_url: Optional[str],
+    api_key: str | None,
+    base_url: str | None,
     output_format: str,
-    limit: Optional[int],
+    limit: int | None,
 ) -> None:
     """List all projects."""
     try:
@@ -81,7 +80,7 @@ def projects_list(
 @format_option
 @click.argument("project_id")
 def projects_get(
-    api_key: Optional[str], base_url: Optional[str], output_format: str, project_id: str
+    api_key: str | None, base_url: str | None, output_format: str, project_id: str
 ) -> None:
     """Get project details."""
     try:
@@ -118,11 +117,11 @@ def projects_get(
 @click.option("--description", "-d", help="Description")
 @click.option("--tags", "-t", help="Comma-separated tags")
 def projects_create(
-    api_key: Optional[str],
-    base_url: Optional[str],
+    api_key: str | None,
+    base_url: str | None,
     name: str,
-    description: Optional[str],
-    tags: Optional[str],
+    description: str | None,
+    tags: str | None,
 ) -> None:
     """Create new project."""
     try:
@@ -150,11 +149,11 @@ def projects_create(
 @click.option("--description", "-d", help="Description")
 @click.option("--tags", "-t", help="Tags")
 def projects_update(
-    api_key: Optional[str],
-    base_url: Optional[str],
+    api_key: str | None,
+    base_url: str | None,
     project_id: str,
-    description: Optional[str],
-    tags: Optional[str],
+    description: str | None,
+    tags: str | None,
 ) -> None:
     """Update project."""
     try:
@@ -179,7 +178,7 @@ def projects_update(
 @click.argument("project_id")
 @click.option("--yes", "-y", is_flag=True, help="Skip confirmation")
 def projects_delete(
-    api_key: Optional[str], base_url: Optional[str], project_id: str, yes: bool
+    api_key: str | None, base_url: str | None, project_id: str, yes: bool
 ) -> None:
     """Delete project."""
     try:
