@@ -171,6 +171,9 @@ addopts = [
 testpaths = ["tests"]
 pythonpath = ["."]
 asyncio_mode = "auto"
+markers = [
+    "integration: live tests against the real Nostradamus API (require NOSTRADAMUS_* credentials; skipped otherwise)",
+]
 
 [tool.pylint.main]
 # Only lint the SDK package, not tests/scripts/examples

@@ -1,78 +1,61 @@
 # Integration Tests
 
-## Status
+## Two Kinds of Integration Test
 
-The integration tests in `test_client_integration.py.disabled` are currently disabled because they use mocked API responses that don't match the actual API implementation.
+| Suite | File | Backend | Runs by default |
+|-------|------|---------|-----------------|
+| Live API (active) | `test_live_api.py` | Real Nostradamus API | No - skipped without credentials |
+| Mocked (disabled) | `test_client_integration.py.disabled` | `respx` mocks | Never (`.disabled` suffix) |
 
-## Real API Testing
+Only `test_live_api.py` is collected. It is read-only (health, organization,
+project listing) and therefore safe to point at production.
 
-The SDK is tested against the real API using:
+## Running the Live Suite
 
-1. **`test_sdk_quick.py`** (root directory)
-   - Quick smoke test against real API
-   - Tests: create, send, query, delete operations
-   - Run with: `python test_sdk_quick.py`
-
-2. **`examples/soil_monitoring_example.py`**
-   - Complete workflow example
-   - Tests all major features
-   - Run with: `python examples/soil_monitoring_example.py`
-
-3. **`test_client.py`** (root directory)
-   - Interactive test script
-   - Lists organizations, projects, collections
-   - Run with: `python test_client.py`
-
-## Why Integration Tests Are Disabled
-
-The mocked integration tests have several issues:
-
-1. **Wrong Endpoints**: Tests mock `/api/v1/organization` but SDK uses `/api/v1/organization/nostradamus`
-2. **Wrong Field Names**: Mock responses use `id`, `name`, `created_at` but models use `organization_id`, `organization_name`, `creation_date`
-3. **Missing UUID Extraction**: API returns IDs in message strings, not as separate fields
-4. **Filter Format**: API requires JSON-encoded filters, not Python dicts
-
-## Running Tests
-
-### Real API Tests (Recommended)
 ```bash
-# Set your credentials
-export NOSTRADAMUS_PROJECT_ID='your-project-id'
-export NOSTRADAMUS_MASTER_KEY='your-master-key'
-export NOSTRADAMUS_WRITE_KEY='your-write-key'
-export NOSTRADAMUS_READ_KEY='your-read-key'
+export NOSTRADAMUS_API_KEY='your-api-key'   # or the OAuth2 pair below
+# export NOSTRADAMUS_USERNAME='user'
+# export NOSTRADAMUS_PASSWORD='pass'
 
-# Run quick test
-python test_sdk_quick.py
-
-# Run full example
-python examples/soil_monitoring_example.py
+make test-integration
+# or
+pytest tests/integration/ -v --no-cov
 ```
 
-### Unit Tests Only
+Optional variables:
+
+| Variable | Purpose |
+|----------|---------|
+| `NOSTRADAMUS_BASE_URL` | Override the API base URL |
+| `NOSTRADAMUS_PROJECT_ID` | Enables the project-by-id test |
+
+Every test carries the `integration` marker (`pytestmark`). Without
+credentials the fixtures call `pytest.skip(...)`, so the suite reports
+`6 skipped` and exits 0.
+
+`make test-integration` fails loudly (exit 1) when pytest collects zero tests,
+so an empty directory can no longer masquerade as a passing run.
+
+## Why the Mocked Suite Is Disabled
+
+`test_client_integration.py.disabled` mocks responses that do not match the
+real API:
+
+1. **Wrong endpoints** - mocks `/api/v1/organization`; the SDK calls
+   `/api/v1/organization` scoped to the caller's auth context.
+2. **Wrong field names** - mocks `id`, `name`, `created_at`; models use
+   `organization_id`, `organization_name`, `creation_date`.
+3. **Missing UUID extraction** - `projects.create()` extracts the UUID from
+   the response message, which the mocks do not emulate.
+4. **Filter format** - the API requires JSON-encoded filter strings, not dicts.
+
+Re-enabling it means recreating mocks against the live contract - the same
+drift that caused the disable. The live suite is the maintained path.
+
+## Unit Tests
+
 ```bash
 make test-unit
 # or
 pytest tests/unit/ -v
 ```
-
-## Future Work
-
-To re-enable integration tests:
-
-1. Update mock endpoints to match actual API paths
-2. Fix mock response field names to match models
-3. Add UUID extraction logic to create operation mocks
-4. Implement filter JSON encoding in mocks
-5. Match all response formats to actual API behavior
-
-**Estimated Effort**: 4-6 hours
-
-## Verification
-
-The SDK is production-ready as verified by:
-- ✅ All unit tests passing (56/56)
-- ✅ Real API integration successful
-- ✅ Examples working correctly
-- ✅ Manual testing with production API
-- ✅ Error handling robust (409 conflicts, validation, etc.)
