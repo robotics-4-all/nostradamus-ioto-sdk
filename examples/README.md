@@ -27,6 +27,14 @@ This directory contains example scripts demonstrating various features of the No
 | `data_ingestion.py` | General | Sensor data ingestion patterns (individual, batch, continuous) |
 | `soil_monitoring_example.py` | Agriculture | Complete workflow matching official API demo ⭐ |
 
+### Notebooks
+
+| Notebook | Description |
+|----------|-------------|
+| `notebooks/Nostradamus_IoTO_SDK_example.ipynb` | ⭐ SDK edition of the partner demo — same soil workflow using only `NostradamusClient` |
+| `notebooks/Nostradamus_IoTO_API_example_v1.ipynb` | Original partner demo notebook (raw `requests`, with captured outputs) — reference only |
+| `notebooks/Nostradamus_IoTO_API_example_v2.ipynb` | Plain-HTTP walkthrough of the REST API — reference only |
+
 ### Real-World Domain Examples
 
 All domain examples follow the same 6-step workflow: create collection → send data → query with filters → statistics → delete → cleanup. They require the same environment variables:
