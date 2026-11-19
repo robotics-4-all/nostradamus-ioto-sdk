@@ -31,7 +31,9 @@ This directory contains example scripts demonstrating various features of the No
 
 | Notebook | Description |
 |----------|-------------|
-| `notebooks/Nostradamus_IoTO_SDK_example.ipynb` | SDK edition of the original partner demo notebook (soil data workflow, SDK-only) |
+| `notebooks/Nostradamus_IoTO_SDK_example.ipynb` | ⭐ SDK edition of the partner demo — same soil workflow using only `NostradamusClient` |
+| `notebooks/Nostradamus_IoTO_API_example_v1.ipynb` | Original partner demo notebook (raw `requests`, with captured outputs) — reference only |
+| `notebooks/Nostradamus_IoTO_API_example_v2.ipynb` | Plain-HTTP walkthrough of the REST API — reference only |
 
 ### Real-World Domain Examples
 
