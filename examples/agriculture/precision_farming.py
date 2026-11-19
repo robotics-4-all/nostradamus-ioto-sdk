@@ -6,7 +6,6 @@ Demonstrates multi-zone crop monitoring data ingestion, querying,
 statistics, and cleanup using sync clients.
 """
 
-import json
 import os
 import random
 import sys
@@ -17,7 +16,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from _load_env import load_dotenv
 
-from nostradamus_ioto_sdk import NostradamusClient
+from nostradamus_ioto_sdk import NostradamusClient, StatOperation
 from nostradamus_ioto_sdk.exceptions import APIError
 
 load_dotenv()
@@ -162,13 +161,16 @@ def main():
             zone_filter = [
                 {"property_name": "key", "operator": "eq", "property_value": ZONES[0]}
             ]
-            results = read_client.data.query(
+            response = read_client.data.get(
                 project_id=project_id,
                 collection_id=collection_id,
                 filters=zone_filter,
                 limit=5,
             )
-            print(f"  - Found {len(results)} readings for {ZONES[0]} (limit 5).")
+            print(
+                f"  - Found {len(response.data)} of {response.total_count} "
+                f"readings for {ZONES[0]} (limit 5)."
+            )
 
             # Query 3.2: Drought stress risk (low moisture + high temp)
             drought_filter = [
@@ -183,13 +185,13 @@ def main():
                     "property_value": 30.0,
                 },
             ]
-            results = read_client.data.query(
+            response = read_client.data.get(
                 project_id=project_id,
                 collection_id=collection_id,
                 filters=drought_filter,
                 limit=10,
             )
-            print(f"  - Found {len(results)} potential drought stress readings.")
+            print(f"  - Found {len(response.data)} potential drought stress readings.")
 
             # Query 3.3: Disease risk (high leaf wetness + high humidity)
             disease_filter = [
@@ -204,24 +206,24 @@ def main():
                     "property_value": 80.0,
                 },
             ]
-            results = read_client.data.query(
+            response = read_client.data.get(
                 project_id=project_id,
                 collection_id=collection_id,
                 filters=disease_filter,
                 limit=10,
             )
-            print(f"  - Found {len(results)} potential disease risk readings.")
+            print(f"  - Found {len(response.data)} potential disease risk readings.")
 
             # Query 3.4: Crop health ranking (Order by NDVI descending)
-            ndvi_order = json.dumps({"field": "ndvi", "order": "desc"})
-            results = read_client.data.query(
+            response = read_client.data.get(
                 project_id=project_id,
                 collection_id=collection_id,
-                order_by=ndvi_order,
+                attributes=["key", "timestamp", "ndvi"],
+                order_by='{"field": "ndvi", "order": "desc"}',
                 limit=3,
             )
             print("  - Top 3 healthiest readings (NDVI):")
-            for r in results:
+            for r in response.data:
                 print(f"    > {r['key']} @ {r['timestamp'][:16]} | NDVI: {r['ndvi']}")
 
     except APIError as e:
@@ -236,7 +238,7 @@ def main():
                 project_id=project_id,
                 collection_id=collection_id,
                 attribute="soil_moisture_pct",
-                operation="avg",
+                stat=StatOperation.AVG,
             )
             print(f"  - Average Soil Moisture: {avg_moisture['value']:.2f}%")
 
@@ -245,7 +247,7 @@ def main():
                 project_id=project_id,
                 collection_id=collection_id,
                 attribute="ambient_temperature_c",
-                operation="max",
+                stat=StatOperation.MAX,
             )
             print(f"  - Maximum Ambient Temp: {max_temp['value']:.1f}°C")
 
@@ -254,7 +256,7 @@ def main():
                 project_id=project_id,
                 collection_id=collection_id,
                 attribute="battery_pct",
-                operation="min",
+                stat=StatOperation.MIN,
             )
             print(f"  - Minimum Battery Level: {min_battery['value']:.1f}%")
 
@@ -263,7 +265,7 @@ def main():
                 project_id=project_id,
                 collection_id=collection_id,
                 attribute="key",
-                operation="distinct",
+                stat=StatOperation.DISTINCT,
             )
             print(f"  - Distinct Zones Monitored: {distinct_zones['value']}")
 
@@ -271,34 +273,22 @@ def main():
         print(f"❌ Error calculating statistics: {e}")
 
     # Step 5: Delete Specific Data (master_key)
-    print("\n🗑️ Step 5: Deleting first 12 hours of data for ZONE_A_FIELD_01...")
+    print(f"\n🗑️ Step 5: Deleting first 12 hours of data for {ZONES[0]}...")
     try:
         with NostradamusClient(api_key=master_key) as master_client:
             start_time = datetime.now() - timedelta(hours=24)
             end_time = start_time + timedelta(hours=12)
 
-            delete_filters = [
-                {"property_name": "key", "operator": "eq", "property_value": ZONES[0]},
-                {
-                    "property_name": "timestamp",
-                    "operator": "gte",
-                    "property_value": start_time.isoformat() + "Z",
-                },
-                {
-                    "property_name": "timestamp",
-                    "operator": "lt",
-                    "property_value": end_time.isoformat() + "Z",
-                },
-            ]
-
             delete_result = master_client.data.delete(
                 project_id=project_id,
                 collection_id=collection_id,
-                filters=delete_filters,
+                key=ZONES[0],
+                timestamp_from=start_time.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                timestamp_to=end_time.strftime("%Y-%m-%dT%H:%M:%SZ"),
             )
             print(
-                f"✅ Delete successful. Records affected: "
-                f"{delete_result.get('deleted_count', 'N/A')}"
+                f"✅ Delete successful: {delete_result.message} "
+                f"(criteria={delete_result.criteria})"
             )
     except APIError as e:
         print(f"❌ Error deleting data: {e}")
