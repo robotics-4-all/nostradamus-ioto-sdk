@@ -40,7 +40,18 @@ test-unit:
 	pytest tests/unit/ -v
 
 test-integration:
-	pytest tests/integration/ -v --no-cov || test $$? -eq 5
+	@echo "Live integration tests skip unless NOSTRADAMUS_API_KEY (or"
+	@echo "NOSTRADAMUS_USERNAME/NOSTRADAMUS_PASSWORD) is set."
+	@pytest tests/integration/ -v --no-cov; \
+	status=$$?; \
+	if [ $$status -eq 5 ]; then \
+		echo ""; \
+		echo "ERROR: no integration tests were collected from tests/integration/."; \
+		echo "       Expected marker-gated live tests in tests/integration/test_live_api.py"; \
+		echo "       (marker: 'integration'). Run 'make test-unit' for the mocked suite."; \
+		exit 1; \
+	fi; \
+	exit $$status
 
 coverage:
 	pytest --cov=nostradamus_ioto_sdk --cov-report=html --cov-report=term-missing
